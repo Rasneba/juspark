@@ -34,7 +34,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "space_id and start_time required" }, { status: 400 });
     }
 
-    const spaceRes = await pool.query("SELECT * FROM juspark_spaces WHERE id = $1 AND status = 'active'", [space_id]);
+    const spaceRes = await pool.query("SELECT s.*, s.has_covered as is_covered, s.has_ev_charging as is_ev_charger, s.total_slots as total_spots, COALESCE(s.available_slots, s.total_slots) as available_spots FROM juspark_spaces s WHERE s.id = $1 AND (s.status = 'active' OR s.is_active = TRUE)", [space_id]);
     if (spaceRes.rows.length === 0) return NextResponse.json({ error: "Space not found" }, { status: 404 });
 
     const space = spaceRes.rows[0];
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     );
 
     await pool.query(
-      "UPDATE juspark_spaces SET available_spots = available_spots - 1 WHERE id = $1 AND available_spots > 0",
+      "UPDATE juspark_spaces SET available_slots = GREATEST(COALESCE(available_slots, total_slots) - 1, 0) WHERE id = $1 AND COALESCE(available_slots, total_slots) > 0",
       [space_id]
     );
 

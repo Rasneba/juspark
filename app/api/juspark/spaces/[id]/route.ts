@@ -8,6 +8,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     const { id } = await params;
     const result = await pool.query(
       `SELECT s.*,
+        s.has_covered as is_covered,
+        s.has_ev_charging as is_ev_charger,
+        s.total_slots as total_spots,
+        COALESCE(s.available_slots, s.total_slots) as available_spots,
         (SELECT json_agg(json_build_object('id', sp.id, 'photo_url', sp.photo_url, 'is_primary', sp.is_primary) ORDER BY sp.sort_order) FROM juspark_space_photos sp WHERE sp.space_id = s.id) as photos,
         (SELECT json_agg(json_build_object('rate_type', rate_type, 'price', price)) FROM juspark_space_pricing WHERE space_id = s.id) as pricing,
         (SELECT json_agg(json_build_object('id', r.id, 'rating', r.rating, 'comment', r.comment, 'created_at', r.created_at, 'user_name', u.name) ORDER BY r.created_at DESC)

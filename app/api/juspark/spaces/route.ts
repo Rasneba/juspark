@@ -27,10 +27,14 @@ export async function GET(req: Request) {
     const type = searchParams.get("type");
     const search = searchParams.get("search");
 
-    let query = `SELECT s.*, 
+    let query = `SELECT s.*,
+      s.has_covered as is_covered,
+      s.has_ev_charging as is_ev_charger,
+      s.total_slots as total_spots,
+      COALESCE(s.available_slots, s.total_slots) as available_spots,
       (SELECT photo_url FROM juspark_space_photos WHERE space_id = s.id AND is_primary = TRUE LIMIT 1) as primary_photo,
       (SELECT json_agg(json_build_object('rate_type', rate_type, 'price', price)) FROM juspark_space_pricing WHERE space_id = s.id) as pricing
-      FROM juspark_spaces s WHERE s.status = 'active'`;
+      FROM juspark_spaces s WHERE (s.status = 'active' OR s.is_active = TRUE)`;
     const params: any[] = [];
     let idx = 1;
 
@@ -79,9 +83,9 @@ export async function POST(req: Request) {
     await pool.query("UPDATE juspark_users SET is_host = TRUE WHERE id = $1", [user.id]);
 
     const result = await pool.query(
-      `INSERT INTO juspark_spaces (host_id, name, description, address, latitude, longitude, space_type, is_covered, is_ev_charger, is_24_7, total_spots, available_spots)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $11) RETURNING *`,
-      [user.id, name, description || null, address, latitude || null, longitude || null, space_type || "lot", is_covered || false, is_ev_charger || false, is_24_7 !== false, total_spots || 1]
+      `INSERT INTO juspark_spaces (host_id, name, description, address, latitude, longitude, space_type, has_covered, has_ev_charging, total_slots, available_slots, is_active)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $10, TRUE) RETURNING *`,
+      [user.id, name, description || null, address, latitude || null, longitude || null, space_type || "lot", is_covered || false, is_ev_charger || false, total_spots || 1]
     );
 
     const space = result.rows[0];

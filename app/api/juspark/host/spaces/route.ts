@@ -26,6 +26,10 @@ export async function GET(req: Request) {
 
     const result = await pool.query(
       `SELECT s.*,
+        s.has_covered as is_covered,
+        s.has_ev_charging as is_ev_charger,
+        s.total_slots as total_spots,
+        COALESCE(s.available_slots, s.total_slots) as available_spots,
         (SELECT COUNT(*) FROM juspark_bookings b WHERE b.space_id = s.id) as total_bookings,
         (SELECT json_agg(json_build_object('rate_type', rate_type, 'price', price)) FROM juspark_space_pricing WHERE space_id = s.id) as pricing
        FROM juspark_spaces s WHERE s.host_id = $1 ORDER BY s.created_at DESC`,
