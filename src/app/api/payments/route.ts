@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       );
     }
 
-    if (booking.paymentStatus === "COMPLETED") {
+    if (booking.paymentStatus === "PAID") {
       return NextResponse.json(
         { error: "Payment already completed for this booking" },
         { status: 409 }
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
     const updated = await prisma.booking.update({
       where: { id: bookingId },
       data: {
-        paymentStatus: "COMPLETED",
+        paymentStatus: "PAID",
         bookingRef: paymentRef,
         status: "CONFIRMED",
       },
@@ -84,7 +84,7 @@ export async function POST(req: Request) {
         amount: parseFloat(String(amount)),
         method,
         providerRef: paymentRef,
-        status: "COMPLETED",
+        status: "PAID",
       },
       message: "Payment processed successfully",
     });
