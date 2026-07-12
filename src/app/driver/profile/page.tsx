@@ -47,11 +47,9 @@ export default function DriverProfilePage() {
 
   if (!user) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7280" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>⏳</div>
-          Loading profile...
-        </div>
+      <div className="min-h-screen bg-zinc-50 flex items-center justify-center text-zinc-500">
+        <span className="w-4 h-4 border-2 border-[#128a42] border-t-transparent rounded-full animate-spin mr-2" />
+        Loading profile...
       </div>
     );
   }
@@ -63,114 +61,84 @@ export default function DriverProfilePage() {
     .reduce((sum, b) => sum + (b.totalAmount || 0), 0);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f9fafb" }}>
-      <header style={{ position: "sticky", top: 0, zIndex: 50, background: "white", borderBottom: "1px solid #e5e7eb", padding: "0.6rem 1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <Link href="/" style={{ padding: "0.35rem 0.55rem", background: "#f3f4f6", borderRadius: 8, fontSize: "1rem", textDecoration: "none", color: "#1B1B1B" }}>←</Link>
-        <span style={{ fontSize: "1rem", fontWeight: "700", flex: 1 }}>My Profile</span>
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 font-sans select-none antialiased">
+      <header className="sticky top-0 z-50 bg-white border-b border-zinc-200/80 shadow-sm">
+        <div className="max-w-lg mx-auto px-4 h-14 flex items-center gap-3">
+          <Link href="/" className="w-8 h-8 bg-zinc-100 hover:bg-zinc-200 rounded-xl flex items-center justify-center text-zinc-600 transition-all text-sm font-bold">
+            ←
+          </Link>
+          <span className="font-display font-bold text-sm text-zinc-950 flex-1">My Profile</span>
+        </div>
       </header>
 
-      <div style={{ padding: "1rem", maxWidth: "500px", margin: "0 auto" }}>
-        {/* User Card */}
-        <div style={{ background: "white", borderRadius: 12, border: "1px solid #e5e7eb", padding: "1.25rem", marginBottom: "1rem", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1rem" }}>
-            <div style={{ width: "56px", height: "56px", borderRadius: "50%", background: "linear-gradient(135deg, #4A90D9, #1B1B1B)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: "1.4rem", fontWeight: "700", flexShrink: 0 }}>
+      <div className="max-w-lg mx-auto w-full px-4 py-4 pb-16">
+        {/* User card */}
+        <div className="bg-white rounded-3xl border border-zinc-150 p-5 mb-4 shadow-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#128a42] to-[#0f7a39] flex items-center justify-center text-white text-lg font-bold flex-shrink-0 shadow-lg shadow-[#128a42]/20">
               {user.name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || "?"}
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <h2 style={{ fontWeight: "700", fontSize: "1.1rem", marginBottom: "0.1rem", color: "#111827" }}>{user.name || "User"}</h2>
-              <p style={{ fontSize: "0.8rem", color: "#6b7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</p>
-              {user.phone && <p style={{ fontSize: "0.75rem", color: "#9ca3af" }}>{user.phone}</p>}
+            <div className="flex-1 min-w-0">
+              <h2 className="font-display font-bold text-base text-zinc-950">{user.name || "User"}</h2>
+              <p className="text-[11px] text-zinc-500 truncate">{user.email}</p>
+              {user.phone && <p className="text-[10px] text-zinc-400">{user.phone}</p>}
             </div>
           </div>
-
-          <div style={{ display: "inline-block", padding: "0.25rem 0.75rem", borderRadius: 999, background: "#D5F5E3", color: "#059669", fontSize: "0.75rem", fontWeight: "600" }}>
+          <span className="inline-block px-3 py-1 rounded-full text-[10px] font-bold bg-[#128a42]/10 text-[#128a42] border border-[#128a42]/20">
             🚗 Driver Account
-          </div>
+          </span>
         </div>
 
         {/* Stats */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.5rem", marginBottom: "1rem" }}>
-          <div style={{ background: "white", borderRadius: 10, border: "1px solid #e5e7eb", padding: "0.75rem", textAlign: "center" }}>
-            <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "#1B1B1B" }}>{bookings.length}</div>
-            <div style={{ fontSize: "0.65rem", color: "#6b7280", fontWeight: "500" }}>Total Bookings</div>
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="bg-white rounded-2xl border border-zinc-150 p-3 text-center shadow-sm">
+            <div className="font-display font-extrabold text-base text-[#128a42]">{bookings.length}</div>
+            <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Total</div>
           </div>
-          <div style={{ background: "white", borderRadius: 10, border: "1px solid #e5e7eb", padding: "0.75rem", textAlign: "center" }}>
-            <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "#4A90D9" }}>{activeBookings.length}</div>
-            <div style={{ fontSize: "0.65rem", color: "#6b7280", fontWeight: "500" }}>Active Now</div>
+          <div className="bg-white rounded-2xl border border-zinc-150 p-3 text-center shadow-sm">
+            <div className="font-display font-extrabold text-base text-[#128a42]">{activeBookings.length}</div>
+            <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Active</div>
           </div>
-          <div style={{ background: "white", borderRadius: 10, border: "1px solid #e5e7eb", padding: "0.75rem", textAlign: "center" }}>
-            <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "#059669" }}>ETB {totalSpent.toFixed(0)}</div>
-            <div style={{ fontSize: "0.65rem", color: "#6b7280", fontWeight: "500" }}>Total Spent</div>
+          <div className="bg-white rounded-2xl border border-zinc-150 p-3 text-center shadow-sm">
+            <div className="font-display font-extrabold text-base text-[#128a42]">ETB {totalSpent.toFixed(0)}</div>
+            <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Spent</div>
           </div>
         </div>
 
-        {/* Quick Links */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1rem" }}>
-          <Link href="/search" style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.85rem 1rem", background: "white", borderRadius: 10, border: "1px solid #e5e7eb", textDecoration: "none", color: "inherit" }}>
-            <span style={{ fontSize: "1.2rem" }}>🔍</span>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: "600", fontSize: "0.85rem" }}>Find Parking</div>
-              <div style={{ fontSize: "0.7rem", color: "#6b7280" }}>Search nearby parking spaces</div>
-            </div>
-            <span style={{ color: "#9ca3af" }}>→</span>
-          </Link>
-
-          <Link href="/search/nearby" style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.85rem 1rem", background: "white", borderRadius: 10, border: "1px solid #e5e7eb", textDecoration: "none", color: "inherit" }}>
-            <span style={{ fontSize: "1.2rem" }}>📍</span>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: "600", fontSize: "0.85rem" }}>Nearby Search</div>
-              <div style={{ fontSize: "0.7rem", color: "#6b7280" }}>Find spots closest to you</div>
-            </div>
-            <span style={{ color: "#9ca3af" }}>→</span>
-          </Link>
-
-          <Link href="/map" style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.85rem 1rem", background: "white", borderRadius: 10, border: "1px solid #e5e7eb", textDecoration: "none", color: "inherit" }}>
-            <span style={{ fontSize: "1.2rem" }}>🗺</span>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: "600", fontSize: "0.85rem" }}>Map View</div>
-              <div style={{ fontSize: "0.7rem", color: "#6b7280" }}>Explore on the map</div>
-            </div>
-            <span style={{ color: "#9ca3af" }}>→</span>
-          </Link>
-
-          <Link href="/bookings" style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.85rem 1rem", background: "white", borderRadius: 10, border: "1px solid #e5e7eb", textDecoration: "none", color: "inherit" }}>
-            <span style={{ fontSize: "1.2rem" }}>📋</span>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: "600", fontSize: "0.85rem" }}>My Bookings</div>
-              <div style={{ fontSize: "0.7rem", color: "#6b7280" }}>{activeBookings.length} active, {pastBookings.length} past</div>
-            </div>
-            <span style={{ color: "#9ca3af" }}>→</span>
-          </Link>
-
-          <Link href="/host" style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.85rem 1rem", background: "white", borderRadius: 10, border: "1px solid #e5e7eb", textDecoration: "none", color: "inherit" }}>
-            <span style={{ fontSize: "1.2rem" }}>🏠</span>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: "600", fontSize: "0.85rem" }}>Switch to Host</div>
-              <div style={{ fontSize: "0.7rem", color: "#6b7280" }}>Manage your parking spaces</div>
-            </div>
-            <span style={{ color: "#9ca3af" }}>→</span>
-          </Link>
+        {/* Quick links */}
+        <div className="space-y-2 mb-6">
+          {[
+            { href: "/search", icon: "🔍", label: "Find Parking", desc: "Search nearby parking spaces" },
+            { href: "/search/nearby", icon: "📍", label: "Nearby Search", desc: "Find spots closest to you" },
+            { href: "/map", icon: "🗺", label: "Map View", desc: "Explore on the map" },
+            { href: "/bookings", icon: "📋", label: "My Bookings", desc: `${activeBookings.length} active, ${pastBookings.length} past` },
+            { href: "/host", icon: "🏠", label: "Switch to Host", desc: "Manage your parking spaces" },
+          ].map((link) => (
+            <Link key={link.href + link.label} href={link.href}
+              className="flex items-center gap-3 p-4 bg-white rounded-3xl border border-zinc-150 hover:border-[#128a42]/30 hover:shadow-md transition-all">
+              <span className="text-base">{link.icon}</span>
+              <div className="flex-1 min-w-0">
+                <div className="font-display font-bold text-xs text-zinc-950">{link.label}</div>
+                <div className="text-[10px] text-zinc-500">{link.desc}</div>
+              </div>
+              <span className="text-zinc-400 text-xs">→</span>
+            </Link>
+          ))}
         </div>
 
-        {/* Recent Bookings */}
+        {/* Recent bookings */}
         {pastBookings.length > 0 && (
-          <div style={{ marginBottom: "1rem" }}>
-            <h3 style={{ fontSize: "0.85rem", fontWeight: "700", color: "#374151", marginBottom: "0.5rem" }}>Recent Bookings</h3>
+          <div className="mb-6">
+            <h3 className="font-display font-bold text-xs text-zinc-950 mb-2 uppercase tracking-wider">Recent Bookings</h3>
             {pastBookings.slice(0, 3).map((b) => (
-              <div key={b.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.6rem 0.75rem", background: "white", borderRadius: 10, border: "1px solid #e5e7eb", marginBottom: "0.35rem" }}>
-                <div>
-                  <div style={{ fontWeight: "600", fontSize: "0.8rem", color: "#111827" }}>{b.space?.name || "Parking"}</div>
-                  <div style={{ fontSize: "0.65rem", color: "#9ca3af" }}>ETB {b.totalAmount || 0}</div>
+              <div key={b.id} className="flex items-center justify-between p-3 bg-white rounded-2xl border border-zinc-150 mb-2">
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold text-xs text-zinc-900 truncate">{b.space?.name || "Parking"}</div>
+                  <div className="text-[10px] text-zinc-500">ETB {b.totalAmount || 0}</div>
                 </div>
-                <span style={{
-                  padding: "0.15rem 0.5rem",
-                  borderRadius: 999,
-                  fontSize: "0.6rem",
-                  fontWeight: "600",
-                  background: b.status === "COMPLETED" ? "#D5F5E3" : "#FADBD8",
-                  color: b.status === "COMPLETED" ? "#059669" : "#DC2626",
-                  textTransform: "capitalize",
-                }}>
+                <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold capitalize ${
+                  b.status === "COMPLETED" ? "bg-[#128a42]/10 text-[#128a42]" : "bg-[#d92323]/10 text-[#d92323]"
+                }`}>
                   {b.status?.toLowerCase()}
                 </span>
               </div>
@@ -178,21 +146,8 @@ export default function DriverProfilePage() {
           </div>
         )}
 
-        {/* Logout */}
-        <button
-          onClick={handleLogout}
-          style={{
-            width: "100%",
-            padding: "0.7rem",
-            borderRadius: 10,
-            border: "1px solid #FCA5A5",
-            background: "white",
-            color: "#DC2626",
-            fontWeight: "700",
-            fontSize: "0.85rem",
-            cursor: "pointer",
-          }}
-        >
+        <button onClick={handleLogout}
+          className="w-full py-3 bg-white border border-[#d92323]/30 text-[#d92323] rounded-2xl text-sm font-bold hover:bg-[#d92323]/5 transition-all">
           Log Out
         </button>
       </div>

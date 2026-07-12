@@ -42,9 +42,7 @@ export default function NearbySearchPage() {
     }
   }, []);
 
-  useEffect(() => {
-    if (userLocation) loadSpaces();
-  }, [userLocation]);
+  useEffect(() => { if (userLocation) loadSpaces(); }, [userLocation]);
 
   const loadSpaces = async () => {
     setLoading(true);
@@ -52,9 +50,7 @@ export default function NearbySearchPage() {
       const res = await fetch(`/api/parking?lat=${userLocation?.lat || 9.0054}&lng=${userLocation?.lng || 38.7636}&radius=50`);
       const data = await res.json();
       setSpaces(data.spaces || []);
-    } catch {
-      setSpaces([]);
-    }
+    } catch { setSpaces([]); }
     setLoading(false);
   };
 
@@ -91,121 +87,103 @@ export default function NearbySearchPage() {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f9fafb" }}>
-      <header style={{ position: "sticky", top: 0, zIndex: 50, background: "white", borderBottom: "1px solid #e5e7eb", padding: "0.6rem 1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <Link href="/" style={{ padding: "0.35rem 0.55rem", background: "#f3f4f6", borderRadius: 8, fontSize: "1rem", textDecoration: "none", color: "#1B1B1B" }}>←</Link>
-        <span style={{ fontSize: "1rem", fontWeight: "700", flex: 1 }}>🅿 Find Parking</span>
-        <Link href="/map" style={{ padding: "0.35rem 0.7rem", background: "#4A90D9", color: "white", borderRadius: 8, fontSize: "0.75rem", fontWeight: "600", textDecoration: "none" }}>🗺 Map</Link>
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 flex flex-col font-sans select-none antialiased">
+      <header className="sticky top-0 z-50 bg-white border-b border-zinc-200/80 shadow-sm">
+        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
+          <Link href="/" className="w-8 h-8 bg-zinc-100 hover:bg-zinc-200 rounded-xl flex items-center justify-center text-zinc-600 transition-all text-sm font-bold">
+            ←
+          </Link>
+          <span className="font-display font-bold text-sm text-zinc-950 flex-1">🅿 Find Parking</span>
+          <Link href="/map" className="px-3 py-1.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl text-xs font-bold transition-all">
+            🗺 Map
+          </Link>
+        </div>
       </header>
 
-      <div style={{ padding: "0.75rem 1rem" }}>
-        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.6rem" }}>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+      <div className="max-w-2xl mx-auto w-full px-4 py-4 flex-1">
+        {/* Search bar */}
+        <div className="relative mb-3">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 text-sm">🔍</div>
+          <input type="text" value={query} onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by name or address..."
-            style={{ flex: 1, padding: "0.65rem 0.75rem", border: "1px solid #d1d5db", borderRadius: 10, fontSize: "0.9rem", outline: "none", background: "white" }}
-          />
-          <button onClick={loadSpaces} style={{ padding: "0.65rem 0.85rem", background: "#1B1B1B", color: "white", border: "none", borderRadius: 10, fontWeight: "600", fontSize: "0.9rem", cursor: "pointer" }}>🔍</button>
+            className="w-full bg-white border border-zinc-200 rounded-2xl pl-11 pr-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#128a42] transition-all shadow-sm" />
         </div>
 
         {locating && (
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 0.75rem", background: "#EEF4FF", borderRadius: 10, marginBottom: "0.6rem", fontSize: "0.8rem", color: "#4A90D9", fontWeight: "500" }}>
-            <span style={{ animation: "spin 1s linear infinite", display: "inline-block" }}>📍</span> Getting your location...
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-[#128a42]/5 border border-[#128a42]/20 text-[#128a42] rounded-2xl mb-3 text-xs font-bold">
+            <span className="w-3.5 h-3.5 border-2 border-[#128a42] border-t-transparent rounded-full animate-spin" />
+            Getting your location...
           </div>
         )}
 
-        <div style={{ display: "flex", gap: "0.3rem", marginBottom: "0.5rem", overflowX: "auto", paddingBottom: "0.25rem", WebkitOverflowScrolling: "touch" }}>
+        {/* Filter chips */}
+        <div className="flex gap-1.5 overflow-x-auto pb-2 mb-3" style={{ WebkitOverflowScrolling: "touch" }}>
           {FILTERS.map((f) => (
-            <button
-              key={f.key}
-              onClick={() => setActiveFilter(f.key)}
-              style={{
-                padding: "0.35rem 0.65rem",
-                borderRadius: 999,
-                border: `1.5px solid ${activeFilter === f.key ? "#1B1B1B" : "#e5e7eb"}`,
-                background: activeFilter === f.key ? "#1B1B1B" : "white",
-                color: activeFilter === f.key ? "white" : "#374151",
-                fontWeight: "500",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                fontSize: "0.75rem",
-                flexShrink: 0,
-              }}
-            >
+            <button key={f.key} onClick={() => setActiveFilter(f.key)}
+              className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap flex-shrink-0 border ${
+                activeFilter === f.key
+                  ? "bg-[#128a42] text-white border-[#128a42]"
+                  : "bg-white text-zinc-500 border-zinc-200 hover:bg-zinc-50"
+              }`}>
               {f.icon ? `${f.icon} ` : ""}{f.label}
             </button>
           ))}
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.6rem" }}>
-          <span style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: "500" }}>
+        {/* Sort + count */}
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs text-zinc-500 font-bold">
             {loading ? "Searching..." : `${filtered.length} space${filtered.length !== 1 ? "s" : ""} nearby`}
           </span>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
-            style={{ padding: "0.3rem 0.5rem", borderRadius: 8, border: "1px solid #d1d5db", fontSize: "0.75rem", outline: "none", background: "white", cursor: "pointer" }}
-          >
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)}
+            className="bg-white border border-zinc-200 text-[10px] text-[#128a42] font-bold px-3 py-1.5 rounded-xl outline-none cursor-pointer">
             <option value="distance">Nearest First</option>
             <option value="price">Lowest Price</option>
             <option value="rating">Top Rated</option>
           </select>
         </div>
 
+        {/* Results */}
         {filtered.length === 0 && !loading ? (
-          <div style={{ textAlign: "center", padding: "3rem 1rem", background: "white", borderRadius: 12, border: "1px solid #e5e7eb" }}>
-            <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>🅿</div>
-            <p style={{ fontWeight: "700", marginBottom: "0.25rem", fontSize: "1rem" }}>No parking found</p>
-            <p style={{ fontSize: "0.8rem", color: "#6b7280" }}>Try a different search or filter</p>
+          <div className="text-center py-10 bg-white rounded-3xl border border-zinc-200">
+            <div className="text-3xl mb-2">🅿</div>
+            <p className="font-display font-bold text-sm text-zinc-800 mb-1">No parking found</p>
+            <p className="text-xs text-zinc-500">Try a different search or filter</p>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+          <div className="space-y-2">
             {filtered.map((space) => {
               const price = space.pricing?.[0];
               const rateLabel = price?.rateType === "HOURLY" ? "hr" : price?.rateType === "DAILY" ? "day" : "mo";
               return (
-                <Link
-                  key={space.id}
-                  href={`/space/${space.id}`}
-                  style={{
-                    display: "flex",
-                    background: "white",
-                    borderRadius: 12,
-                    border: "1px solid #e5e7eb",
-                    overflow: "hidden",
-                    gap: "0.75rem",
-                    textDecoration: "none",
-                    color: "inherit",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-                  }}
-                >
-                  <div style={{ width: "90px", minHeight: "90px", background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Link key={space.id} href={`/space/${space.id}`}
+                  className="flex bg-white rounded-3xl border border-zinc-150 hover:border-[#128a42]/30 hover:shadow-md overflow-hidden gap-3 transition-all group">
+                  <div className="w-20 h-20 bg-zinc-50 flex items-center justify-center flex-shrink-0">
                     {space.images?.[0]?.url ? (
-                      <img src={space.images[0].url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <img src={space.images[0].url} alt="" className="w-full h-full object-cover" />
                     ) : (
-                      <span style={{ fontSize: "1.8rem" }}>🅿</span>
+                      <span className="text-2xl">🅿</span>
                     )}
                   </div>
-                  <div style={{ flex: 1, padding: "0.6rem 0.75rem 0.6rem 0", minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.35rem", marginBottom: "0.15rem" }}>
-                      <span style={{ padding: "0.1rem 0.4rem", background: "#EEF4FF", color: "#4A90D9", borderRadius: 999, fontSize: "0.6rem", fontWeight: "600", textTransform: "capitalize" }}>
+                  <div className="flex-1 py-3 pr-3 min-w-0">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="text-[9px] font-bold text-[#128a42] bg-[#128a42]/10 px-1.5 py-0.5 rounded-full uppercase">
                         {space.spaceType || "Lot"}
                       </span>
                       {space.ratingAvg > 0 && (
-                        <span style={{ fontSize: "0.65rem", fontWeight: "600", color: "#f59e0b" }}>★ {Number(space.ratingAvg).toFixed(1)}</span>
+                        <span className="text-[10px] font-bold"><span className="text-[#facc15]">★</span> {Number(space.ratingAvg).toFixed(1)}</span>
                       )}
-                      {space.is247 && <span style={{ fontSize: "0.6rem", padding: "1px 5px", background: "#fef3c7", borderRadius: 999, color: "#d97706", fontWeight: 600 }}>24/7</span>}
+                      {space.is247 && <span className="text-[8px] px-1.5 py-0.5 bg-[#facc15]/10 text-[#b8860b] rounded-full font-bold">24/7</span>}
                     </div>
-                    <h3 style={{ fontSize: "0.85rem", fontWeight: "700", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginBottom: "0.1rem", color: "#111827" }}>{space.name}</h3>
-                    <p style={{ fontSize: "0.7rem", color: "#9ca3af", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginBottom: "0.25rem" }}>{space.address}</p>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "#1B1B1B" }}>
-                        {price ? `ETB ${price.price}` : "—"}<span style={{ fontSize: "0.65rem", fontWeight: "500", color: "#9ca3af" }}>/{rateLabel}</span>
+                    <h3 className="font-display font-bold text-xs text-zinc-950 truncate group-hover:text-[#128a42] transition-colors">{space.name}</h3>
+                    <p className="text-[10px] text-zinc-500 truncate">{space.address}</p>
+                    <div className="flex justify-between items-center mt-1.5">
+                      <span className="font-extrabold text-[#128a42] text-sm font-display">
+                        {price ? `ETB ${price.price}` : "—"}
+                        <span className="text-[9px] text-zinc-400 font-normal font-sans">/{rateLabel}</span>
                       </span>
                       {space._distance !== null && (
-                        <span style={{ fontSize: "0.65rem", color: "#6b7280", fontWeight: "500" }}>
+                        <span className="text-[9px] text-zinc-500 font-mono bg-zinc-50 px-1.5 py-0.5 rounded-md">
                           📍 {space._distance < 1 ? `${Math.round(space._distance * 1000)}m` : `${space._distance.toFixed(1)}km`}
                         </span>
                       )}

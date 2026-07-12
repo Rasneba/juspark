@@ -1,0 +1,419 @@
+export type Locale = "en" | "am";
+
+const translations = {
+  en: {
+    // Navigation
+    "nav.home": "Home",
+    "nav.search": "Search",
+    "nav.map": "Map",
+    "nav.host": "Host Dashboard",
+    "nav.profile": "Profile",
+    "nav.bookings": "My Bookings",
+    "nav.signIn": "Sign In",
+    "nav.signUp": "Sign Up",
+    "nav.back": "Back",
+    "nav.listings": "My Listings",
+
+    // Brand
+    "brand.name": "PARKme",
+    "brand.subtitle": "Ethiopia",
+    "brand.amharic": "ፓርክም · ኢትዮጵያ",
+
+    // Home
+    "home.title": "Park Smarter",
+    "home.titleAccent": "Across Ethiopia",
+    "home.description": "Search, book, and pay for parking in Addis Ababa and beyond. Instant booking, real-time availability.",
+    "home.findParking": "Find Parking",
+    "home.listSpace": "List Your Space",
+    "home.feature1Title": "Search",
+    "home.feature1Desc": "Nearby spots",
+    "home.feature2Title": "Book & Pay",
+    "home.feature2Desc": "Instant confirm",
+    "home.feature3Title": "Earn",
+    "home.feature3Desc": "List your space",
+
+    // Search
+    "search.placeholder": "Search parking spots, addresses...",
+    "search.noResults": "No parking found",
+    "search.noResultsDesc": "Try adjusting your search or filters to find available parking.",
+    "search.spacesNearby": "parking spaces nearby",
+    "search.loading": "Loading...",
+    "search.filterAll": "All",
+    "search.filterGarage": "Garage",
+    "search.filterLot": "Lot",
+    "search.filterDriveway": "Driveway",
+    "search.filterCovered": "Covered",
+    "search.filterEv": "EV",
+    "search.filter247": "24/7",
+
+    // Map
+    "map.title": "Map",
+    "map.search": "Search places, hotels, airports, streets...",
+    "map.searchButton": "Search this area",
+    "map.myLocation": "My location",
+    "map.streets": "Streets",
+    "map.satellite": "Satellite",
+    "map.placesOn": "Places ON",
+    "map.placesOff": "Places OFF",
+    "map.parkingCount": "parking",
+    "map.placesCount": "places nearby",
+    "map.searching": "Searching...",
+    "map.listView": "List View",
+    "map.detailsBook": "Details & Book",
+
+    // Space Detail
+    "space.spots": "spots",
+    "space.available": "available",
+    "space.pricing": "Pricing",
+    "space.hourly": "Hourly",
+    "space.daily": "Daily",
+    "space.monthly": "Monthly",
+    "space.bookNow": "Book Now",
+    "space.directions": "Directions",
+    "space.location": "Location",
+    "space.reviews": "Reviews",
+    "space.noReviews": "No reviews yet. Be the first to book and review this space!",
+    "space.hostedBy": "Hosted by",
+    "space.covered": "Covered",
+    "space.evCharging": "EV Charging",
+    "space.access247": "24/7 Access",
+
+    // Booking
+    "book.title": "Book Parking",
+    "book.spaceDetails": "Space Details",
+    "book.bookingDetails": "Booking Details",
+    "book.duration": "Duration (hours)",
+    "book.vehiclePlate": "Vehicle Plate Number",
+    "book.vehiclePlatePlaceholder": "e.g. AA-12345",
+    "book.rate": "Rate",
+    "book.total": "Total",
+    "book.confirm": "Confirm Booking",
+    "book.confirming": "Confirming...",
+
+    // Host Dashboard
+    "host.title": "Host Dashboard",
+    "host.totalEarnings": "Total Earnings",
+    "host.pendingPayout": "Pending Payout",
+    "host.totalBookings": "Total Bookings",
+    "host.avgRating": "Average Rating",
+    "host.yourSpaces": "Your Spaces",
+    "host.noSpaces": "No spaces yet",
+    "host.noSpacesDesc": "Add your first parking space to start earning",
+    "host.addSpace": "+ Add Space",
+    "host.manage": "Manage →",
+
+    // Host Listings
+    "listings.title": "My Listings",
+    "listings.totalSpaces": "total spaces",
+    "listings.noListings": "No listings yet",
+    "listings.noListingsDesc": "Add your first parking space to get started",
+    "listings.active": "Active",
+    "listings.inactive": "Inactive",
+    "listings.deactivate": "Deactivate",
+    "listings.activate": "Activate",
+    "listings.delete": "Delete",
+
+    // Holiday Blocking
+    "holiday.title": "Holiday Blocking",
+    "holiday.subtitle": "Block dates for Ethiopian holidays",
+    "holiday.description": "Automatically block your parking space during major Ethiopian holidays when demand patterns change.",
+    "holiday.upcoming": "Upcoming Holidays",
+    "holiday.blockedDates": "Blocked Dates",
+    "host.blockAll": "Block All Holidays",
+    "host.unblockAll": "Unblock All",
+    "host.blocked": "Blocked",
+    "host.block": "Block",
+    "host.unblock": "Unblock",
+
+    // Profile
+    "profile.title": "My Profile",
+    "profile.driverMode": "Driver Mode",
+    "profile.hostMode": "Host Mode",
+    "profile.logout": "Log Out",
+
+    // Driver Profile
+    "driver.title": "My Profile",
+    "driver.account": "Driver Account",
+    "driver.totalBookings": "Total Bookings",
+    "driver.activeNow": "Active Now",
+    "driver.totalSpent": "Total Spent",
+    "driver.findParking": "Find Parking",
+    "driver.findParkingDesc": "Search nearby parking spaces",
+    "driver.nearbySearch": "Nearby Search",
+    "driver.nearbySearchDesc": "Find spots closest to you",
+    "driver.mapView": "Map View",
+    "driver.mapViewDesc": "Explore on the map",
+    "driver.myBookings": "My Bookings",
+    "driver.switchToHost": "Switch to Host",
+    "driver.switchToHostDesc": "Manage your parking spaces",
+    "driver.recentBookings": "Recent Bookings",
+
+    // Bookings
+    "bookings.title": "My Bookings",
+    "bookings.active": "Active",
+    "bookings.past": "Past",
+    "bookings.noActive": "No active bookings",
+    "bookings.noPast": "No past bookings",
+    "bookings.findBook": "Find and book a parking space",
+    "bookings.pastAppear": "Past bookings appear here",
+    "bookings.searchParking": "Search Parking",
+
+    // Auth
+    "auth.login.title": "PARKme Ethiopia",
+    "auth.login.subtitle": "Find & book parking in seconds",
+    "auth.login.guestAccess": "Guest Access",
+    "auth.login.hostAccess": "Host Access",
+    "auth.login.driverSignIn": "Driver Sign In",
+    "auth.login.hostSignIn": "Host Sign In",
+    "auth.login.email": "Email",
+    "auth.login.password": "Password",
+    "auth.login.noAccount": "No account?",
+    "auth.login.testCreds": "Test: guest@parkme.et / host@parkme.et — Password: admin123",
+
+    "auth.register.title": "Create Account",
+    "auth.register.subtitle": "Join PARKme Ethiopia today",
+    "auth.register.fullName": "Full Name",
+    "auth.register.email": "Email",
+    "auth.register.phone": "Phone (optional)",
+    "auth.register.password": "Password",
+    "auth.register.driver": "Driver",
+    "auth.register.host": "Host",
+    "auth.register.hostInfo": "List your parking space and earn money. Switch roles anytime.",
+    "auth.register.haveAccount": "Have an account?",
+    "auth.register.createAccount": "Create Account",
+
+    // Common
+    "common.loading": "Loading...",
+    "common.error": "Something went wrong",
+    "common.retry": "Try again",
+    "common.save": "Save",
+    "common.cancel": "Cancel",
+    "common.delete": "Delete",
+    "common.edit": "Edit",
+    "common.close": "Close",
+    "common.perHour": "/hr",
+    "common.perDay": "/day",
+    "common.perMonth": "/mo",
+  },
+  am: {
+    // Navigation
+    "nav.home": "መነሻ",
+    "nav.search": "ፈልግ",
+    "nav.map": "ካርታ",
+    "nav.host": "የእንቋቋ ማስተዳደሪያ",
+    "nav.profile": "መገለጫ",
+    "nav.bookings": "ቦታ ማስያዣዎቼ",
+    "nav.signIn": "ግባ",
+    "nav.signUp": "ተመዝገብ",
+    "nav.back": "ተመለስ",
+    "nav.listings": "ቦታ ማስተዋいらっቸዎቼ",
+
+    // Brand
+    "brand.name": "ፓርክም",
+    "brand.subtitle": "ኢትዮጵያ",
+    "brand.amharic": "ፓርክም · ኢትዮጵያ",
+
+    // Home
+    "home.title": "በ智能 የመኪና ቦታ",
+    "home.titleAccent": "መስራት በኢትዮጵያ",
+    "home.description": "በአዲስ አበባ እና ከዚህ በላይ የመኪና ቦታ ፈልግ፣ ቀይጥ እና ክፈል።",
+    "home.findParking": "ቦታ ፈልግ",
+    "home.listSpace": "ቦታ ያስተዋግ",
+    "home.feature1Title": "ፈልግ",
+    "home.feature1Desc": "በአቅራቢያ ቦታዎች",
+    "home.feature2Title": "ቀይጥ እና ክፈል",
+    "home.feature2Desc": "በፍጥነት ያረጋግጥ",
+    "home.feature3Title": "ያስተዋግ",
+    "home.feature3Desc": "ቦታ ያስተዋግ",
+
+    // Search
+    "search.placeholder": "ቦታ ማስያዣ ፈልግ...",
+    "search.noResults": "ቦታ ማስያዣ አልተገኘም",
+    "search.noResultsDesc": "የተሻለ ለመፈለግ ፍለጋዎን ያስተካክሉ።",
+    "search.spacesNearby": "ቦታ ማስያዣዎች በአቅራቢያ",
+    "search.loading": "በመጫን ላይ...",
+    "search.filterAll": "ሁሉም",
+    "search.filterGarage": "ጋራጅ",
+    "search.filterLot": "ቦታ",
+    "search.filterDriveway": "መኪና መንገድ",
+    "search.filterCovered": "የተሸፈነ",
+    "search.filterEv": "ኤሌክትሪክ",
+    "search.filter247": "24/7",
+
+    // Map
+    "map.title": "ካርታ",
+    "map.search": "ቦታዎች ፈልግ...",
+    "map.searchButton": "ይህን ቦታ ፈልግ",
+    "map.myLocation": "የእኔ ቦታ",
+    "map.streets": "መንገዶች",
+    "map.satellite": "ሳትelite",
+    "map.placesOn": "ቦታዎች ON",
+    "map.placesOff": "ቦታዎች OFF",
+    "map.parkingCount": "ቦታ ማስያዣ",
+    "map.placesCount": "ቦታዎች በአቅራቢያ",
+    "map.searching": "በመፈለግ ላይ...",
+    "map.listView": "የዝርዝር ቅርጽ",
+    "map.detailsBook": "ዝርዝር እና ቀይጥ",
+
+    // Space Detail
+    "space.spots": "ቦታዎች",
+    "space.available": "ይገኛል",
+    "space.pricing": "ዋጋ",
+    "space.hourly": "በሰዓት",
+    "space.daily": "በቀን",
+    "space.monthly": "በወር",
+    "space.bookNow": "አሁን ቀይጥ",
+    "space.directions": "መንገድ",
+    "space.location": "ቦታ",
+    "space.reviews": "ግምገማዎች",
+    "space.noReviews": "ተጨማሪ ግምገማዎች የሉም!",
+    "space.hostedBy": "የተቀበለው",
+    "space.covered": "የተሸፈነ",
+    "space.evCharging": "ኤሌክትሪክ ሽⴰርㅈ",
+    "space.access247": "24/7 መድረሻ",
+
+    // Booking
+    "book.title": "ቦታ ቀይጥ",
+    "book.spaceDetails": "የቦታ ዝርዝሮች",
+    "book.bookingDetails": "የቦታ ማስያዣ ዝርዝሮች",
+    "book.duration": "ጊዜ (ሰዓታት)",
+    "book.vehiclePlate": "የመኪና ሰረታም ቁጥር",
+    "book.vehiclePlatePlaceholder": "ለምሳሌ AA-12345",
+    "book.rate": "ዋጋ",
+    "book.total": "ጠቅላላ",
+    "book.confirm": "ቦታ ማስያዣ ያረጋግጡ",
+    "book.confirming": "በመረጋገጥ ላይ...",
+
+    // Host Dashboard
+    "host.title": "የእንቋቋ ማስተዳደሪያ",
+    "host.totalEarnings": "ጠቅላላ ገንዘብ",
+    "host.pendingPayout": "የሚሆን ክፍያ",
+    "host.totalBookings": "ጠቅላላ ቦታ ማስያዣዎች",
+    "host.avgRating": "መካከለኛ ደረጃ",
+    "host.yourSpaces": "ቦታዎችህ",
+    "host.noSpaces": "ቦታዎች የሉም",
+    "host.noSpacesDesc": "መንገድ ለመጀመር ቦታ ያስተዋግ",
+    "host.addSpace": "+ ቦታ አክል",
+    "host.manage": "ያስተዳድሩ →",
+
+    // Host Listings
+    "listings.title": "ቦታ ማስተዋreadcrች",
+    "listings.totalSpaces": "ጠቅላላ ቦታዎች",
+    "listings.noListings": "ቦታ ማስተዋいらっቸዎች የሉም",
+    "listings.noListingsDesc": "መጀመሪያ ቦታ ያስተዋግ",
+    "listings.active": "ንቁ",
+    "listings.inactive": "ንቁ የማይሆን",
+    "listings.deactivate": "ንቁ አቋም",
+    "listings.activate": "ንቁ አድርግ",
+    "listings.delete": "ሰርዝ",
+
+    // Holiday Blocking
+    "holiday.title": "የኢትዮጵያ በዓላት መገደብ",
+    "holiday.subtitle": "ከኢትዮጵያ በዓላት ቀኖች ቦታ ያስተዋግ",
+    "holiday.description": "ትልቅ የኢትዮጵያ በዓላት ወቅት ተፈጻ嵯き ይለዋወጣል።",
+    "holiday.upcoming": "የሚቀጥሉ በዓላት",
+    "holiday.blockedDates": "የተገደቡ ቀኖች",
+    "host.blockAll": "ሁሉንም በዓላት ግደብ",
+    "host.unblockAll": "ሁሉንም ክፈት",
+    "host.blocked": "የተገደበ",
+    "host.block": "ግደብ",
+    "host.unblock": "ክፈት",
+
+    // Profile
+    "profile.title": "መገለጫ",
+    "profile.driverMode": "የመኪና ሾፋሪ ሁኔታ",
+    "profile.hostMode": "የእንቋቋ ሁኔታ",
+    "profile.logout": "ውጣ",
+
+    // Driver Profile
+    "driver.title": "መገለጫ",
+    "driver.account": "የሾፋሪ መለያ",
+    "driver.totalBookings": "ጠቅላላ ቦታ ማስያዣዎች",
+    "driver.activeNow": "አሁን ንቁ",
+    "driver.totalSpent": "ጠቅላላ የተከፈለ",
+    "driver.findParking": "ቦታ ፈልግ",
+    "driver.findParkingDesc": "በአቅራቢያ ቦታዎች ፈልግ",
+    "driver.nearbySearch": "በአቅራቢያ ፍለጋ",
+    "driver.nearbySearchDesc": "በአቅራቢያ ቦታ ፈልግ",
+    "driver.mapView": "የካርታ ቅርጽ",
+    "driver.mapViewDesc": "በካርታ ላይ ያስሱ",
+    "driver.myBookings": "ቦታ ማስያዣዎቼ",
+    "driver.switchToHost": "ወደ እንቋቋ ቀይር",
+    "driver.switchToHostDesc": "ቦታዎችህን ያስተዳድሩ",
+    "driver.recentBookings": "የቅርብ ቦታ ማስያዣዎች",
+
+    // Bookings
+    "bookings.title": "ቦታ ማስያዣዎቼ",
+    "bookings.active": "ንቁ",
+    "bookings.past": "ቀይተኛ",
+    "bookings.noActive": "ንቁ ቦታ ማስያዣዎች የሉም",
+    "bookings.noPast": "ቀይተኛ ቦታ ማስያዣዎች የሉም",
+    "bookings.findBook": "ቦታ ማስያዣ ፈልግ",
+    "bookings.pastAppear": "ቀይተኛ ቦታ ማስያዣዎች ይወያያሉ",
+    "bookings.searchParking": "ቦታ ፈልግ",
+
+    // Auth
+    "auth.login.title": "ፓርክም ኢትዮጵያ",
+    "auth.login.subtitle": "በቃ ቦታ ማስያዣ ፈልግ",
+    "auth.login.guestAccess": "እንግዳ መድረሻ",
+    "auth.login.hostAccess": "እንቋቋ መድረሻ",
+    "auth.login.driverSignIn": "ሾፋሪ ግባ",
+    "auth.login.hostSignIn": "እንቋቋ ግባ",
+    "auth.login.email": "ኢሜይል",
+    "auth.login.password": "የይለፍ ቃል",
+    "auth.login.noAccount": "መለያ የለህም?",
+    "auth.login.testCreds": "ፃፈት: guest@parkme.et / host@parkme.et — የይለፍ ቃል: admin123",
+
+    "auth.register.title": "መለያ ፍጭም",
+    "auth.register.subtitle": "ፓርክም ኢትዮጵያ ተቀላቅል",
+    "auth.register.fullName": "ሙሉ ስም",
+    "auth.register.email": "ኢሜይል",
+    "auth.register.phone": "ስልክ (አማራጭ)",
+    "auth.register.password": "የይለፍ ቃል",
+    "auth.register.driver": "ሾፋሪ",
+    "auth.register.host": "እንቋቋ",
+    "auth.register.hostInfo": "ቦታ ያስተዋግ እና ገንዘብ አግኝ።",
+    "auth.register.haveAccount": "መለያ አለህ?",
+    "auth.register.createAccount": "መለያ ፍጭም",
+
+    // Common
+    "common.loading": "በመጫን ላይ...",
+    "common.error": "ችግር ተፈጥሯል",
+    "common.retry": "እንደገና ሞክር",
+    "common.save": "አስቀምጥ",
+    "common.cancel": "ሰርዝ",
+    "common.delete": "ሰርዝ",
+    "common.edit": "ያስተካክሉ",
+    "common.close": "ዝጋ",
+    "common.perHour": "/ሰዓት",
+    "common.perDay": "/ቀን",
+    "common.perMonth": "/ወር",
+  },
+} as const;
+
+export type TranslationKey = keyof typeof translations.en;
+
+let currentLocale: Locale = "en";
+
+export function setLocale(locale: Locale) {
+  currentLocale = locale;
+  if (typeof window !== "undefined") {
+    localStorage.setItem("parkme_locale", locale);
+    document.documentElement.lang = locale === "am" ? "am" : "en";
+  }
+}
+
+export function getLocale(): Locale {
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem("parkme_locale") as Locale | null;
+    if (stored === "am" || stored === "en") {
+      currentLocale = stored;
+    }
+  }
+  return currentLocale;
+}
+
+export function t(key: TranslationKey): string {
+  const locale = getLocale();
+  return translations[locale]?.[key] || translations.en[key] || key;
+}

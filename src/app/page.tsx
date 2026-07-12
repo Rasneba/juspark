@@ -2,45 +2,88 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div style={{ minHeight: "100vh", background: "var(--primary)", display: "flex", flexDirection: "column" }}>
-      <header style={{ padding: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1 style={{ fontSize: "1.25rem", fontWeight: "800", color: "white" }}>🅿 PARKme Ethiopia</h1>
-        <Link href="/auth/login" style={{ padding: "0.5rem 1rem", background: "rgba(255,255,255,0.15)", color: "white", borderRadius: "var(--radius)", fontWeight: "600", fontSize: "0.85rem" }}>Sign In</Link>
+    <div className="min-h-screen bg-zinc-950 text-white flex flex-col font-sans select-none overflow-x-hidden antialiased">
+      {/* Ethiopian tri-color top accent bar */}
+      <div className="h-1 w-full flex">
+        <div className="flex-1 bg-[#128a42]" />
+        <div className="flex-1 bg-[#facc15]" />
+        <div className="flex-1 bg-[#d92323]" />
+      </div>
+
+      {/* Header */}
+      <header className="px-5 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3 cursor-default">
+          <div className="w-10 h-10 bg-gradient-to-r from-[#128a42] via-[#facc15] to-[#d92323] p-[2px] rounded-2xl shadow-lg">
+            <div className="w-full h-full bg-zinc-950 rounded-[14px] flex items-center justify-center">
+              <span className="text-sm font-black">🅿</span>
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-display font-extrabold text-lg tracking-tighter text-white">
+              PARKme <span className="text-[#128a42]">Ethiopia</span>
+            </span>
+            <span className="text-[9px] font-bold tracking-wider text-[#128a42] uppercase -mt-0.5">
+              ፓርክም · ኢትዮጵያ
+            </span>
+          </div>
+        </div>
+        <Link href="/auth/login" className="bg-white/10 hover:bg-white/20 text-white px-5 py-2 rounded-2xl text-xs font-bold transition-all border border-white/10 hover:border-white/20 active:scale-95">
+          Sign In
+        </Link>
       </header>
 
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "1.5rem", textAlign: "center" }}>
-        <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>🅿</div>
-        <h2 style={{ fontSize: "2rem", fontWeight: "800", color: "white", marginBottom: "0.75rem", lineHeight: 1.1 }}>
-          Park Smarter<br />Across Ethiopia
+      {/* Hero */}
+      <main className="flex-1 flex flex-col items-center justify-center px-6 text-center">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#128a42] via-[#facc15] to-[#d92323] p-[2px] mb-8 shadow-2xl shadow-[#128a42]/20">
+          <div className="w-full h-full bg-zinc-950 rounded-[22px] flex items-center justify-center">
+            <span className="text-3xl">🅿</span>
+          </div>
+        </div>
+
+        <h2 className="font-display font-extrabold text-4xl sm:text-5xl leading-[1.05] mb-4 tracking-tight">
+          Park Smarter<br />
+          <span className="text-[#128a42]">Across Ethiopia</span>
         </h2>
-        <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.6)", marginBottom: "2rem", maxWidth: "320px", lineHeight: 1.5 }}>
-          Search, book, and pay for parking in Addis Ababa and beyond.
+        <p className="text-zinc-400 text-base max-w-sm mb-10 leading-relaxed">
+          Search, book, and pay for parking in Addis Ababa and beyond. Instant booking, real-time availability.
         </p>
 
-        <Link href="/search" style={{ display: "block", width: "100%", maxWidth: "320px", padding: "1rem", background: "var(--accent)", color: "white", borderRadius: "var(--radius)", fontWeight: "700", fontSize: "1.1rem", textAlign: "center", marginBottom: "0.75rem" }}>
-          🔍 Find Parking
-        </Link>
-        <Link href="/host" style={{ display: "block", width: "100%", maxWidth: "320px", padding: "1rem", background: "rgba(255,255,255,0.1)", color: "white", borderRadius: "var(--radius)", fontWeight: "700", fontSize: "1.1rem", textAlign: "center", border: "1px solid rgba(255,255,255,0.2)", marginBottom: "2rem" }}>
-          💰 List Your Space
-        </Link>
+        <div className="w-full max-w-sm space-y-3">
+          <Link href="/search" className="block w-full py-4 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl font-black text-base text-center transition-all shadow-xl shadow-[#128a42]/20 active:scale-[0.98]">
+            🔍 Find Parking
+          </Link>
+          <Link href="/host" className="block w-full py-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl font-black text-base text-center border border-white/10 transition-all active:scale-[0.98]">
+            💰 List Your Space
+          </Link>
+        </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.75rem", width: "100%", maxWidth: "320px" }}>
+        {/* Feature cards */}
+        <div className="grid grid-cols-3 gap-3 w-full max-w-sm mt-10">
           {[
-            { icon: "🔍", label: "Search" },
-            { icon: "📱", label: "Book & Pay" },
-            { icon: "💰", label: "Earn" },
+            { icon: "🔍", label: "Search", desc: "Nearby spots" },
+            { icon: "📱", label: "Book & Pay", desc: "Instant confirm" },
+            { icon: "💰", label: "Earn", desc: "List your space" },
           ].map((f) => (
-            <div key={f.label} style={{ padding: "1rem 0.5rem", background: "rgba(255,255,255,0.05)", borderRadius: "var(--radius)", border: "1px solid rgba(255,255,255,0.1)" }}>
-              <div style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>{f.icon}</div>
-              <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.7)", fontWeight: "600" }}>{f.label}</div>
+            <div key={f.label} className="p-4 bg-white/5 rounded-2xl border border-white/10 text-center">
+              <div className="text-2xl mb-2">{f.icon}</div>
+              <div className="text-xs font-bold text-white mb-0.5">{f.label}</div>
+              <div className="text-[10px] text-zinc-500">{f.desc}</div>
             </div>
           ))}
         </div>
       </main>
 
-      <footer style={{ padding: "1rem", textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: "0.75rem" }}>
-        &copy; 2026 PARKme Ethiopia
+      {/* Footer */}
+      <footer className="py-6 text-center text-zinc-600 text-xs">
+        &copy; 2026 PARKme Ethiopia &middot; Made with 🇪🇹
       </footer>
+
+      {/* Bottom tri-color accent bar */}
+      <div className="h-1 w-full flex">
+        <div className="flex-1 bg-[#128a42]" />
+        <div className="flex-1 bg-[#facc15]" />
+        <div className="flex-1 bg-[#d92323]" />
+      </div>
     </div>
   );
 }

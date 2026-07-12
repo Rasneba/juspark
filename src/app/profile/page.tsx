@@ -39,7 +39,8 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--muted-foreground)" }}>
+      <div className="min-h-screen flex items-center justify-center text-zinc-500">
+        <span className="w-5 h-5 border-2 border-[#128a42] border-t-transparent rounded-full animate-spin mr-2" />
         Loading...
       </div>
     );
@@ -49,105 +50,84 @@ export default function ProfilePage() {
     ? [
         { href: "/host", label: "Host Dashboard", desc: "View earnings and stats", icon: "📊" },
         { href: "/host/listings", label: "My Listings", desc: "Manage your parking spaces", icon: "📋" },
-        { href: "/host/add", label: "Add New Space", desc: "List a new parking space", icon: "➕" },
         { href: "/bookings", label: "My Bookings", desc: "View your bookings", icon: "🕐" },
-        { href: "/notifications", label: "Notifications", desc: "View alerts and messages", icon: "🔔" },
       ]
     : [
         { href: "/bookings", label: "My Bookings", desc: "View active and past bookings", icon: "📋" },
-        { href: "/vehicles", label: "My Vehicles", desc: "Manage your vehicles", icon: "🚗" },
         { href: "/host", label: "Host Dashboard", desc: "Switch to host mode", icon: "🏠" },
-        { href: "/notifications", label: "Notifications", desc: "View alerts and messages", icon: "🔔" },
       ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--muted)" }}>
-      <header style={{ padding: "0.75rem 1rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <Link href="/" style={{ padding: "0.4rem 0.6rem", background: "var(--muted)", borderRadius: "var(--radius)", fontSize: "1.1rem" }}>←</Link>
-        <span style={{ fontSize: "0.95rem", fontWeight: "700", flex: 1 }}>Profile</span>
-        <Link href="/search" style={{ padding: "0.35rem 0.7rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", fontSize: "0.75rem", fontWeight: "600" }}>Search</Link>
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 flex flex-col font-sans select-none antialiased">
+      <header className="sticky top-0 z-50 bg-white border-b border-zinc-200/80 shadow-sm">
+        <div className="max-w-lg mx-auto px-4 h-14 flex items-center gap-3">
+          <Link href="/" className="w-8 h-8 bg-zinc-100 hover:bg-zinc-200 rounded-xl flex items-center justify-center text-zinc-600 transition-all text-sm font-bold">
+            ←
+          </Link>
+          <span className="font-display font-bold text-sm text-zinc-950 flex-1">Profile</span>
+          <Link href="/search" className="px-3 py-1.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl text-xs font-bold transition-all">
+            Search
+          </Link>
+        </div>
       </header>
 
-      <div style={{ padding: "1rem", maxWidth: "500px", margin: "0 auto" }}>
-        <h1 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--primary)", marginBottom: "1rem" }}>My Profile</h1>
+      <div className="max-w-lg mx-auto w-full px-4 py-4 flex-1">
+        <h1 className="font-display font-extrabold text-lg text-[#128a42] mb-4">My Profile</h1>
 
-        <div style={{ padding: "1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", marginBottom: "1rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" }}>
-            <div style={{ width: "44px", height: "44px", borderRadius: "50%", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: "1.1rem", fontWeight: "700", flexShrink: 0 }}>
+        {/* User card */}
+        <div className="p-5 bg-white rounded-3xl border border-zinc-150 mb-4">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#128a42] to-[#0f7a39] flex items-center justify-center text-white text-lg font-bold flex-shrink-0">
               {user.name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || "?"}
             </div>
             <div>
-              <h2 style={{ fontWeight: "700", fontSize: "0.95rem" }}>{user.name || "User"}</h2>
-              <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)" }}>{user.email}</p>
+              <h2 className="font-display font-bold text-sm text-zinc-950">{user.name || "User"}</h2>
+              <p className="text-[11px] text-zinc-500">{user.email}</p>
             </div>
           </div>
-          <div style={{ display: "inline-block", padding: "0.25rem 0.75rem", borderRadius: "999px", background: mode === "host" ? "#EEF4FF" : "#D5F5E3", color: mode === "host" ? "var(--accent)" : "var(--success)", fontSize: "0.8rem", fontWeight: "600", textTransform: "capitalize" }}>
+          <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold capitalize"
+            style={{
+              background: mode === "host" ? "#128a4210" : "#128a4208",
+              color: "#128a42",
+              border: "1px solid #128a4220",
+            }}>
             {mode} Mode
-          </div>
+          </span>
         </div>
 
-        <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1rem" }}>
-          <button
-            onClick={() => toggleMode("driver")}
-            style={{
-              flex: 1,
-              padding: "0.75rem",
-              borderRadius: "var(--radius)",
-              border: `2px solid ${mode === "driver" ? "var(--primary)" : "var(--border)"}`,
-              background: mode === "driver" ? "var(--primary)" : "white",
-              color: mode === "driver" ? "white" : "var(--primary)",
-              fontWeight: "600",
-              cursor: "pointer",
-              fontSize: "0.9rem",
-            }}
-          >
+        {/* Mode toggle */}
+        <div className="flex gap-1.5 mb-4 p-1 bg-zinc-100 rounded-2xl">
+          <button onClick={() => toggleMode("driver")}
+            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
+              mode === "driver" ? "bg-[#128a42] text-white shadow-sm" : "text-zinc-600 hover:text-zinc-900"
+            }`}>
             🚗 Driver Mode
           </button>
-          <button
-            onClick={() => toggleMode("host")}
-            style={{
-              flex: 1,
-              padding: "0.75rem",
-              borderRadius: "var(--radius)",
-              border: `2px solid ${mode === "host" ? "var(--primary)" : "var(--border)"}`,
-              background: mode === "host" ? "var(--primary)" : "white",
-              color: mode === "host" ? "white" : "var(--primary)",
-              fontWeight: "600",
-              cursor: "pointer",
-              fontSize: "0.9rem",
-            }}
-          >
+          <button onClick={() => toggleMode("host")}
+            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
+              mode === "host" ? "bg-[#128a42] text-white shadow-sm" : "text-zinc-600 hover:text-zinc-900"
+            }`}>
             🏠 Host Mode
           </button>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1.5rem" }}>
+        {/* Links */}
+        <div className="space-y-2 mb-6">
           {links.map((link) => (
-            <Link key={link.href + link.label} href={link.href} style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.75rem 1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", textDecoration: "none", color: "inherit" }}>
-              <span style={{ fontSize: "1.1rem" }}>{link.icon}</span>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: "600", fontSize: "0.85rem" }}>{link.label}</div>
-                <div style={{ fontSize: "0.7rem", color: "var(--muted-foreground)" }}>{link.desc}</div>
+            <Link key={link.href + link.label} href={link.href}
+              className="flex items-center gap-3 p-4 bg-white rounded-3xl border border-zinc-150 hover:border-[#128a42]/30 hover:shadow-md transition-all">
+              <span className="text-lg">{link.icon}</span>
+              <div className="flex-1 min-w-0">
+                <div className="font-display font-bold text-sm text-zinc-950">{link.label}</div>
+                <div className="text-[11px] text-zinc-500">{link.desc}</div>
               </div>
-              <span style={{ marginLeft: "auto", color: "var(--muted-foreground)", fontSize: "0.9rem" }}>→</span>
+              <span className="text-zinc-400 text-sm">→</span>
             </Link>
           ))}
         </div>
 
-        <button
-          onClick={handleLogout}
-          style={{
-            width: "100%",
-            padding: "0.65rem",
-            borderRadius: "var(--radius)",
-            border: "1px solid var(--danger)",
-            background: "white",
-            color: "var(--danger)",
-            fontWeight: "700",
-            fontSize: "0.85rem",
-            cursor: "pointer",
-          }}
-        >
+        <button onClick={handleLogout}
+          className="w-full py-3 bg-white border border-[#d92323]/30 text-[#d92323] rounded-2xl text-sm font-bold hover:bg-[#d92323]/5 transition-all">
           Log Out
         </button>
       </div>

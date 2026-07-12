@@ -82,64 +82,85 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--primary)", display: "flex", flexDirection: "column" }}>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "1rem" }}>
-        <div style={{ maxWidth: "420px", width: "100%" }}>
-          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-            <div style={{ width: "56px", height: "56px", borderRadius: "14px", background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 0.75rem", fontSize: "24px" }}>
-              <span style={{ color: "white" }}>🅿</span>
+    <div className="min-h-screen bg-zinc-950 text-white flex flex-col font-sans select-none antialiased">
+      {/* Ethiopian tri-color top accent */}
+      <div className="h-1 w-full flex">
+        <div className="flex-1 bg-[#128a42]" />
+        <div className="flex-1 bg-[#facc15]" />
+        <div className="flex-1 bg-[#d92323]" />
+      </div>
+
+      <div className="flex-1 flex flex-col justify-center items-center px-4 py-8">
+        <div className="max-w-sm w-full">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <div className="w-14 h-14 bg-gradient-to-r from-[#128a42] via-[#facc15] to-[#d92323] p-[2px] rounded-2xl shadow-2xl mx-auto mb-3">
+              <div className="w-full h-full bg-zinc-950 rounded-[14px] flex items-center justify-center">
+                <span className="text-xl font-black">🅿</span>
+              </div>
             </div>
-            <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "white" }}>PARKme Ethiopia</h1>
-            <p style={{ color: "rgba(255,255,255,0.6)", marginTop: "0.25rem", fontSize: "0.9rem" }}>Find & book parking in seconds</p>
+            <h1 className="font-display font-extrabold text-2xl tracking-tight">PARKme <span className="text-[#128a42]">Ethiopia</span></h1>
+            <p className="text-zinc-500 text-sm mt-1">Find & book parking in seconds</p>
           </div>
 
-          {/* Two access buttons */}
-          <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.25rem" }}>
+          {/* Quick access buttons */}
+          <div className="flex gap-3 mb-5">
             <button onClick={handleGuestAccess} disabled={loading}
-              style={{ flex: 1, padding: "1rem", borderRadius: "var(--radius)", border: "none", background: "var(--accent)", color: "white", fontWeight: "700", cursor: loading ? "not-allowed" : "pointer", fontSize: "0.95rem", opacity: loading ? 0.6 : 1 }}>
+              className="flex-1 py-3.5 rounded-2xl border-none bg-[#128a42] hover:bg-[#0f7a39] text-white font-bold text-sm transition-all shadow-lg shadow-[#128a42]/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
               🔍 Guest Access
             </button>
             <button onClick={handleHostAccess} disabled={loading}
-              style={{ flex: 1, padding: "1rem", borderRadius: "var(--radius)", border: "none", background: "var(--success)", color: "white", fontWeight: "700", cursor: loading ? "not-allowed" : "pointer", fontSize: "0.95rem", opacity: loading ? 0.6 : 1 }}>
+              className="flex-1 py-3.5 rounded-2xl border-none bg-white/10 hover:bg-white/20 text-white font-bold text-sm transition-all border border-white/10 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
               💰 Host Access
             </button>
           </div>
 
-          {error && <div style={{ padding: "0.65rem", background: "#FEE2E2", color: "var(--danger)", borderRadius: "var(--radius)", marginBottom: "1rem", fontSize: "0.8rem" }}>{error}</div>}
+          {error && (
+            <div className="px-4 py-3 bg-[#d92323]/10 border border-[#d92323]/30 text-[#d92323] rounded-2xl mb-4 text-xs font-bold">
+              {error}
+            </div>
+          )}
 
-          {/* Role selector + email form */}
-          <div style={{ background: "white", borderRadius: "1rem", padding: "1.25rem" }}>
-            <div style={{ display: "flex", gap: "0.35rem", marginBottom: "1rem" }}>
-              <button onClick={() => setSelectedRole("guest")} style={{ flex: 1, padding: "0.55rem", borderRadius: "var(--radius)", border: `2px solid ${selectedRole === "guest" ? "var(--primary)" : "var(--border)"}`, background: selectedRole === "guest" ? "var(--primary)" : "white", color: selectedRole === "guest" ? "white" : "var(--primary)", fontWeight: "600", cursor: "pointer", fontSize: "0.8rem" }}>
+          {/* Login form card */}
+          <div className="bg-white rounded-3xl p-6 shadow-2xl">
+            {/* Role tabs */}
+            <div className="flex gap-1.5 mb-5 p-1 bg-zinc-100 rounded-2xl">
+              <button onClick={() => setSelectedRole("guest")}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                  selectedRole === "guest" ? "bg-[#128a42] text-white shadow-sm" : "text-zinc-600 hover:text-zinc-900"
+                }`}>
                 Driver Sign In
               </button>
-              <button onClick={() => setSelectedRole("host")} style={{ flex: 1, padding: "0.55rem", borderRadius: "var(--radius)", border: `2px solid ${selectedRole === "host" ? "var(--primary)" : "var(--border)"}`, background: selectedRole === "host" ? "var(--primary)" : "white", color: selectedRole === "host" ? "white" : "var(--primary)", fontWeight: "600", cursor: "pointer", fontSize: "0.8rem" }}>
+              <button onClick={() => setSelectedRole("host")}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                  selectedRole === "host" ? "bg-[#128a42] text-white shadow-sm" : "text-zinc-600 hover:text-zinc-900"
+                }`}>
                 Host Sign In
               </button>
             </div>
 
             <form onSubmit={handleLogin}>
-              <div style={{ marginBottom: "0.75rem" }}>
+              <div className="mb-3">
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email"
-                  style={{ width: "100%", padding: "0.7rem 0.75rem", border: "1px solid var(--border)", borderRadius: "var(--radius)", fontSize: "1rem", outline: "none", background: "var(--muted)" }} />
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#128a42] transition-all" />
               </div>
-              <div style={{ marginBottom: "1rem" }}>
+              <div className="mb-5">
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"
-                  style={{ width: "100%", padding: "0.7rem 0.75rem", border: "1px solid var(--border)", borderRadius: "var(--radius)", fontSize: "1rem", outline: "none", background: "var(--muted)" }} />
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#128a42] transition-all" />
               </div>
               <button type="submit" disabled={loading}
-                style={{ width: "100%", padding: "0.75rem", background: loading ? "var(--muted)" : "var(--primary)", color: "white", border: "none", borderRadius: "var(--radius)", fontSize: "0.95rem", fontWeight: "700", cursor: loading ? "not-allowed" : "pointer" }}>
+                className="w-full py-3.5 bg-[#128a42] hover:bg-[#0f7a39] text-white border-none rounded-2xl text-sm font-bold transition-all shadow-lg shadow-[#128a42]/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
                 {loading ? "Signing in..." : selectedRole === "host" ? "Sign In as Host" : "Sign In as Driver"}
               </button>
             </form>
 
-            <div style={{ textAlign: "center", marginTop: "0.75rem", fontSize: "0.85rem" }}>
-              <span style={{ color: "var(--muted-foreground)" }}>No account? </span>
-              <Link href="/auth/register" style={{ color: "var(--accent)", fontWeight: "700" }}>Sign Up</Link>
+            <div className="text-center mt-4 text-xs">
+              <span className="text-zinc-500">No account? </span>
+              <Link href="/auth/register" className="text-[#128a42] font-bold hover:underline">Sign Up</Link>
             </div>
           </div>
 
-          <div style={{ textAlign: "center", marginTop: "0.75rem", color: "rgba(255,255,255,0.3)", fontSize: "0.7rem" }}>
+          <div className="text-center mt-4 text-zinc-600 text-[10px]">
             Test: guest@parkme.et / host@parkme.et — Password: admin123
           </div>
         </div>

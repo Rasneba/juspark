@@ -67,88 +67,77 @@ export default function HostListingsPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--muted)" }}>
-      <header style={{ padding: "0.75rem 1rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-        <Link href="/host" style={{ padding: "0.4rem 0.6rem", background: "var(--muted)", borderRadius: "var(--radius)", fontSize: "1.1rem" }}>←</Link>
-        <span style={{ fontSize: "0.95rem", fontWeight: "700", flex: 1 }}>My Listings</span>
-        <Link href="/host/add" style={{ padding: "0.35rem 0.7rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", fontSize: "0.75rem", fontWeight: "600" }}>+ Add</Link>
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 flex flex-col font-sans select-none antialiased">
+      <header className="sticky top-0 z-50 bg-white border-b border-zinc-200/80 shadow-sm">
+        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
+          <Link href="/host" className="w-8 h-8 bg-zinc-100 hover:bg-zinc-200 rounded-xl flex items-center justify-center text-zinc-600 transition-all text-sm font-bold">
+            ←
+          </Link>
+          <span className="font-display font-bold text-sm text-zinc-950 flex-1">My Listings</span>
+          <Link href="/host/add" className="px-3 py-1.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl text-xs font-bold transition-all">
+            + Add
+          </Link>
+        </div>
       </header>
 
-      <div style={{ padding: "1rem", maxWidth: "600px", margin: "0 auto" }}>
-        <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", marginBottom: "1rem" }}>{spaces.length} total spaces</p>
+      <div className="max-w-2xl mx-auto w-full px-4 py-4 flex-1">
+        <p className="text-xs text-zinc-500 font-bold mb-3">{spaces.length} total spaces</p>
 
         {loading ? (
-          <div style={{ textAlign: "center", padding: "3rem", color: "var(--muted-foreground)" }}>Loading listings...</div>
+          <div className="text-center py-12 text-zinc-500 flex items-center justify-center gap-2">
+            <span className="w-4 h-4 border-2 border-[#128a42] border-t-transparent rounded-full animate-spin" />
+            Loading listings...
+          </div>
         ) : spaces.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "2rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
-            <p style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.25rem" }}>No listings yet</p>
-            <p style={{ color: "var(--muted-foreground)", fontSize: "0.85rem", marginBottom: "0.75rem" }}>Add your first parking space to get started</p>
-            <Link href="/host/add" style={{ padding: "0.5rem 1rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600", fontSize: "0.85rem" }}>+ Add Space</Link>
+          <div className="text-center py-10 bg-white rounded-3xl border border-zinc-200">
+            <div className="text-3xl mb-2">🅿</div>
+            <p className="font-display font-bold text-sm text-zinc-800 mb-1">No listings yet</p>
+            <p className="text-xs text-zinc-500 mb-4">Add your first parking space to get started</p>
+            <Link href="/host/add" className="inline-block px-6 py-2.5 bg-[#128a42] text-white rounded-2xl text-xs font-bold hover:bg-[#0f7a39] transition-all">
+              + Add Space
+            </Link>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          <div className="space-y-2">
             {spaces.map((space) => {
               const isActive = space.is_active !== false && space.isActive !== false;
               const price = space.pricing?.[0];
               return (
-                <div key={space.id} style={{ padding: "0.75rem 1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "0.5rem" }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", marginBottom: "0.125rem" }}>
-                        <h3 style={{ fontWeight: "700", fontSize: "0.9rem" }}>{space.name}</h3>
-                        <span style={{
-                          padding: "0.1rem 0.4rem",
-                          borderRadius: "999px",
-                          fontSize: "0.6rem",
-                          fontWeight: "600",
-                          background: isActive ? "#D5F5E3" : "#FADBD8",
-                          color: isActive ? "var(--success)" : "var(--danger)",
-                        }}>
+                <div key={space.id} className="p-4 bg-white rounded-3xl border border-zinc-150">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-display font-bold text-sm text-zinc-950 truncate">{space.name}</h3>
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${
+                          isActive ? "bg-[#128a42]/10 text-[#128a42]" : "bg-[#d92323]/10 text-[#d92323]"
+                        }`}>
                           {isActive ? "Active" : "Inactive"}
                         </span>
                       </div>
-                      <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", marginBottom: "0.25rem" }}>{space.address}</p>
-                      <div style={{ display: "flex", gap: "0.75rem", fontSize: "0.7rem", color: "var(--muted-foreground)" }}>
+                      <p className="text-[11px] text-zinc-500 truncate mb-1">{space.address}</p>
+                      <div className="flex gap-3 text-[10px] text-zinc-500">
                         <span>{space.total_spots || space.totalSpots || 0} spots</span>
                         <span>{space.booking_count || space.bookingCount || 0} bookings</span>
-                        {price && <span>ETB {price.price}/{price.rate_type === "hourly" ? "hr" : price.rate_type === "daily" ? "day" : "mo"}</span>}
+                        {price && <span className="font-bold text-[#128a42]">ETB {price.price}/{price.rate_type === "hourly" ? "hr" : price.rate_type === "daily" ? "day" : "mo"}</span>}
                       </div>
                     </div>
                   </div>
-                  <div style={{ display: "flex", gap: "0.375rem" }}>
+                  <div className="flex gap-2">
                     <button
                       onClick={() => toggleActive(space)}
                       disabled={togglingId === space.id}
-                      style={{
-                        flex: 1,
-                        padding: "0.4rem",
-                        borderRadius: "var(--radius)",
-                        border: "1px solid var(--border)",
-                        background: isActive ? "#FEE2E2" : "#D5F5E3",
-                        color: isActive ? "var(--danger)" : "var(--success)",
-                        fontWeight: "600",
-                        fontSize: "0.7rem",
-                        cursor: togglingId === space.id ? "not-allowed" : "pointer",
-                        opacity: togglingId === space.id ? 0.6 : 1,
-                      }}
+                      className={`flex-1 py-2 rounded-xl text-[11px] font-bold transition-all border ${
+                        isActive
+                          ? "bg-[#d92323]/5 border-[#d92323]/20 text-[#d92323] hover:bg-[#d92323]/10"
+                          : "bg-[#128a42]/5 border-[#128a42]/20 text-[#128a42] hover:bg-[#128a42]/10"
+                      } disabled:opacity-50`}
                     >
                       {togglingId === space.id ? "..." : isActive ? "Deactivate" : "Activate"}
                     </button>
                     <button
                       onClick={() => deleteSpace(space.id)}
                       disabled={deletingId === space.id}
-                      style={{
-                        flex: 1,
-                        padding: "0.4rem",
-                        borderRadius: "var(--radius)",
-                        border: "1px solid var(--danger)",
-                        background: "white",
-                        color: "var(--danger)",
-                        fontWeight: "600",
-                        fontSize: "0.7rem",
-                        cursor: deletingId === space.id ? "not-allowed" : "pointer",
-                        opacity: deletingId === space.id ? 0.6 : 1,
-                      }}
+                      className="flex-1 py-2 rounded-xl text-[11px] font-bold bg-white border border-[#d92323]/20 text-[#d92323] hover:bg-[#d92323]/5 transition-all disabled:opacity-50"
                     >
                       {deletingId === space.id ? "..." : "Delete"}
                     </button>

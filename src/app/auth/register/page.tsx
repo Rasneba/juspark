@@ -35,66 +35,83 @@ export default function RegisterPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--primary)", display: "flex", flexDirection: "column" }}>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "1rem" }}>
-        <div style={{ maxWidth: "420px", width: "100%" }}>
-          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-            <div style={{ width: "56px", height: "56px", borderRadius: "14px", background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 0.75rem", fontSize: "24px" }}>
-              <span style={{ color: "white" }}>🅿</span>
+    <div className="min-h-screen bg-zinc-950 text-white flex flex-col font-sans select-none antialiased">
+      <div className="h-1 w-full flex">
+        <div className="flex-1 bg-[#128a42]" />
+        <div className="flex-1 bg-[#facc15]" />
+        <div className="flex-1 bg-[#d92323]" />
+      </div>
+
+      <div className="flex-1 flex flex-col justify-center items-center px-4 py-8">
+        <div className="max-w-sm w-full">
+          <div className="text-center mb-8">
+            <div className="w-14 h-14 bg-gradient-to-r from-[#128a42] via-[#facc15] to-[#d92323] p-[2px] rounded-2xl shadow-2xl mx-auto mb-3">
+              <div className="w-full h-full bg-zinc-950 rounded-[14px] flex items-center justify-center">
+                <span className="text-xl font-black">🅿</span>
+              </div>
             </div>
-            <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "white" }}>Create Account</h1>
-            <p style={{ color: "rgba(255,255,255,0.6)", marginTop: "0.25rem", fontSize: "0.9rem" }}>Join PARKme Ethiopia today</p>
+            <h1 className="font-display font-extrabold text-2xl tracking-tight">Create Account</h1>
+            <p className="text-zinc-500 text-sm mt-1">Join PARKme Ethiopia today</p>
           </div>
 
-          <div style={{ background: "white", borderRadius: "1rem", padding: "1.5rem" }}>
-            <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.25rem" }}>
-              <button onClick={() => setSelectedRole("driver")} style={{ flex: 1, padding: "0.65rem", borderRadius: "var(--radius)", border: `2px solid ${selectedRole === "driver" ? "var(--primary)" : "var(--border)"}`, background: selectedRole === "driver" ? "var(--primary)" : "white", color: selectedRole === "driver" ? "white" : "var(--primary)", fontWeight: "600", cursor: "pointer", fontSize: "0.85rem" }}>
+          <div className="bg-white rounded-3xl p-6 shadow-2xl">
+            <div className="flex gap-1.5 mb-5 p-1 bg-zinc-100 rounded-2xl">
+              <button onClick={() => setSelectedRole("driver")}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                  selectedRole === "driver" ? "bg-[#128a42] text-white shadow-sm" : "text-zinc-600 hover:text-zinc-900"
+                }`}>
                 🔍 Driver
               </button>
-              <button onClick={() => setSelectedRole("host")} style={{ flex: 1, padding: "0.65rem", borderRadius: "var(--radius)", border: `2px solid ${selectedRole === "host" ? "var(--primary)" : "var(--border)"}`, background: selectedRole === "host" ? "var(--primary)" : "white", color: selectedRole === "host" ? "white" : "var(--primary)", fontWeight: "600", cursor: "pointer", fontSize: "0.85rem" }}>
+              <button onClick={() => setSelectedRole("host")}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                  selectedRole === "host" ? "bg-[#128a42] text-white shadow-sm" : "text-zinc-600 hover:text-zinc-900"
+                }`}>
                 💰 Host
               </button>
             </div>
 
             {selectedRole === "host" && (
-              <div style={{ padding: "0.6rem", background: "#EEF4FF", borderRadius: "var(--radius)", marginBottom: "1rem", fontSize: "0.8rem", color: "var(--accent)", lineHeight: "1.4" }}>
+              <div className="px-4 py-3 bg-[#128a42]/5 border border-[#128a42]/20 text-[#128a42] rounded-2xl mb-4 text-xs leading-relaxed">
                 List your parking space and earn money. Switch roles anytime.
               </div>
             )}
 
-            {error && <div style={{ padding: "0.65rem", background: "#FEE2E2", color: "var(--danger)", borderRadius: "var(--radius)", marginBottom: "1rem", fontSize: "0.8rem" }}>{error}</div>}
+            {error && (
+              <div className="px-4 py-3 bg-[#d92323]/10 border border-[#d92323]/30 text-[#d92323] rounded-2xl mb-4 text-xs font-bold">
+                {error}
+              </div>
+            )}
 
             <form onSubmit={handleRegister}>
-              <div style={{ marginBottom: "0.75rem" }}>
-                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "600", marginBottom: "0.2rem" }}>Full Name</label>
+              <div className="mb-3">
+                <label className="block text-xs font-bold text-zinc-700 mb-1">Full Name</label>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name"
-                  style={{ width: "100%", padding: "0.7rem 0.75rem", border: "1px solid var(--border)", borderRadius: "var(--radius)", fontSize: "1rem", outline: "none", background: "var(--muted)" }} />
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#128a42] transition-all" />
               </div>
-              <div style={{ marginBottom: "0.75rem" }}>
-                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "600", marginBottom: "0.2rem" }}>Email</label>
+              <div className="mb-3">
+                <label className="block text-xs font-bold text-zinc-700 mb-1">Email</label>
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com"
-                  style={{ width: "100%", padding: "0.7rem 0.75rem", border: "1px solid var(--border)", borderRadius: "var(--radius)", fontSize: "1rem", outline: "none", background: "var(--muted)" }} />
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#128a42] transition-all" />
               </div>
-              <div style={{ marginBottom: "0.75rem" }}>
-                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "600", marginBottom: "0.2rem" }}>Phone (optional)</label>
+              <div className="mb-3">
+                <label className="block text-xs font-bold text-zinc-700 mb-1">Phone (optional)</label>
                 <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+251 9XX XXX XXXX"
-                  style={{ width: "100%", padding: "0.7rem 0.75rem", border: "1px solid var(--border)", borderRadius: "var(--radius)", fontSize: "1rem", outline: "none", background: "var(--muted)" }} />
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#128a42] transition-all" />
               </div>
-              <div style={{ marginBottom: "1.25rem" }}>
-                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "600", marginBottom: "0.2rem" }}>Password</label>
+              <div className="mb-5">
+                <label className="block text-xs font-bold text-zinc-700 mb-1">Password</label>
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min 6 characters"
-                  style={{ width: "100%", padding: "0.7rem 0.75rem", border: "1px solid var(--border)", borderRadius: "var(--radius)", fontSize: "1rem", outline: "none", background: "var(--muted)" }} />
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#128a42] transition-all" />
               </div>
-
               <button type="submit" disabled={loading}
-                style={{ width: "100%", padding: "0.8rem", background: loading ? "var(--muted)" : "var(--primary)", color: "white", border: "none", borderRadius: "var(--radius)", fontSize: "1rem", fontWeight: "700", cursor: loading ? "not-allowed" : "pointer" }}>
+                className="w-full py-3.5 bg-[#128a42] hover:bg-[#0f7a39] text-white border-none rounded-2xl text-sm font-bold transition-all shadow-lg shadow-[#128a42]/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
                 {loading ? "Creating..." : "Create Account"}
               </button>
             </form>
 
-            <div style={{ textAlign: "center", marginTop: "1rem", fontSize: "0.85rem" }}>
-              <span style={{ color: "var(--muted-foreground)" }}>Have an account? </span>
-              <Link href="/auth/login" style={{ color: "var(--accent)", fontWeight: "700" }}>Sign In</Link>
+            <div className="text-center mt-4 text-xs">
+              <span className="text-zinc-500">Have an account? </span>
+              <Link href="/auth/login" className="text-[#128a42] font-bold hover:underline">Sign In</Link>
             </div>
           </div>
         </div>

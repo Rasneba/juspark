@@ -19,17 +19,11 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
   const [space, setSpace] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [duration, setDuration] = useState(1);
-  const [startTime, setStartTime] = useState(() => {
-    const now = new Date();
-    return now.toISOString().slice(0, 16);
-  });
   const [vehiclePlate, setVehiclePlate] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    loadSpace();
-  }, []);
+  useEffect(() => { loadSpace(); }, []);
 
   const loadSpace = async () => {
     setLoading(true);
@@ -54,15 +48,11 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
     setSubmitting(true);
     setError("");
     try {
-      const start = new Date(startTime);
+      const start = new Date();
       const end = new Date(start.getTime() + duration * 60 * 60 * 1000);
       const res = await apiFetch("/api/bookings", {
         method: "POST",
-        body: JSON.stringify({
-          spaceId,
-          startTime: start.toISOString(),
-          endTime: end.toISOString(),
-        }),
+        body: JSON.stringify({ spaceId, startTime: start.toISOString(), endTime: end.toISOString() }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -77,118 +67,117 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
 
   if (loading) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--muted-foreground)" }}>
-        Loading space details...
+      <div className="min-h-screen bg-zinc-50 flex items-center justify-center text-zinc-500">
+        <span className="w-4 h-4 border-2 border-[#128a42] border-t-transparent rounded-full animate-spin mr-2" />
+        Loading...
       </div>
     );
   }
 
   if (!space) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1rem" }}>
-        <p style={{ fontSize: "1.125rem", fontWeight: "600" }}>Space not found</p>
-        <Link href="/search" style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none" }}>← Back to Search</Link>
+      <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center gap-3">
+        <p className="font-display font-bold text-sm">Space not found</p>
+        <Link href="/search" className="text-[#128a42] font-bold text-xs hover:underline">← Back to Search</Link>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--muted)" }}>
-      <header style={{ padding: "0.75rem 1rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <Link href={`/space/${spaceId}`} style={{ padding: "0.4rem 0.6rem", background: "var(--muted)", borderRadius: "var(--radius)", fontSize: "1.1rem" }}>←</Link>
-        <span style={{ fontSize: "0.95rem", fontWeight: "700", flex: 1 }}>Book Parking</span>
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 font-sans select-none antialiased">
+      <header className="sticky top-0 z-50 bg-white border-b border-zinc-200/80 shadow-sm">
+        <div className="max-w-lg mx-auto px-4 h-14 flex items-center gap-3">
+          <Link href={`/space/${spaceId}`} className="w-8 h-8 bg-zinc-100 hover:bg-zinc-200 rounded-xl flex items-center justify-center text-zinc-600 transition-all text-sm font-bold">
+            ←
+          </Link>
+          <span className="font-display font-bold text-sm text-zinc-950 flex-1">Book Parking</span>
+        </div>
       </header>
 
-      <div style={{ padding: "1rem", maxWidth: "500px", margin: "0 auto" }}>
-        <Link href={`/space/${spaceId}`} style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none", fontSize: "0.8rem", display: "inline-block", marginBottom: "0.75rem" }}>← Back to Space</Link>
+      <div className="max-w-lg mx-auto w-full px-4 py-4 pb-16">
+        <Link href={`/space/${spaceId}`} className="text-[#128a42] font-bold text-xs hover:underline inline-block mb-3">← Back to Space</Link>
 
-        <h1 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--primary)", marginBottom: "0.25rem" }}>Book Parking</h1>
-        <p style={{ color: "var(--muted-foreground)", fontSize: "0.85rem", marginBottom: "1rem" }}>{space.name}</p>
+        <h1 className="font-display font-extrabold text-lg text-[#128a42] mb-0.5">Book Parking</h1>
+        <p className="text-xs text-zinc-500 mb-4">{space.name}</p>
 
-        <div style={{ padding: "1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", marginBottom: "1rem" }}>
-          <h2 style={{ fontSize: "0.9rem", fontWeight: "700", marginBottom: "0.75rem" }}>Space Details</h2>
-          <div style={{ display: "grid", gap: "0.75rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--muted-foreground)" }}>Address</span>
-              <span style={{ fontWeight: "600" }}>{space.address}</span>
+        {/* Space details card */}
+        <div className="bg-white rounded-3xl border border-zinc-150 p-5 mb-3 shadow-sm">
+          <h2 className="font-display font-bold text-xs text-zinc-950 mb-3 uppercase tracking-wider">Space Details</h2>
+          <div className="space-y-2.5">
+            <div className="flex justify-between text-xs">
+              <span className="text-zinc-500">Address</span>
+              <span className="font-bold text-zinc-900 text-right max-w-[60%] truncate">{space.address}</span>
             </div>
             {pricing && (
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "var(--muted-foreground)" }}>Rate</span>
-                <span style={{ fontWeight: "600" }}>ETB {pricing.price}/{pricing.rate_type === "hourly" ? "hour" : pricing.rate_type === "daily" ? "day" : "month"}</span>
+              <div className="flex justify-between text-xs">
+                <span className="text-zinc-500">Rate</span>
+                <span className="font-bold text-zinc-900">ETB {pricing.price}/{pricing.rate_type === "hourly" ? "hour" : pricing.rate_type === "daily" ? "day" : "month"}</span>
               </div>
             )}
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--muted-foreground)" }}>Available Spots</span>
-              <span style={{ fontWeight: "600" }}>{space.available_spots || space.availableSpots || 0}/{space.total_spots || space.totalSpots || 0}</span>
+            <div className="flex justify-between text-xs">
+              <span className="text-zinc-500">Available Spots</span>
+              <span className="font-bold text-zinc-900">{space.available_spots || space.availableSpots || 0}/{space.total_spots || space.totalSpots || 0}</span>
             </div>
           </div>
         </div>
 
-        <div style={{ padding: "1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", marginBottom: "1rem" }}>
-          <h2 style={{ fontSize: "0.9rem", fontWeight: "700", marginBottom: "0.75rem" }}>Booking Details</h2>
+        {/* Booking form card */}
+        <div className="bg-white rounded-3xl border border-zinc-150 p-5 shadow-sm">
+          <h2 className="font-display font-bold text-xs text-zinc-950 mb-4 uppercase tracking-wider">Booking Details</h2>
 
           {error && (
-            <div style={{ padding: "0.75rem", background: "#FEE2E2", color: "var(--danger)", borderRadius: "var(--radius)", marginBottom: "1rem", fontSize: "0.875rem" }}>{error}</div>
+            <div className="px-4 py-3 bg-[#d92323]/10 border border-[#d92323]/30 text-[#d92323] rounded-2xl mb-4 text-xs font-bold">
+              {error}
+            </div>
           )}
 
-          <div style={{ marginBottom: "1rem" }}>
-            <label style={{ display: "block", fontSize: "0.875rem", fontWeight: "600", marginBottom: "0.5rem" }}>Duration (hours)</label>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-              <button
-                onClick={() => setDuration((d) => Math.max(1, d - 1))}
-                style={{ width: "36px", height: "36px", borderRadius: "var(--radius)", border: "1px solid var(--border)", background: "white", fontSize: "1.25rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
-              >
+          {/* Duration picker */}
+          <div className="mb-4">
+            <label className="block text-xs font-bold text-zinc-700 mb-2">Duration (hours)</label>
+            <div className="flex items-center gap-4">
+              <button onClick={() => setDuration((d) => Math.max(1, d - 1))}
+                className="w-10 h-10 rounded-2xl border border-zinc-200 bg-white text-lg font-bold flex items-center justify-center hover:bg-zinc-50 transition-all active:scale-95">
                 −
               </button>
-              <span style={{ fontSize: "1.25rem", fontWeight: "700", minWidth: "3rem", textAlign: "center" }}>{duration}</span>
-              <button
-                onClick={() => setDuration((d) => Math.min(24, d + 1))}
-                style={{ width: "36px", height: "36px", borderRadius: "var(--radius)", border: "1px solid var(--border)", background: "white", fontSize: "1.25rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
-              >
+              <div className="flex-1 text-center">
+                <span className="font-display font-extrabold text-2xl text-[#128a42]">{duration}</span>
+                <span className="text-[10px] text-zinc-500 ml-1">hr{duration > 1 ? "s" : ""}</span>
+              </div>
+              <button onClick={() => setDuration((d) => Math.min(24, d + 1))}
+                className="w-10 h-10 rounded-2xl border border-zinc-200 bg-white text-lg font-bold flex items-center justify-center hover:bg-zinc-50 transition-all active:scale-95">
                 +
               </button>
             </div>
+            {/* Duration slider */}
+            <input type="range" min={1} max={24} value={duration} onChange={(e) => setDuration(Number(e.target.value))}
+              className="w-full mt-3" />
+            <div className="flex justify-between text-[9px] text-zinc-400 mt-1 font-mono">
+              <span>1h</span><span>6h</span><span>12h</span><span>24h</span>
+            </div>
           </div>
 
-          <div style={{ marginBottom: "1.5rem" }}>
-            <label style={{ display: "block", fontSize: "0.875rem", fontWeight: "600", marginBottom: "0.25rem" }}>Vehicle Plate Number</label>
-            <input
-              type="text"
-              value={vehiclePlate}
-              onChange={(e) => setVehiclePlate(e.target.value)}
+          {/* Vehicle plate */}
+          <div className="mb-5">
+            <label className="block text-xs font-bold text-zinc-700 mb-2">Vehicle Plate Number</label>
+            <input type="text" value={vehiclePlate} onChange={(e) => setVehiclePlate(e.target.value)}
               placeholder="e.g. AA-12345"
-              style={{ width: "100%", padding: "0.75rem", border: "1px solid var(--border)", borderRadius: "var(--radius)", fontSize: "1rem", outline: "none", textTransform: "uppercase" }}
-            />
+              className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#128a42] transition-all uppercase" />
           </div>
 
-          <div style={{ padding: "1rem", background: "var(--muted)", borderRadius: "var(--radius)", marginBottom: "1.5rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-              <span style={{ color: "var(--muted-foreground)" }}>Rate</span>
-              <span>ETB {hourlyRate.toFixed(2)} × {duration}h</span>
+          {/* Price summary */}
+          <div className="p-4 bg-zinc-50 rounded-2xl mb-5">
+            <div className="flex justify-between text-xs mb-2">
+              <span className="text-zinc-500">Rate</span>
+              <span className="text-zinc-700">ETB {hourlyRate.toFixed(2)} × {duration}h</span>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "0.5rem", borderTop: "1px solid var(--border)" }}>
-              <span style={{ fontWeight: "700", fontSize: "1.125rem" }}>Total</span>
-              <span style={{ fontWeight: "800", fontSize: "1.25rem", color: "var(--primary)" }}>ETB {total}</span>
+            <div className="flex justify-between items-center pt-2 border-t border-zinc-200">
+              <span className="font-display font-bold text-sm text-zinc-950">Total</span>
+              <span className="font-display font-extrabold text-xl text-[#128a42]">ETB {total}</span>
             </div>
           </div>
 
-          <button
-            onClick={handleBook}
-            disabled={submitting}
-            style={{
-              width: "100%",
-              padding: "0.875rem",
-              background: "var(--primary)",
-              color: "white",
-              border: "none",
-              borderRadius: "var(--radius)",
-              fontSize: "1rem",
-              fontWeight: "700",
-              cursor: submitting ? "not-allowed" : "pointer",
-              opacity: submitting ? 0.6 : 1,
-            }}
-          >
+          <button onClick={handleBook} disabled={submitting}
+            className="w-full py-3.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl text-sm font-bold transition-all shadow-lg shadow-[#128a42]/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
             {submitting ? "Confirming..." : "Confirm Booking"}
           </button>
         </div>

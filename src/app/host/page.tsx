@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { ETHIOPIAN_HOLIDAYS, EthiopianHoliday } from "@/lib/holidays";
+import { t, setLocale, getLocale, Locale } from "@/lib/i18n";
 
 const API_BASE = "";
 
@@ -18,11 +20,16 @@ export default function HostDashboardPage() {
   const [stats, setStats] = useState<any>(null);
   const [spaces, setSpaces] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [locale, setLocaleState] = useState<Locale>("en");
+  const [blockedHolidays, setBlockedHolidays] = useState<Set<string>>(new Set());
+  const [selectedSpaceId, setSelectedSpaceId] = useState<string | null>(null);
 
   useEffect(() => {
+    setLocaleState(getLocale());
     const token = getToken();
     if (!token) { window.location.href = "/auth/login"; return; }
     loadData();
+    loadBlockedHolidays();
   }, []);
 
   const loadData = async () => {
@@ -36,79 +43,231 @@ export default function HostDashboardPage() {
       if (spacesRes.ok) {
         const data = await spacesRes.json();
         setSpaces(data.spaces || []);
+        if (data.spaces?.length > 0 && !selectedSpaceId) {
+          setSelectedSpaceId(data.spaces[0].id);
+        }
       }
     } catch { }
     setLoading(false);
   };
 
+  const loadBlockedHolidays = () => {
+    try {
+      const stored = localStorage.getItem("parkme_blocked_holidays");
+      if (stored) {
+        setBlockedHolidays(new Set(JSON.parse(stored)));
+      }
+    } catch {}
+  };
+
+  const toggleHolidayBlock = (holidayId: string) => {
+    setBlockedHolidays((prev) => {
+      const next = new Set(prev);
+      if (next.has(holidayId)) next.delete(holidayId);
+      else next.add(holidayId);
+      localStorage.setItem("parkme_blocked_holidays", JSON.stringify([...next]));
+      return next;
+    });
+  };
+
+  const blockAllHolidays = () => {
+    const all = new Set(ETHIOPIAN_HOLIDAYS.map((h) => h.id));
+    setBlockedHolidays(all);
+    localStorage.setItem("parkme_blocked_holidays", JSON.stringify([...all]));
+  };
+
+  const unblockAllHolidays = () => {
+    setBlockedHolidays(new Set());
+    localStorage.setItem("parkme_blocked_holidays", JSON.stringify([]));
+  };
+
+  const switchLocale = (newLocale: Locale) => {
+    setLocale(newLocale);
+    setLocaleState(newLocale);
+  };
+
+  const currentYear = new Date().getFullYear();
+
   const statCards = [
-    { label: "Total Earnings", value: `ETB ${stats?.total_earnings || stats?.totalEarnings || 0}`, icon: "💰" },
-    { label: "Pending Payout", value: `ETB ${stats?.pending_payout || stats?.pendingPayout || 0}`, icon: "⏳" },
-    { label: "Total Bookings", value: stats?.total_bookings || stats?.totalBookings || 0, icon: "📋" },
-    { label: "Average Rating", value: stats?.average_rating || stats?.averageRating || "—", icon: "⭐" },
+    { label: t("host.totalEarnings"), value: `ETB ${stats?.total_earnings || stats?.totalEarnings || 0}`, icon: "💰", color: "#128a42" },
+    { label: t("host.pendingPayout"), value: `ETB ${stats?.pending_payout || stats?.pendingPayout || 0}`, icon: "⏳", color: "#facc15" },
+    { label: t("host.totalBookings"), value: stats?.total_bookings || stats?.totalBookings || 0, icon: "📋", color: "#128a42" },
+    { label: t("host.avgRating"), value: stats?.average_rating || stats?.averageRating || "—", icon: "⭐", color: "#facc15" },
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--muted)" }}>
-      <header style={{ padding: "0.75rem 1rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-        <Link href="/" style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--primary)", textDecoration: "none" }}>PARKme Ethiopia</Link>
-        <span style={{ flex: 1 }} />
-        <Link href="/search" style={{ padding: "0.35rem 0.7rem", background: "var(--muted)", borderRadius: "var(--radius)", fontSize: "0.8rem", fontWeight: "600", textDecoration: "none" }}>Search</Link>
-        <Link href="/profile" style={{ padding: "0.35rem 0.7rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600", fontSize: "0.8rem" }}>Profile</Link>
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 flex flex-col font-sans select-none antialiased">
+      <header className="sticky top-0 z-50 bg-white border-b border-zinc-200/80 shadow-sm">
+        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-7 h-7 bg-gradient-to-r from-[#128a42] via-[#facc15] to-[#d92323] p-[1.5px] rounded-xl">
+              <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
+                <span className="text-[10px]">🅿</span>
+              </div>
+            </div>
+            <span className="font-display font-extrabold text-sm tracking-tight text-zinc-950">
+              PARKme <span className="text-[#128a42]">{locale === "am" ? "እንቋቋ" : "Host"}</span>
+            </span>
+          </Link>
+          <span className="flex-1" />
+          {/* Language toggle */}
+          <button onClick={() => switchLocale(locale === "en" ? "am" : "en")}
+            className="px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 rounded-2xl text-xs font-bold transition-all border border-zinc-200"
+            aria-label={locale === "en" ? "Switch to Amharic" : "Switch to English"}>
+            {locale === "en" ? "🇪🇹 አማ" : "🇬🇧 EN"}
+          </button>
+          <Link href="/search" className="px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 rounded-2xl text-xs font-bold transition-all border border-zinc-200">
+            {t("nav.search")}
+          </Link>
+          <Link href="/profile" className="px-3 py-1.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl text-xs font-bold transition-all">
+            {t("nav.profile")}
+          </Link>
+        </div>
       </header>
 
-      <div style={{ padding: "1rem", maxWidth: "600px", margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-          <h1 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--primary)" }}>Host Dashboard</h1>
-          <Link href="/host/add" style={{ padding: "0.5rem 1rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "700", fontSize: "0.85rem" }}>+ Add</Link>
+      <div className="max-w-2xl mx-auto w-full px-4 py-4 flex-1">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="font-display font-extrabold text-lg text-[#128a42]">{t("host.title")}</h1>
         </div>
 
         {loading ? (
-          <div style={{ textAlign: "center", padding: "3rem", color: "var(--muted-foreground)" }}>Loading...</div>
+          <div className="text-center py-12 text-zinc-500 flex items-center justify-center gap-2">
+            <span className="w-4 h-4 border-2 border-[#128a42] border-t-transparent rounded-full animate-spin" />
+            {t("common.loading")}
+          </div>
         ) : (
           <>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "1.5rem" }}>
+            {/* Stats grid */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
               {statCards.map((card) => (
-                <div key={card.label} style={{ padding: "1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
-                    <span style={{ fontSize: "0.75rem", color: "var(--muted-foreground)", fontWeight: "500" }}>{card.label}</span>
-                    <span style={{ fontSize: "1.1rem" }}>{card.icon}</span>
+                <div key={card.label} className="p-4 bg-white rounded-3xl border border-zinc-150">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">{card.label}</span>
+                    <span className="text-sm">{card.icon}</span>
                   </div>
-                  <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--primary)" }}>{card.value}</div>
+                  <div className="font-display font-extrabold text-base" style={{ color: card.color }}>{card.value}</div>
                 </div>
               ))}
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-              <h2 style={{ fontSize: "1rem", fontWeight: "700" }}>Your Spaces</h2>
-              <Link href="/host/listings" style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none", fontSize: "0.8rem" }}>Manage →</Link>
+            {/* Holiday Blocking Section */}
+            <div className="bg-white rounded-3xl border border-zinc-150 p-5 mb-6 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <h2 className="font-display font-bold text-sm text-zinc-950">{t("holiday.title")}</h2>
+                  <p className="text-[10px] text-zinc-500 mt-0.5">{t("holiday.subtitle")}</p>
+                </div>
+                <div className="flex gap-1.5">
+                  <button onClick={blockAllHolidays}
+                    className="px-3 py-1.5 bg-[#d92323]/5 border border-[#d92323]/20 text-[#d92323] rounded-xl text-[10px] font-bold hover:bg-[#d92323]/10 transition-all">
+                    {t("host.blockAll")}
+                  </button>
+                  <button onClick={unblockAllHolidays}
+                    className="px-3 py-1.5 bg-[#128a42]/5 border border-[#128a42]/20 text-[#128a42] rounded-xl text-[10px] font-bold hover:bg-[#128a42]/10 transition-all">
+                    {t("host.unblockAll")}
+                  </button>
+                </div>
+              </div>
+              <p className="text-[10px] text-zinc-400 mb-4 leading-relaxed">{t("holiday.description")}</p>
+
+              {/* Upcoming holidays */}
+              <div className="space-y-2">
+                {ETHIOPIAN_HOLIDAYS.filter((h) => h.month > 0 && h.day > 0).map((holiday) => {
+                  const isBlocked = blockedHolidays.has(holiday.id);
+                  const holidayDate = new Date(currentYear, holiday.month - 1, holiday.day);
+                  const isPast = holidayDate < new Date();
+                  const displayDate = isPast
+                    ? new Date(currentYear + 1, holiday.month - 1, holiday.day)
+                    : holidayDate;
+                  const dateStr = displayDate.toLocaleDateString(locale === "am" ? "am-ET" : "en-US", {
+                    month: "short",
+                    day: "numeric",
+                  });
+
+                  return (
+                    <div key={holiday.id}
+                      className={`flex items-center gap-3 p-3 rounded-2xl border transition-all ${
+                        isBlocked
+                          ? "bg-[#d92323]/5 border-[#d92323]/20"
+                          : "bg-zinc-50 border-zinc-100 hover:border-zinc-200"
+                      }`}>
+                      <span className="text-xl">{holiday.emoji}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-display font-bold text-xs text-zinc-950">
+                            {locale === "am" ? holiday.nameAm : holiday.nameEn}
+                          </span>
+                          {isBlocked && (
+                            <span className="px-1.5 py-0.5 bg-[#d92323]/10 text-[#d92323] text-[8px] font-bold rounded-full uppercase">
+                              {t("host.blocked")}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[10px] text-zinc-500">
+                          {dateStr} · {locale === "am" ? holiday.descriptionAm.slice(0, 50) : holiday.descriptionEn.slice(0, 60)}
+                        </div>
+                      </div>
+                      <button onClick={() => toggleHolidayBlock(holiday.id)}
+                        className={`px-3 py-1.5 rounded-xl text-[10px] font-bold transition-all border ${
+                          isBlocked
+                            ? "bg-[#d92323]/10 border-[#d92323]/30 text-[#d92323] hover:bg-[#d92323]/15"
+                            : "bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+                        }`}
+                        aria-label={isBlocked ? `${t("host.unblock")} ${holiday.nameEn}` : `${t("host.block")} ${holiday.nameEn}`}
+                        aria-pressed={isBlocked}>
+                        {isBlocked ? t("host.unblock") : t("host.block")}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Blocked count summary */}
+              {blockedHolidays.size > 0 && (
+                <div className="mt-3 p-3 bg-[#d92323]/5 rounded-2xl border border-[#d92323]/10">
+                  <p className="text-[10px] font-bold text-[#d92323]">
+                    {blockedHolidays.size} {locale === "am" ? "በዓላት ተገድበዋል" : "holiday(s) blocked"}
+                  </p>
+                  <p className="text-[9px] text-zinc-500 mt-0.5">
+                    {locale === "am"
+                      ? "ቦታ ማስያዣዎች በእነዚህ ቀኖች አይገዙም"
+                      : "Bookings will be disabled on these dates"}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Your Spaces */}
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="font-display font-bold text-sm text-zinc-950">{t("host.yourSpaces")}</h2>
+              <Link href="/host/listings" className="text-[11px] text-[#128a42] font-bold hover:underline">{t("host.manage")}</Link>
             </div>
 
             {spaces.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "2rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
-                <p style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.25rem" }}>No spaces yet</p>
-                <p style={{ color: "var(--muted-foreground)", fontSize: "0.85rem", marginBottom: "0.75rem" }}>Add your first parking space to start earning</p>
-                <Link href="/host/add" style={{ padding: "0.5rem 1rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600", fontSize: "0.85rem" }}>+ Add Space</Link>
+              <div className="text-center py-8 bg-white rounded-3xl border border-zinc-200">
+                <div className="text-2xl mb-2">🅿</div>
+                <p className="font-display font-bold text-sm text-zinc-800 mb-1">{t("host.noSpaces")}</p>
+                <p className="text-xs text-zinc-500 mb-3">{t("host.noSpacesDesc")}</p>
+                <Link href="/host/add" className="inline-block px-5 py-2 bg-[#128a42] text-white rounded-2xl text-xs font-bold hover:bg-[#0f7a39] transition-all">
+                  {t("host.addSpace")}
+                </Link>
               </div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              <div className="space-y-2">
                 {spaces.map((space) => (
-                  <Link key={space.id} href={`/space/${space.id}`} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.75rem 1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", textDecoration: "none", color: "inherit" }}>
-                    <div style={{ flex: 1 }}>
-                      <h3 style={{ fontWeight: "700", marginBottom: "0.125rem", fontSize: "0.9rem" }}>{space.name}</h3>
-                      <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)" }}>{space.address}</p>
+                  <Link key={space.id} href={`/space/${space.id}`}
+                    className="flex items-center justify-between p-4 bg-white rounded-3xl border border-zinc-150 hover:border-[#128a42]/30 hover:shadow-md transition-all">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-display font-bold text-sm text-zinc-950 truncate">{space.name}</h3>
+                      <p className="text-[11px] text-zinc-500 truncate">{space.address}</p>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                      <span style={{ fontSize: "0.7rem", color: "var(--muted-foreground)" }}>{space.booking_count || space.bookingCount || 0} bookings</span>
-                      <span style={{
-                        padding: "0.2rem 0.5rem",
-                        borderRadius: "999px",
-                        fontSize: "0.65rem",
-                        fontWeight: "600",
-                        background: (space.is_active !== false && space.isActive !== false) ? "#D5F5E3" : "#FADBD8",
-                        color: (space.is_active !== false && space.isActive !== false) ? "var(--success)" : "var(--danger)",
-                      }}>
-                        {space.is_active !== false && space.isActive !== false ? "Active" : "Inactive"}
+                    <div className="flex items-center gap-2 flex-shrink-0 ml-3">
+                      <span className="text-[10px] text-zinc-500">{space.booking_count || space.bookingCount || 0} bookings</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${
+                        (space.is_active !== false && space.isActive !== false)
+                          ? "bg-[#128a42]/10 text-[#128a42]" : "bg-[#d92323]/10 text-[#d92323]"
+                      }`}>
+                        {space.is_active !== false && space.isActive !== false ? t("listings.active") : t("listings.inactive")}
                       </span>
                     </div>
                   </Link>

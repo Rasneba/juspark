@@ -9,10 +9,10 @@ const DEFAULT_CENTER: [number, number] = [9.0192, 38.7525];
 const MapView = dynamic(() => import("./MapView"), {
   ssr: false,
   loading: () => (
-    <div style={{ width: "100%", height: "100%", background: "#e8e8e8", display: "flex", alignItems: "center", justifyContent: "center", color: "#666", fontSize: "0.9rem" }}>
+    <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, #fafafa 0%, #f4f4f5 100%)", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7a72", fontSize: "0.9rem" }}>
       <div style={{ textAlign: "center" }}>
         <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>🗺</div>
-        <div>Loading map...</div>
+        <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 600 }}>Loading map...</div>
       </div>
     </div>
   ),
@@ -202,7 +202,7 @@ export default function MapPage() {
     if (!type) return "🅿";
     const t = type.toLowerCase();
     if (t === "garage") return "🏢";
-    if (t === "driveway") return "🏠";
+    if (t === "driveway") return "🏡";
     if (t === "street") return "🛣";
     return "🅿";
   };
@@ -213,57 +213,74 @@ export default function MapPage() {
   };
 
   return (
-    <div style={{ height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-      <header style={{ padding: "0.5rem 0.75rem", background: "#fff", borderBottom: "1px solid #e5e7eb", display: "flex", alignItems: "center", gap: "0.5rem", zIndex: 40, flexShrink: 0 }}>
-        <Link href="/search" style={{ padding: "0.4rem 0.6rem", background: "#f3f4f6", borderRadius: 8, fontSize: "1.1rem", textDecoration: "none" }}>←</Link>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ fontSize: "0.9rem", fontWeight: "700" }}>🗺 Map</span>
+    <div className="h-[100dvh] flex flex-col overflow-hidden">
+      {/* Header bar */}
+      <header className="px-3 py-2.5 bg-white border-b border-zinc-200/80 flex items-center gap-2 z-40 flex-shrink-0 shadow-sm">
+        <Link href="/search" className="w-8 h-8 bg-zinc-100 hover:bg-zinc-200 rounded-xl flex items-center justify-center text-zinc-600 transition-all text-sm font-bold">
+          ←
+        </Link>
+        <div className="flex-1 min-w-0">
+          <span className="font-display font-bold text-sm text-zinc-950">🗺 Map</span>
           {currentAddress && (
-            <div style={{ fontSize: "0.65rem", color: "#6b7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>📍 {currentAddress}</div>
+            <div className="text-[10px] text-zinc-500 truncate">📍 {currentAddress}</div>
           )}
         </div>
         <button
           onClick={() => setSatellite(!satellite)}
-          style={{ padding: "0.3rem 0.6rem", borderRadius: 8, border: `1px solid ${satellite ? "#4A90D9" : "#d1d5db"}`, background: satellite ? "#EEF4FF" : "white", fontSize: "0.7rem", fontWeight: "600", cursor: "pointer", color: satellite ? "#4A90D9" : "#374151" }}
+          className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all border ${
+            satellite
+              ? "bg-[#128a42]/10 text-[#128a42] border-[#128a42]/30"
+              : "bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50"
+          }`}
         >
           {satellite ? "🛰 Satellite" : "🗺 Streets"}
         </button>
-        <Link href="/auth/login" style={{ padding: "0.35rem 0.7rem", background: "#1B1B1B", color: "white", borderRadius: 8, fontSize: "0.75rem", fontWeight: "600", textDecoration: "none" }}>Sign In</Link>
+        <Link href="/auth/login" className="px-3 py-1.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-xl text-[11px] font-bold transition-all">
+          Sign In
+        </Link>
       </header>
 
-      <div style={{ position: "relative", zIndex: 30, background: "#fff", borderBottom: "1px solid #e5e7eb", padding: "0.5rem 0.75rem", flexShrink: 0 }}>
-        <form onSubmit={handleSearchSubmit} style={{ display: "flex", gap: "0.35rem" }}>
+      {/* Search bar */}
+      <div className="relative z-30 bg-white border-b border-zinc-200/80 px-3 py-2 flex-shrink-0">
+        <form onSubmit={handleSearchSubmit} className="flex gap-2">
           <input
             type="text"
             value={query}
             onChange={(e) => handleSearchInputChange(e.target.value)}
             onFocus={() => searchSuggestions.length > 0 && setShowSuggestions(true)}
             placeholder="Search places, hotels, airports, streets..."
-            style={{ flex: 1, padding: "0.6rem 0.75rem", border: "1px solid #d1d5db", borderRadius: 8, fontSize: "0.85rem", outline: "none" }}
+            className="flex-1 bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#128a42] transition-all"
           />
-          <button type="submit" style={{ padding: "0.6rem 0.85rem", background: "#1B1B1B", color: "white", border: "none", borderRadius: 8, fontWeight: "600", fontSize: "0.85rem", cursor: "pointer" }}>🔍</button>
+          <button type="submit" className="px-4 py-2.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl font-bold text-sm transition-all shadow-sm">
+            🔍
+          </button>
         </form>
 
         {showSuggestions && searchSuggestions.length > 0 && (
-          <div style={{ position: "absolute", left: "0.75rem", right: "0.75rem", top: "3.4rem", background: "white", borderRadius: 10, border: "1px solid #e5e7eb", boxShadow: "0 8px 24px rgba(0,0,0,0.15)", zIndex: 100, maxHeight: "240px", overflowY: "auto" }}>
+          <div className="absolute left-3 right-3 top-[3.6rem] bg-white rounded-2xl border border-zinc-200 shadow-2xl z-[100] max-h-60 overflow-y-auto">
             {searchSuggestions.map((s, i) => (
               <button
                 key={i}
                 onClick={() => handleSuggestionClick(s)}
-                style={{ display: "block", width: "100%", padding: "0.6rem 0.75rem", textAlign: "left", border: "none", borderBottom: i < searchSuggestions.length - 1 ? "1px solid #f3f4f6" : "none", background: "white", cursor: "pointer", fontSize: "0.8rem", color: "#374151" }}
+                className="w-full text-left px-4 py-3 hover:bg-zinc-50 transition-colors border-b border-zinc-100 last:border-0"
               >
-                <div style={{ fontWeight: "600", marginBottom: 2 }}>📍 {s.display_name?.split(",")[0]}</div>
-                <div style={{ fontSize: "0.7rem", color: "#9ca3af", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.display_name}</div>
+                <div className="text-xs font-bold text-zinc-900 truncate">📍 {s.display_name?.split(",")[0]}</div>
+                <div className="text-[10px] text-zinc-400 truncate mt-0.5">{s.display_name}</div>
               </button>
             ))}
           </div>
         )}
       </div>
 
-      <div style={{ padding: "0.35rem 0.75rem", background: "#fff", borderBottom: "1px solid #e5e7eb", display: "flex", gap: "0.3rem", overflowX: "auto", flexShrink: 0, WebkitOverflowScrolling: "touch" }}>
+      {/* POI category chips */}
+      <div className="px-3 py-2 bg-white border-b border-zinc-200/80 flex gap-1.5 overflow-x-auto flex-shrink-0" style={{ WebkitOverflowScrolling: "touch" }}>
         <button
           onClick={() => setShowPois(!showPois)}
-          style={{ padding: "0.25rem 0.55rem", borderRadius: 999, border: `1.5px solid ${showPois ? "#059669" : "#e5e7eb"}`, background: showPois ? "#D5F5E3" : "white", fontSize: "0.7rem", fontWeight: "600", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0, color: showPois ? "#059669" : "#6b7280" }}
+          className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all whitespace-nowrap flex-shrink-0 border ${
+            showPois
+              ? "bg-[#128a42]/10 text-[#128a42] border-[#128a42]/30"
+              : "bg-white text-zinc-500 border-zinc-200 hover:bg-zinc-50"
+          }`}
         >
           📍 Places {showPois ? "ON" : "OFF"}
         </button>
@@ -271,14 +288,19 @@ export default function MapPage() {
           <button
             key={cat.key}
             onClick={() => togglePoiCategory(cat.key)}
-            style={{ padding: "0.25rem 0.55rem", borderRadius: 999, border: `1.5px solid ${activePoiCategories.has(cat.key) ? "#1B1B1B" : "#e5e7eb"}`, background: activePoiCategories.has(cat.key) ? "#1B1B1B" : "white", color: activePoiCategories.has(cat.key) ? "white" : "#6b7280", fontSize: "0.7rem", fontWeight: "500", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
+            className={`px-3 py-1 rounded-full text-[11px] font-medium transition-all whitespace-nowrap flex-shrink-0 border ${
+              activePoiCategories.has(cat.key)
+                ? "bg-[#128a42] text-white border-[#128a42]"
+                : "bg-white text-zinc-500 border-zinc-200 hover:bg-zinc-50"
+            }`}
           >
             {cat.emoji} {cat.label}
           </button>
         ))}
       </div>
 
-      <div style={{ flex: 1, position: "relative", minHeight: 0 }}>
+      {/* Map + overlays */}
+      <div className="flex-1 relative min-h-0">
         <MapView
           center={mapCenter}
           spaces={spaces}
@@ -296,75 +318,86 @@ export default function MapPage() {
 
         {showSearchArea && (
           <button onClick={() => { fetchSpaces(mapCenter[0], mapCenter[1]); fetchPois(mapCenter[0], mapCenter[1]); setShowSearchArea(false); }}
-            style={{ position: "absolute", top: 12, left: "50%", transform: "translateX(-50%)", zIndex: 9999, background: "white", color: "#1B1B1B", border: "1px solid #d1d5db", borderRadius: 999, padding: "0.5rem 1.25rem", fontSize: "0.8rem", fontWeight: "600", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
+            className="absolute top-3 left-1/2 -translate-x-1/2 z-[9999] bg-white text-[#128a42] border border-[#128a42]/30 rounded-full px-5 py-2 text-xs font-bold shadow-xl shadow-black/10 hover:bg-[#128a42]/5 transition-all active:scale-95"
+          >
             🔍 Search this area
           </button>
         )}
 
         <button onClick={handleMyLocation} disabled={myLocating}
-          style={{ position: "absolute", bottom: 70, right: 12, zIndex: 9999, width: 44, height: 44, borderRadius: "50%", border: "1px solid #d1d5db", background: myLocating ? "#f5f5f5" : "white", boxShadow: "0 2px 8px rgba(0,0,0,0.12)", cursor: myLocating ? "wait" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, opacity: myLocating ? 0.7 : 1 }}>
-          {myLocating ? "⏳" : "📍"}
+          className="absolute bottom-20 right-3 z-[9999] w-11 h-11 rounded-full bg-white border border-zinc-200 shadow-lg flex items-center justify-center text-lg hover:bg-zinc-50 transition-all active:scale-95 disabled:opacity-50"
+          style={{ touchAction: "manipulation" }}
+        >
+          {myLocating ? (
+            <span className="w-4 h-4 border-2 border-[#128a42] border-t-transparent rounded-full animate-spin" />
+          ) : "📍"}
         </button>
 
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "white", borderTop: "1px solid #e5e7eb", padding: "0.6rem 0.75rem", display: "flex", alignItems: "center", justifyContent: "space-between", zIndex: 9999 }}>
-          <span style={{ fontSize: "0.8rem", color: "#6b7280" }}>
-            {loading ? "Searching..." : <><strong style={{ color: "#1B1B1B" }}>{spaces.length}</strong> parking · {pois.length} places nearby</>}
+        {/* Bottom status bar */}
+        <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-zinc-200/80 px-3 py-2.5 flex items-center justify-between z-[9999]">
+          <span className="text-xs text-zinc-500">
+            {loading ? "Searching..." : (
+              <><strong className="text-[#128a42]">{spaces.length}</strong> parking · {pois.length} places nearby</>
+            )}
           </span>
-          <Link href="/search" style={{ padding: "0.4rem 0.75rem", background: "#4A90D9", color: "white", borderRadius: 8, fontSize: "0.75rem", fontWeight: "600", textDecoration: "none" }}>List</Link>
+          <Link href="/search" className="px-3 py-1.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-xl text-[11px] font-bold transition-all">
+            List View
+          </Link>
         </div>
 
+        {/* Selected space card */}
         {selectedSpace && (
-          <div style={{ position: "absolute", bottom: 52, left: 8, right: 8, zIndex: 9999, background: "white", borderRadius: 12, border: "1px solid #e5e7eb", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}>
+          <div className="absolute bottom-14 left-2 right-2 z-[9999] bg-white rounded-3xl border border-zinc-200 overflow-hidden shadow-2xl">
             {getPhotoUrl(selectedSpace) && (
-              <div style={{ width: "100%", height: "140px", position: "relative" }}>
-                <img src={getPhotoUrl(selectedSpace)!} alt={selectedSpace.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(transparent, rgba(0,0,0,0.6))", padding: "0.75rem 0.75rem 0.5rem" }}>
-                  <span style={{ fontSize: "0.9rem", fontWeight: "800", color: "white", textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}>
+              <div className="w-full h-36 relative">
+                <img src={getPhotoUrl(selectedSpace)!} alt={selectedSpace.name} className="w-full h-full object-cover" />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
+                  <span className="text-sm font-display font-extrabold text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}>
                     {selectedSpace.pricing?.[0] ? `ETB ${selectedSpace.pricing[0].price}` : "TBD"}
-                    <span style={{ fontSize: "0.7rem", fontWeight: "500", opacity: 0.9 }}>
+                    <span className="text-[11px] font-normal opacity-90">
                       {selectedSpace.pricing?.[0] ? `/${selectedSpace.pricing[0].rateType === "HOURLY" ? "hr" : selectedSpace.pricing[0].rateType === "DAILY" ? "day" : "mo"}` : ""}
                     </span>
                   </span>
                 </div>
-                <button onClick={(e) => { e.stopPropagation(); setSelectedSpace(null); }} style={{ position: "absolute", top: 8, right: 8, background: "rgba(0,0,0,0.5)", border: "none", cursor: "pointer", fontSize: "0.9rem", color: "white", padding: "4px 8px", borderRadius: 6 }}>✕</button>
+                <button onClick={(e) => { e.stopPropagation(); setSelectedSpace(null); }}
+                  className="absolute top-2 right-2 w-7 h-7 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white text-xs hover:bg-black/60 transition-all"
+                >✕</button>
               </div>
             )}
-            <div style={{ padding: "0.6rem 0.75rem" }}>
+            <div className="p-3">
               {!getPhotoUrl(selectedSpace) && (
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <span style={{ fontSize: "1.2rem" }}>{spaceIcon(selectedSpace.spaceType)}</span>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{spaceIcon(selectedSpace.spaceType)}</span>
                     <div>
-                      <div style={{ fontWeight: "700", fontSize: "0.9rem" }}>{selectedSpace.name}</div>
-                      <div style={{ fontSize: "0.7rem", color: "#6b7280" }}>{selectedSpace.address}</div>
+                      <div className="font-display font-bold text-sm text-zinc-950">{selectedSpace.name}</div>
+                      <div className="text-[10px] text-zinc-500">{selectedSpace.address}</div>
                     </div>
                   </div>
-                  <button onClick={(e) => { e.stopPropagation(); setSelectedSpace(null); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1rem", color: "#9ca3af", padding: "4px" }}>✕</button>
+                  <button onClick={(e) => { e.stopPropagation(); setSelectedSpace(null); }}
+                    className="w-7 h-7 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-400 hover:text-zinc-700 flex items-center justify-center transition-all"
+                  >✕</button>
                 </div>
               )}
-            </div>
-            <div style={{ padding: "0 0.75rem 0.6rem" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
-                <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "#1B1B1B" }}>
+              <div className="flex items-center gap-2 flex-wrap mb-2">
+                <span className="font-display font-extrabold text-base text-[#128a42]">
                   {selectedSpace.pricing?.[0] ? `ETB ${selectedSpace.pricing[0].price}` : "TBD"}
-                  <span style={{ fontSize: "0.7rem", fontWeight: "500", color: "#6b7280" }}>
+                  <span className="text-[10px] font-normal text-zinc-500 font-sans">
                     {selectedSpace.pricing?.[0] ? `/${selectedSpace.pricing[0].rateType === "HOURLY" ? "hr" : selectedSpace.pricing[0].rateType === "DAILY" ? "day" : "mo"}` : ""}
                   </span>
                 </span>
                 {selectedSpace.ratingAvg > 0 && (
-                  <span style={{ fontSize: "0.7rem", color: "#f59e0b", fontWeight: 600 }}>★ {Number(selectedSpace.ratingAvg).toFixed(1)}</span>
+                  <span className="text-[11px] font-bold text-zinc-800"><span className="text-[#facc15]">★</span> {Number(selectedSpace.ratingAvg).toFixed(1)}</span>
                 )}
-                <span style={{ fontSize: "0.6rem", padding: "1px 6px", background: "#f3f4f6", borderRadius: 999, color: "#6b7280", fontWeight: 600, textTransform: "capitalize" }}>{selectedSpace.spaceType}</span>
-                {selectedSpace.isCovered && <span style={{ fontSize: "0.6rem", padding: "1px 6px", background: "#dbeafe", borderRadius: 999, color: "#2563eb", fontWeight: 600 }}>Covered</span>}
-                {selectedSpace.is247 && <span style={{ fontSize: "0.6rem", padding: "1px 6px", background: "#fef3c7", borderRadius: 999, color: "#d97706", fontWeight: 600 }}>24/7</span>}
+                <span className="text-[9px] px-2 py-0.5 bg-zinc-100 rounded-full text-zinc-600 font-bold uppercase">{selectedSpace.spaceType}</span>
               </div>
-              <div style={{ display: "flex", gap: "0.4rem" }}>
-                <Link href={`/space/${selectedSpace.id}`} style={{ flex: 1, display: "block", padding: "0.55rem", background: "#1B1B1B", color: "white", borderRadius: 8, fontSize: "0.8rem", fontWeight: "600", textAlign: "center", textDecoration: "none" }}>
+              <div className="flex gap-2">
+                <Link href={`/space/${selectedSpace.id}`} className="flex-1 block py-2.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl text-xs font-bold text-center transition-all active:scale-[0.98]">
                   Details & Book →
                 </Link>
-                <a href={`https://www.google.com/maps/dir/?api=1&destination=${selectedSpace.latitude},${selectedSpace.longitude}`} target="_blank" rel="noopener" style={{ padding: "0.55rem 0.75rem", background: "#4A90D9", color: "white", borderRadius: 8, fontSize: "0.8rem", fontWeight: "600", textDecoration: "none" }}>
-                  🧭
-                </a>
+                <a href={`https://www.google.com/maps/dir/?api=1&destination=${selectedSpace.latitude},${selectedSpace.longitude}`} target="_blank" rel="noopener"
+                  className="px-3 py-2.5 bg-[#128a42]/10 text-[#128a42] rounded-2xl text-xs font-bold hover:bg-[#128a42]/20 transition-all"
+                >🧭</a>
               </div>
             </div>
           </div>

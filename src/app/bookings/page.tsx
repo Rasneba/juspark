@@ -14,13 +14,13 @@ async function apiFetch(path: string, options: RequestInit = {}) {
   return fetch(`${API_BASE}${path}`, { ...options, headers });
 }
 
-const STATUS_STYLES: Record<string, { bg: string; color: string }> = {
-  confirmed: { bg: "#D5F5E3", color: "var(--success)" },
-  active: { bg: "#D5F5E3", color: "var(--success)" },
-  completed: { bg: "#EEF4FF", color: "var(--accent)" },
-  pending: { bg: "#FEF9E7", color: "#D4A017" },
-  cancelled: { bg: "#FADBD8", color: "var(--danger)" },
-  expired: { bg: "#F5F5F5", color: "var(--muted-foreground)" },
+const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
+  confirmed: { bg: "#128a4210", text: "#128a42" },
+  active: { bg: "#128a4210", text: "#128a42" },
+  completed: { bg: "#128a4210", text: "#128a42" },
+  pending: { bg: "#facc1520", text: "#b8860b" },
+  cancelled: { bg: "#d9232310", text: "#d92323" },
+  expired: { bg: "#88a69310", text: "#88a693" },
 };
 
 export default function BookingsPage() {
@@ -54,106 +54,80 @@ export default function BookingsPage() {
   const filtered = bookings.filter((b) => (tab === "past" ? isPast(b) : !isPast(b)));
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--muted)" }}>
-      <header style={{ padding: "0.75rem 1rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <Link href="/" style={{ padding: "0.4rem 0.6rem", background: "var(--muted)", borderRadius: "var(--radius)", fontSize: "1.1rem" }}>←</Link>
-        <span style={{ fontSize: "0.95rem", fontWeight: "700", flex: 1 }}>My Bookings</span>
-        <Link href="/search" style={{ padding: "0.35rem 0.7rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", fontSize: "0.75rem", fontWeight: "600" }}>Search</Link>
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 flex flex-col font-sans select-none antialiased">
+      <header className="sticky top-0 z-50 bg-white border-b border-zinc-200/80 shadow-sm">
+        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
+          <Link href="/" className="w-8 h-8 bg-zinc-100 hover:bg-zinc-200 rounded-xl flex items-center justify-center text-zinc-600 transition-all text-sm font-bold">
+            ←
+          </Link>
+          <span className="font-display font-bold text-sm text-zinc-950 flex-1">My Bookings</span>
+          <Link href="/search" className="px-3 py-1.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl text-xs font-bold transition-all">
+            Search
+          </Link>
+        </div>
       </header>
 
-      <div style={{ padding: "1rem", maxWidth: "600px", margin: "0 auto" }}>
-        <h1 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--primary)", marginBottom: "1rem" }}>My Bookings</h1>
+      <div className="max-w-2xl mx-auto w-full px-4 py-4 flex-1">
+        <h1 className="font-display font-extrabold text-lg text-[#128a42] mb-4">My Bookings</h1>
 
-        <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1rem" }}>
-          <button
-            onClick={() => setTab("active")}
-            style={{
-              padding: "0.5rem 1.5rem",
-              borderRadius: "999px",
-              border: `1px solid ${tab === "active" ? "var(--primary)" : "var(--border)"}`,
-              background: tab === "active" ? "var(--primary)" : "white",
-              color: tab === "active" ? "white" : "var(--foreground)",
-              fontWeight: "600",
-              cursor: "pointer",
-              fontSize: "0.875rem",
-            }}
-          >
+        <div className="flex gap-1.5 mb-4 p-1 bg-zinc-100 rounded-2xl">
+          <button onClick={() => setTab("active")}
+            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
+              tab === "active" ? "bg-[#128a42] text-white shadow-sm" : "text-zinc-600 hover:text-zinc-900"
+            }`}>
             Active
           </button>
-          <button
-            onClick={() => setTab("past")}
-            style={{
-              padding: "0.5rem 1.5rem",
-              borderRadius: "999px",
-              border: `1px solid ${tab === "past" ? "var(--primary)" : "var(--border)"}`,
-              background: tab === "past" ? "var(--primary)" : "white",
-              color: tab === "past" ? "white" : "var(--foreground)",
-              fontWeight: "600",
-              cursor: "pointer",
-              fontSize: "0.875rem",
-            }}
-          >
+          <button onClick={() => setTab("past")}
+            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
+              tab === "past" ? "bg-[#128a42] text-white shadow-sm" : "text-zinc-600 hover:text-zinc-900"
+            }`}>
             Past
           </button>
         </div>
 
         {loading ? (
-          <div style={{ textAlign: "center", padding: "3rem", color: "var(--muted-foreground)" }}>Loading bookings...</div>
+          <div className="text-center py-12 text-zinc-500 flex items-center justify-center gap-2">
+            <span className="w-4 h-4 border-2 border-[#128a42] border-t-transparent rounded-full animate-spin" />
+            Loading bookings...
+          </div>
         ) : filtered.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "2rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
-            <p style={{ fontSize: "0.95rem", fontWeight: "600", marginBottom: "0.25rem" }}>
+          <div className="text-center py-10 bg-white rounded-3xl border border-zinc-200">
+            <div className="text-3xl mb-2">📋</div>
+            <p className="font-display font-bold text-sm text-zinc-800 mb-1">
               {tab === "active" ? "No active bookings" : "No past bookings"}
             </p>
-            <p style={{ color: "var(--muted-foreground)", fontSize: "0.85rem", marginBottom: "0.75rem" }}>
+            <p className="text-xs text-zinc-500 mb-4">
               {tab === "active" ? "Find and book a parking space" : "Past bookings appear here"}
             </p>
             {tab === "active" && (
-              <Link href="/search" style={{ padding: "0.75rem 1.5rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600" }}>
+              <Link href="/search" className="inline-block px-6 py-2.5 bg-[#128a42] text-white rounded-2xl text-xs font-bold hover:bg-[#0f7a39] transition-all">
                 Search Parking
               </Link>
             )}
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          <div className="space-y-2">
             {filtered.map((booking) => {
               const statusKey = (booking.status || "").toLowerCase();
-              const statusStyle = STATUS_STYLES[statusKey] || { bg: "#F5F5F5", color: "var(--muted-foreground)" };
+              const statusStyle = STATUS_STYLES[statusKey] || { bg: "#88a69310", text: "#88a693" };
               return (
                 <Link
                   key={booking.id}
                   href={`/bookings/${booking.id}`}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "0.75rem 1rem",
-                    background: "white",
-                    borderRadius: "var(--radius)",
-                    border: "1px solid var(--border)",
-                    textDecoration: "none",
-                    color: "inherit",
-                  }}
+                  className="flex items-center justify-between p-4 bg-white rounded-3xl border border-zinc-150 hover:border-[#128a42]/30 hover:shadow-md transition-all"
                 >
-                  <div style={{ flex: 1 }}>
-                    <h3 style={{ fontWeight: "700", fontSize: "0.9rem", marginBottom: "0.125rem" }}>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-display font-bold text-sm text-zinc-950 truncate">
                       {booking.space_name || booking.spaceName || booking.space?.name || "Parking Space"}
                     </h3>
-                    <div style={{ fontSize: "0.75rem", color: "var(--muted-foreground)", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                    <div className="flex gap-3 mt-1 text-[11px] text-zinc-500">
                       {booking.date && <span>{booking.date}</span>}
                       {booking.duration && <span>{booking.duration}h</span>}
-                      {booking.amount && <span>ETB {booking.amount}</span>}
+                      {booking.amount && <span className="font-bold text-[#128a42]">ETB {booking.amount}</span>}
                     </div>
                   </div>
-                  <span style={{
-                    padding: "0.25rem 0.75rem",
-                    borderRadius: "999px",
-                    fontSize: "0.75rem",
-                    fontWeight: "600",
-                    background: statusStyle.bg,
-                    color: statusStyle.color,
-                    textTransform: "capitalize",
-                    flexShrink: 0,
-                  }}>
+                  <span className="px-3 py-1 rounded-full text-[11px] font-bold capitalize flex-shrink-0"
+                    style={{ background: statusStyle.bg, color: statusStyle.text }}>
                     {booking.status}
                   </span>
                 </Link>
