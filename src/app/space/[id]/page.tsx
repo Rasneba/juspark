@@ -71,14 +71,29 @@ export default function SpaceDetailPage() {
     ? (space.images as Array<Record<string, unknown>>)
     : (space.primary_photo ? [{ url: space.primary_photo, isPrimary: true }] : []);
 
+  const spaceTypeIcon = (type: string) => {
+    const t = (type || "").toLowerCase();
+    if (t === "garage") return "🏢";
+    if (t === "driveway") return "🏡";
+    if (t === "street") return "🛣";
+    return "🅿";
+  };
+
+  const slotType = (p: Record<string, unknown>) => {
+    const rt = String(p.rate_type || p.rateType).toLowerCase();
+    if (rt === "hourly") return "hr";
+    if (rt === "daily") return "day";
+    return "mo";
+  };
+
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900 font-sans antialiased">
       <Header />
-      <div className="max-w-2xl mx-auto px-4 py-4 pb-16">
-        <Link href="/search" className="inline-flex items-center gap-1.5 text-zinc-500 text-xs font-bold mb-4 hover:text-[#128a42] transition-colors">← Back to Search</Link>
+      <div className="max-w-2xl mx-auto px-4 py-4 pb-20">
 
-        <div className="bg-white rounded-3xl border border-zinc-150 overflow-hidden shadow-sm">
-          <div className="h-72 bg-zinc-100 relative">
+        {/* Photo Gallery */}
+        <div className="bg-white rounded-3xl overflow-hidden shadow-sm mb-4">
+          <div className="h-64 bg-zinc-100 relative">
             {photos.length > 0 ? (
               <>
                 <img src={String(photos[activePhoto]?.url || photos[0]?.url)} alt={String(space.name)} className="w-full h-full object-cover" />
@@ -93,66 +108,97 @@ export default function SpaceDetailPage() {
                   <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white rounded-xl px-2.5 py-1 text-[10px] font-bold">{activePhoto + 1}/{photos.length}</div>
                 )}
               </>
-            ) : <span className="text-5xl text-zinc-300">🅿</span>}
-          </div>
-
-          <div className="p-5">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold text-[#128a42] bg-[#128a42]/10 px-2.5 py-1 rounded-full border border-[#128a42]/20 uppercase">{String(space.space_type || space.spaceType)}</span>
-                {Number(space.rating_avg || space.ratingAvg) > 0 && (
-                  <span className="text-xs font-bold text-zinc-800"><span className="text-[#facc15]">★</span> {Number(space.rating_avg || space.ratingAvg).toFixed(1)}
-                    {(space.review_count || space.reviewCount) ? <span className="text-zinc-400 font-normal ml-1">({String(space.review_count || space.reviewCount)})</span> : null}
-                  </span>
-                )}
-              </div>
-              <span className="text-[10px] text-zinc-500 font-mono bg-zinc-50 px-2 py-0.5 rounded-md">{String(space.available_spots ?? space.availableSpots ?? "—")}/{String(space.total_spots ?? space.totalSpots ?? "—")} spots</span>
-            </div>
-
-            <h1 className="font-display font-extrabold text-xl text-zinc-950 mb-1">{String(space.name)}</h1>
-            <p className="text-xs text-zinc-500 mb-4">{String(space.address)}</p>
-
-            <div className="flex gap-2 flex-wrap mb-4">
-              {!!(space.is_covered || space.isCovered) && <span className="text-[10px] font-bold px-2.5 py-1 bg-[#128a42]/5 text-[#128a42] rounded-full border border-[#128a42]/20">☂ Covered</span>}
-              {!!(space.is_ev_charger || space.isEvCharger) && <span className="text-[10px] font-bold px-2.5 py-1 bg-[#128a42]/5 text-[#128a42] rounded-full border border-[#128a42]/20">⚡ EV Charging</span>}
-              {!!(space.is_24_7 || space.is247) && <span className="text-[10px] font-bold px-2.5 py-1 bg-[#facc15]/10 text-[#b8860b] rounded-full border border-[#facc15]/30">🕐 24/7 Access</span>}
-            </div>
-
-            {!!space.description && <p className="text-xs text-zinc-500 leading-relaxed mb-4">{String(space.description)}</p>}
-
-            {!!(space.host_name || space.hostName || space.host) && (
-              <div className="px-4 py-3 bg-zinc-50 rounded-2xl mb-4 text-xs">
-                <span className="font-bold text-zinc-700">Hosted by </span>
-                <span className="text-zinc-900">{String(space.host_name || space.hostName || (space.host as Record<string, unknown>)?.name || "Host")}</span>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="text-6xl opacity-30">🅿</span>
               </div>
             )}
-
-            <div className="border-t border-zinc-100 pt-4 mb-4">
-              <h2 className="font-display font-bold text-sm text-zinc-950 mb-3">Pricing</h2>
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { label: "Hourly", data: hourly, icon: "⏱" },
-                  { label: "Daily", data: daily, icon: "📅" },
-                  { label: "Monthly", data: monthly, icon: "📆" },
-                ].map((item) => (
-                  <div key={item.label} className="p-3 bg-zinc-50 rounded-2xl border border-zinc-100 text-center">
-                    <div className="text-base mb-1">{item.icon}</div>
-                    <div className="text-[10px] text-zinc-500 mb-0.5">{item.label}</div>
-                    <div className="font-display font-extrabold text-sm text-[#128a42]">{item.data ? `ETB ${item.data.price}` : "—"}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <Link href={`/book/${space.id}`} className="flex-1 py-3.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl text-sm font-bold text-center transition-all shadow-lg shadow-[#128a42]/20 active:scale-[0.98]">Book Now</Link>
-              <a href={`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`} target="_blank" rel="noopener"
-                className="px-4 py-3.5 bg-[#128a42]/10 text-[#128a42] rounded-2xl text-sm font-bold hover:bg-[#128a42]/20 transition-all">🧭</a>
-            </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl border border-zinc-150 mt-4 overflow-hidden shadow-sm">
+        {/* Space Info Card */}
+        <div className="bg-white rounded-3xl overflow-hidden shadow-sm p-5 mb-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-[10px] font-bold text-[#128a42] bg-[#128a42]/10 px-2.5 py-1 rounded-full border border-[#128a42]/20 uppercase">{String(space.space_type || space.spaceType)}</span>
+            {Number(space.rating_avg || space.ratingAvg) > 0 && (
+              <span className="text-xs font-bold text-zinc-800">
+                <span className="text-[#facc15]">★</span> {Number(space.rating_avg || space.ratingAvg).toFixed(1)}
+                {(space.review_count || space.reviewCount) ? <span className="text-zinc-400 font-normal ml-1">({String(space.review_count || space.reviewCount)})</span> : null}
+              </span>
+            )}
+            <span className="text-[10px] text-zinc-500 font-mono bg-zinc-50 px-2 py-0.5 rounded-md ml-auto">
+              {String(space.available_spots ?? space.availableSpots ?? "—")}/{String(space.total_spots ?? space.totalSpots ?? "—")} spots
+            </span>
+          </div>
+
+          <h1 className="font-display font-extrabold text-xl text-zinc-950 mb-1">{String(space.name)}</h1>
+          <p className="text-xs text-zinc-500 mb-3">{String(space.address)}</p>
+
+          <div className="flex gap-2 flex-wrap mb-4">
+            {!!(space.is_covered || space.isCovered) && <span className="text-[10px] font-bold px-2.5 py-1 bg-[#128a42]/5 text-[#128a42] rounded-full border border-[#128a42]/20">☂ Covered</span>}
+            {!!(space.is_ev_charger || space.isEvCharger) && <span className="text-[10px] font-bold px-2.5 py-1 bg-blue-50 text-blue-600 rounded-full border border-blue-200">⚡ EV Charging</span>}
+            {!!(space.is_24_7 || space.is247) && <span className="text-[10px] font-bold px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-200">🕐 24/7</span>}
+          </div>
+
+          {!!space.description && <p className="text-xs text-zinc-500 leading-relaxed mb-4">{String(space.description)}</p>}
+
+          {!!(space.host_name || space.hostName || space.host) && (
+            <div className="flex items-center gap-2 px-4 py-3 bg-zinc-50 rounded-2xl text-xs">
+              <span className="text-lg">👤</span>
+              <span className="font-bold text-zinc-700">Hosted by </span>
+              <span className="text-zinc-900 font-medium">{String(space.host_name || space.hostName || (space.host as Record<string, unknown>)?.name || "Host")}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Pricing — Ticket style */}
+        <div className="bg-white rounded-3xl overflow-hidden shadow-sm p-5 mb-4">
+          <h2 className="font-display font-bold text-sm text-zinc-950 mb-4">Pricing</h2>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: "Hourly", data: hourly, icon: "⏱" },
+              { label: "Daily", data: daily, icon: "📅" },
+              { label: "Monthly", data: monthly, icon: "📆" },
+            ].map((item) => (
+              <div key={item.label} className="p-4 rounded-2xl border-2 text-center transition-all" style={{ background: "linear-gradient(135deg, #f8fafc, #f1f5f9)" }}>
+                <div className="text-xl mb-1">{item.icon}</div>
+                <div className="text-[10px] text-zinc-500 mb-1 font-medium">{item.label}</div>
+                <div className="font-display font-extrabold text-sm text-[#128a42]">
+                  {item.data ? `ETB ${item.data.price}` : "—"}
+                </div>
+                {item.data && <div className="text-[9px] text-zinc-400 mt-0.5">per {slotType(item.data)}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Ticket-style Booking CTA */}
+        <div className="rounded-3xl overflow-hidden shadow-sm mb-4">
+          <div className="h-1.5" style={{ background: "linear-gradient(90deg, #009900 33%, #FFCC00 66%, #CC0000 100%)" }} />
+          <div className="bg-white p-5 border border-t-0 border-zinc-100 rounded-b-3xl">
+            <div className="flex justify-between items-start mb-5">
+              <div>
+                <div className="font-display font-bold text-lg text-zinc-900">{String(space.name)}</div>
+                <div className="text-slate-500 text-sm mt-0.5">{String(space.address)}</div>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-[#128a42]">
+                  {hourly ? `ETB ${hourly.price}` : daily ? `ETB ${daily.price}` : monthly ? `ETB ${monthly.price}` : "TBD"}
+                </div>
+                <div className="text-sm text-slate-500">
+                  per {hourly ? "hour" : daily ? "day" : monthly ? "month" : ""}
+                </div>
+              </div>
+            </div>
+
+            <Link href={`/book/${space.id}`} className="w-full bg-gradient-to-r from-[#128a42] to-[#0f7a39] text-white font-semibold py-4 rounded-2xl text-lg block text-center shadow-lg shadow-[#128a42]/30 active:scale-[0.98] transition-all">
+              Pay &amp; Get Ticket
+            </Link>
+          </div>
+        </div>
+
+        {/* Location */}
+        <div className="bg-white rounded-3xl overflow-hidden shadow-sm mb-4">
           <div className="flex justify-between items-center px-5 py-3 border-b border-zinc-100">
             <h2 className="font-display font-bold text-sm text-zinc-950">Location</h2>
             <div className="flex gap-1.5">
@@ -160,13 +206,23 @@ export default function SpaceDetailPage() {
               <button onClick={() => setMapSatellite(true)} className={`px-3 py-1 rounded-xl text-[10px] font-bold transition-all border ${mapSatellite ? "bg-[#128a42]/10 text-[#128a42] border-[#128a42]/30" : "bg-white text-zinc-500 border-zinc-200 hover:bg-zinc-50"}`}>🛰 Satellite</button>
             </div>
           </div>
-          <iframe title="Parking Location" width="100%" height="300" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade" src={mapSatellite ? mapSatSrc : mapStreetSrc} />
+          <iframe title="Parking Location" width="100%" height="260" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade" src={mapSatellite ? mapSatSrc : mapStreetSrc} />
+          <div className="px-5 py-3 flex gap-2">
+            <a href={`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`} target="_blank" rel="noopener"
+              className="flex-1 py-2.5 bg-[#128a42]/10 text-[#128a42] rounded-2xl text-xs font-bold text-center hover:bg-[#128a42]/20 transition-all">
+              🧭 Get Directions
+            </a>
+          </div>
         </div>
 
-        <div className="bg-white rounded-3xl border border-zinc-150 mt-4 p-5 shadow-sm">
+        {/* Reviews */}
+        <div className="bg-white rounded-3xl overflow-hidden shadow-sm p-5">
           <h2 className="font-display font-bold text-sm text-zinc-950 mb-3">Reviews</h2>
           {reviews.length === 0 ? (
-            <p className="text-xs text-zinc-500">No reviews yet. Be the first to book and review this space!</p>
+            <div className="text-center py-6">
+              <div className="text-3xl mb-2">💬</div>
+              <p className="text-xs text-zinc-500">No reviews yet. Be the first to book and review!</p>
+            </div>
           ) : (
             <div className="space-y-3">
               {reviews.map((review, i) => (
@@ -188,17 +244,17 @@ export default function SpaceDetailPage() {
 
 function Header() {
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-zinc-200/80 shadow-sm">
-      <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
-        <Link href="/search" className="w-8 h-8 bg-zinc-100 hover:bg-zinc-200 rounded-xl flex items-center justify-center text-zinc-600 transition-all text-sm font-bold">←</Link>
-        <div className="flex items-center gap-2 flex-1">
-          <div className="w-6 h-6 bg-gradient-to-r from-[#128a42] via-[#facc15] to-[#d92323] p-[1px] rounded-lg">
-            <div className="w-full h-full bg-white rounded-[7px] flex items-center justify-center"><span className="text-[8px]">🅿</span></div>
-          </div>
-          <span className="font-display font-bold text-sm text-zinc-950">PARKme <span className="text-[#128a42]">Ethiopia</span></span>
-        </div>
-        <Link href="/auth/login" className="px-3 py-1.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl text-xs font-bold transition-all">Sign In</Link>
+    <nav className="sticky top-0 z-50 bg-white border-b border-zinc-200 shadow-sm">
+      <div className="h-1" style={{ background: "linear-gradient(90deg, #009900 33%, #FFCC00 66%, #CC0000 100%)" }} />
+      <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-2 flex-1">
+          <div className="w-9 h-9 bg-gradient-to-br from-[#128a42] to-[#0f7a39] rounded-2xl flex items-center justify-center text-white text-xl shadow-md shadow-[#128a42]/20">🅿</div>
+          <span className="font-display font-extrabold text-lg tracking-tighter text-[#128a42]">Park<span className="text-zinc-900">Eth</span></span>
+        </Link>
+        <Link href="/auth/login" className="flex items-center gap-2 bg-white border border-zinc-200 px-4 py-2 rounded-3xl text-sm hover:bg-zinc-50 transition-all">
+          👤 <span className="font-medium text-zinc-700">Sign In</span>
+        </Link>
       </div>
-    </header>
+    </nav>
   );
 }

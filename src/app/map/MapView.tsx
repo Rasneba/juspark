@@ -10,7 +10,7 @@ function getLng(s: any): number { return s.longitude || 38.7636; }
 function createPriceIcon(price: string, selected: boolean, spaceName: string, spaceType: string) {
   return L.divIcon({
     className: "",
-    html: `<div class="parkme-marker" role="button" tabindex="0" aria-label="Parking: ${spaceName}, ${spaceType}, ${price}" aria-pressed="${selected}" style="background:${selected ? "#128a42" : "#1B1B1B"};color:#fff;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:700;font-family:system-ui,sans-serif;white-space:nowrap;border:2px solid ${selected ? "#fff" : "#128a42"};box-shadow:0 2px 10px rgba(0,0,0,0.35);cursor:pointer;outline:none;${selected ? "transform:scale(1.15);z-index:9999;" : ""}">${price}</div>`,
+    html: `<div class="parkme-marker" role="button" tabindex="0" aria-label="Parking: ${spaceName}, ${spaceType}, ${price}" aria-pressed="${selected}" style="background:${selected ? "#128a42" : "#fff"};color:${selected ? "#fff" : "#128a42"};padding:6px 14px;border-radius:16px;font-size:14px;font-weight:800;font-family:'Space Grotesk',system-ui,sans-serif;white-space:nowrap;border:3px solid ${selected ? "#fff" : "#128a42"};box-shadow:0 4px 16px rgba(18,138,66,${selected ? "0.45" : "0.25"});cursor:pointer;outline:none;${selected ? "transform:scale(1.2);z-index:9999;" : "transform:scale(1);"}">🅿 ${price}</div>`,
     iconSize: [0, 0],
     iconAnchor: [0, 0],
   });
@@ -114,11 +114,13 @@ export default function MapView({ center, spaces, pois, selectedId, satellite, s
     const style = document.createElement("style");
     style.textContent = `
       @keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.8);opacity:0}100%{transform:scale(1);opacity:1}}
-      .parkme-marker{pointer-events:auto!important;cursor:pointer!important;touch-action:manipulation;}
-      .parkme-marker:focus{outline:3px solid #128a42;outline-offset:2px;border-radius:6px;}
-      .parkme-marker:focus-visible{outline:3px solid #128a42;outline-offset:2px;border-radius:6px;}
-      .parkme-marker:hover{transform:scale(1.1);transition:transform 0.15s ease;}
-      .parkme-marker[aria-pressed="true"]{transform:scale(1.15);z-index:9999;}
+      .parkme-marker{pointer-events:auto!important;cursor:pointer!important;touch-action:manipulation;transition:transform 0.2s ease,box-shadow 0.2s ease;}
+      .parkme-marker:focus{outline:3px solid #128a42;outline-offset:3px;border-radius:14px;}
+      .parkme-marker:focus-visible{outline:3px solid #128a42;outline-offset:3px;border-radius:14px;}
+      .parkme-marker:hover{transform:scale(1.12);box-shadow:0 6px 20px rgba(18,138,66,0.35)!important;}
+      .parkme-marker[aria-pressed="true"]{transform:scale(1.2);z-index:9999;}
+      .search-tooltip{background:white!important;color:#128a42!important;font-weight:700!important;border-radius:12px!important;padding:6px 12px!important;border:2px solid #128a42!important;box-shadow:0 4px 12px rgba(18,138,66,0.2)!important;font-family:'Space Grotesk',system-ui,sans-serif!important;}
+      .search-tooltip::before{border-top-color:#128a42!important;}
     `;
     document.head.appendChild(style);
 
