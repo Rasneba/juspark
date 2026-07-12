@@ -65,12 +65,12 @@ export default function HostListingsPage() {
 
         {loading ? (
           <div className="text-center py-12 text-zinc-500 flex items-center justify-center gap-2">
-            <span className="w-4 h-4 border-2 border-[#128a42] border-t-transparent rounded-full animate-spin" /> Loading listings...
+            <span className="w-4 h-4 border-2 border-[ethio-green] border-t-transparent rounded-full animate-spin" /> Loading listings...
           </div>
         ) : error ? (
           <div className="text-center py-10 bg-white rounded-3xl border border-zinc-200">
-            <p className="text-sm font-bold text-[#d92323] mb-2">{error}</p>
-            <button onClick={loadSpaces} className="px-5 py-2 bg-[#128a42] text-white rounded-2xl text-xs font-bold hover:bg-[#0f7a39] transition-all">Retry</button>
+            <p className="text-sm font-bold text-[ethio-red] mb-2">{error}</p>
+            <button onClick={loadSpaces} className="px-5 py-2 bg-[ethio-green] text-white rounded-2xl text-xs font-bold hover:bg-[ethio-green] transition-all">Retry</button>
           </div>
         ) : spaces.length === 0 ? (
           <div className="text-center py-10 bg-white rounded-3xl border border-zinc-200">
@@ -89,7 +89,7 @@ export default function HostListingsPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-display font-bold text-sm text-zinc-950 truncate">{String(space.name)}</h3>
-                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${isActive ? "bg-[#128a42]/10 text-[#128a42]" : "bg-[#d92323]/10 text-[#d92323]"}`}>
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${isActive ? "bg-[ethio-green]/10 text-[ethio-green]" : "bg-[ethio-red]/10 text-[ethio-red]"}`}>
                           {isActive ? "Active" : "Inactive"}
                         </span>
                       </div>
@@ -97,17 +97,17 @@ export default function HostListingsPage() {
                       <div className="flex gap-3 text-[10px] text-zinc-500">
                         <span>{String(space.total_spots || space.totalSpots || 0)} spots</span>
                         <span>{String(space.booking_count || space.bookingCount || 0)} bookings</span>
-                        {pricing && <span className="font-bold text-[#128a42]">ETB {String(pricing.price)}/{String(pricing.rate_type || pricing.rateType) === "hourly" ? "hr" : String(pricing.rate_type || pricing.rateType) === "daily" ? "day" : "mo"}</span>}
+                        {pricing && <span className="font-bold text-[ethio-green]">ETB {String(pricing.price)}/{String(pricing.rate_type || pricing.rateType) === "hourly" ? "hr" : String(pricing.rate_type || pricing.rateType) === "daily" ? "day" : "mo"}</span>}
                       </div>
                     </div>
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => toggleActive(space)} disabled={togglingId === String(space.id)}
-                      className={`flex-1 py-2 rounded-xl text-[11px] font-bold transition-all border ${isActive ? "bg-[#d92323]/5 border-[#d92323]/20 text-[#d92323] hover:bg-[#d92323]/10" : "bg-[#128a42]/5 border-[#128a42]/20 text-[#128a42] hover:bg-[#128a42]/10"} disabled:opacity-50`}>
+                      className={`flex-1 py-2 rounded-xl text-[11px] font-bold transition-all border ${isActive ? "bg-[ethio-red]/5 border-[ethio-red]/20 text-[ethio-red] hover:bg-[ethio-red]/10" : "bg-[ethio-green]/5 border-[ethio-green]/20 text-[ethio-green] hover:bg-[ethio-green]/10"} disabled:opacity-50`}>
                       {togglingId === String(space.id) ? "..." : isActive ? "Deactivate" : "Activate"}
                     </button>
                     <button onClick={() => deleteSpace(String(space.id))} disabled={deletingId === String(space.id)}
-                      className="flex-1 py-2 rounded-xl text-[11px] font-bold bg-white border border-[#d92323]/20 text-[#d92323] hover:bg-[#d92323]/5 transition-all disabled:opacity-50">
+                      className="flex-1 py-2 rounded-xl text-[11px] font-bold bg-white border border-[ethio-red]/20 text-[ethio-red] hover:bg-[ethio-red]/5 transition-all disabled:opacity-50">
                       {deletingId === String(space.id) ? "..." : "Delete"}
                     </button>
                   </div>

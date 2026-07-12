@@ -80,7 +80,7 @@ export default function NearbySearchPage() {
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
           <Link href="/" className="w-8 h-8 bg-zinc-100 hover:bg-zinc-200 rounded-xl flex items-center justify-center text-zinc-600 transition-all text-sm font-bold">←</Link>
           <span className="font-display font-bold text-sm text-zinc-950 flex-1">🅿 Find Parking</span>
-          <Link href="/map" className="px-3 py-1.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl text-xs font-bold transition-all">🗺 Map</Link>
+          <Link href="/map" className="px-3 py-1.5 bg-[ethio-green] hover:bg-[ethio-green] text-white rounded-2xl text-xs font-bold transition-all">🗺 Map</Link>
         </div>
       </header>
 
@@ -89,12 +89,12 @@ export default function NearbySearchPage() {
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 text-sm">🔍</div>
           <input type="text" value={query} onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by name or address..."
-            className="w-full bg-white border border-zinc-200 rounded-2xl pl-11 pr-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#128a42] focus:ring-2 focus:ring-[#128a42]/10 transition-all shadow-sm" />
+            className="w-full bg-white border border-zinc-200 rounded-2xl pl-11 pr-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[ethio-green] focus:ring-2 focus:ring-[ethio-green]/10 transition-all shadow-sm" />
         </div>
 
         {locating && (
-          <div className="flex items-center gap-2 px-4 py-2.5 bg-[#128a42]/5 border border-[#128a42]/20 text-[#128a42] rounded-2xl mb-3 text-xs font-bold">
-            <span className="w-3.5 h-3.5 border-2 border-[#128a42] border-t-transparent rounded-full animate-spin" />
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-[ethio-green]/5 border border-[ethio-green]/20 text-[ethio-green] rounded-2xl mb-3 text-xs font-bold">
+            <span className="w-3.5 h-3.5 border-2 border-[ethio-green] border-t-transparent rounded-full animate-spin" />
             Getting your location...
           </div>
         )}
@@ -104,7 +104,7 @@ export default function NearbySearchPage() {
             <button key={f.key} onClick={() => setActiveFilter(f.key)}
               className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap flex-shrink-0 border ${
                 activeFilter === f.key
-                  ? "bg-[#128a42] text-white border-[#128a42]"
+                  ? "bg-[ethio-green] text-white border-[ethio-green]"
                   : "bg-white text-zinc-500 border-zinc-200 hover:bg-zinc-50"
               }`}>
               {f.label}
@@ -114,10 +114,10 @@ export default function NearbySearchPage() {
 
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs text-zinc-500 font-bold">
-            {loading ? "Searching..." : error ? <span className="text-[#d92323]">{error}</span> : `${filtered.length} space${filtered.length !== 1 ? "s" : ""} nearby`}
+            {loading ? "Searching..." : error ? <span className="text-[ethio-red]">{error}</span> : `${filtered.length} space${filtered.length !== 1 ? "s" : ""} nearby`}
           </span>
           <select value={sortBy} onChange={(e) => setSortBy(e.target.value as "distance" | "price" | "rating")}
-            className="bg-white border border-zinc-200 text-[10px] text-[#128a42] font-bold px-3 py-1.5 rounded-xl outline-none cursor-pointer">
+            className="bg-white border border-zinc-200 text-[10px] text-[ethio-green] font-bold px-3 py-1.5 rounded-xl outline-none cursor-pointer">
             <option value="distance">Nearest First</option>
             <option value="price">Lowest Price</option>
             <option value="rating">Top Rated</option>
@@ -138,7 +138,7 @@ export default function NearbySearchPage() {
               const rateLabel = rateType === "hourly" ? "hr" : rateType === "daily" ? "day" : "mo";
               return (
                 <Link key={String(space.id)} href={`/space/${space.id}`}
-                  className="flex bg-white rounded-3xl border border-zinc-150 hover:border-[#128a42]/30 hover:shadow-md overflow-hidden gap-3 transition-all group">
+                  className="flex bg-white rounded-3xl border border-zinc-150 hover:border-[ethio-green]/30 hover:shadow-md overflow-hidden gap-3 transition-all group">
                   <div className="w-20 h-20 bg-zinc-50 flex items-center justify-center flex-shrink-0">
                     {(space.images as Array<Record<string, unknown>>)?.[0]?.url ? (
                       <img src={String((space.images as Array<Record<string, unknown>>)[0].url)} alt="" className="w-full h-full object-cover" />
@@ -146,13 +146,13 @@ export default function NearbySearchPage() {
                   </div>
                   <div className="flex-1 py-3 pr-3 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className="text-[9px] font-bold text-[#128a42] bg-[#128a42]/10 px-1.5 py-0.5 rounded-full uppercase">{String(space.spaceType || "Lot")}</span>
-                      {Number(space.ratingAvg || space.rating_avg) > 0 && <span className="text-[10px] font-bold"><span className="text-[#facc15]">★</span> {Number(space.ratingAvg || space.rating_avg).toFixed(1)}</span>}
+                      <span className="text-[9px] font-bold text-[ethio-green] bg-[ethio-green]/10 px-1.5 py-0.5 rounded-full uppercase">{String(space.spaceType || "Lot")}</span>
+                      {Number(space.ratingAvg || space.rating_avg) > 0 && <span className="text-[10px] font-bold"><span className="text-[ethio-yellow]">★</span> {Number(space.ratingAvg || space.rating_avg).toFixed(1)}</span>}
                     </div>
-                    <h3 className="font-display font-bold text-xs text-zinc-950 truncate group-hover:text-[#128a42] transition-colors">{String(space.name)}</h3>
+                    <h3 className="font-display font-bold text-xs text-zinc-950 truncate group-hover:text-[ethio-green] transition-colors">{String(space.name)}</h3>
                     <p className="text-[10px] text-zinc-500 truncate">{String(space.address)}</p>
                     <div className="flex justify-between items-center mt-1.5">
-                      <span className="font-extrabold text-[#128a42] text-sm font-display">
+                      <span className="font-extrabold text-[ethio-green] text-sm font-display">
                         {pricing ? `ETB ${pricing.price}` : "—"}
                         <span className="text-[9px] text-zinc-400 font-normal font-sans">/{rateLabel}</span>
                       </span>

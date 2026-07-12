@@ -55,7 +55,7 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
   if (loading) {
     return (
       <div className="min-h-screen bg-zinc-50 flex items-center justify-center text-zinc-500">
-        <span className="w-4 h-4 border-2 border-[#128a42] border-t-transparent rounded-full animate-spin mr-2" /> Loading...
+        <span className="w-4 h-4 border-2 border-[ethio-green] border-t-transparent rounded-full animate-spin mr-2" /> Loading...
       </div>
     );
   }
@@ -64,7 +64,7 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
     return (
       <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center gap-3">
         <p className="font-display font-bold text-sm">Space not found</p>
-        <Link href="/search" className="text-[#128a42] font-bold text-xs hover:underline">← Back to Search</Link>
+        <Link href="/search" className="text-[ethio-green] font-bold text-xs hover:underline">← Back to Search</Link>
       </div>
     );
   }
@@ -79,9 +79,9 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
       </header>
 
       <div className="max-w-lg mx-auto w-full px-4 py-4 pb-16">
-        <Link href={`/space/${spaceId}`} className="text-[#128a42] font-bold text-xs hover:underline inline-block mb-3">← Back to Space</Link>
+        <Link href={`/space/${spaceId}`} className="text-[ethio-green] font-bold text-xs hover:underline inline-block mb-3">← Back to Space</Link>
 
-        <h1 className="font-display font-extrabold text-lg text-[#128a42] mb-0.5">Book Parking</h1>
+        <h1 className="font-display font-extrabold text-lg text-[ethio-green] mb-0.5">Book Parking</h1>
         <p className="text-xs text-zinc-500 mb-4">{String(space.name)}</p>
 
         <div className="bg-white rounded-3xl border border-zinc-150 p-5 mb-3 shadow-sm">
@@ -108,7 +108,7 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
           <h2 className="font-display font-bold text-xs text-zinc-950 mb-4 uppercase tracking-wider">Booking Details</h2>
 
           {error && (
-            <div className="px-4 py-3 bg-[#d92323]/10 border border-[#d92323]/30 text-[#d92323] rounded-2xl mb-4 text-xs font-bold">{error}</div>
+            <div className="px-4 py-3 bg-[ethio-red]/10 border border-[ethio-red]/30 text-[ethio-red] rounded-2xl mb-4 text-xs font-bold">{error}</div>
           )}
 
           <div className="mb-4">
@@ -117,7 +117,7 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
               <button onClick={() => setDuration((d) => Math.max(1, d - 1))}
                 className="w-10 h-10 rounded-2xl border border-zinc-200 bg-white text-lg font-bold flex items-center justify-center hover:bg-zinc-50 transition-all active:scale-95">−</button>
               <div className="flex-1 text-center">
-                <span className="font-display font-extrabold text-2xl text-[#128a42]">{duration}</span>
+                <span className="font-display font-extrabold text-2xl text-[ethio-green]">{duration}</span>
                 <span className="text-[10px] text-zinc-500 ml-1">hr{duration > 1 ? "s" : ""}</span>
               </div>
               <button onClick={() => setDuration((d) => Math.min(24, d + 1))}
@@ -130,7 +130,7 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
           <div className="mb-5">
             <label className="block text-xs font-bold text-zinc-700 mb-2">Vehicle Plate Number</label>
             <input type="text" value={vehiclePlate} onChange={(e) => setVehiclePlate(e.target.value)} placeholder="e.g. AA-12345"
-              className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[#128a42] focus:ring-2 focus:ring-[#128a42]/10 transition-all uppercase" />
+              className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-[ethio-green] focus:ring-2 focus:ring-[ethio-green]/10 transition-all uppercase" />
           </div>
 
           <div className="p-4 bg-zinc-50 rounded-2xl mb-5">
@@ -140,12 +140,12 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
             </div>
             <div className="flex justify-between items-center pt-2 border-t border-zinc-200">
               <span className="font-display font-bold text-sm text-zinc-950">Total</span>
-              <span className="font-display font-extrabold text-xl text-[#128a42]">ETB {total}</span>
+              <span className="font-display font-extrabold text-xl text-[ethio-green]">ETB {total}</span>
             </div>
           </div>
 
           <button onClick={handleBook} disabled={submitting}
-            className="w-full py-3.5 bg-[#128a42] hover:bg-[#0f7a39] text-white rounded-2xl text-sm font-bold transition-all shadow-lg shadow-[#128a42]/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+            className="w-full py-3.5 bg-[ethio-green] hover:bg-[ethio-green] text-white rounded-2xl text-sm font-bold transition-all shadow-lg shadow-[ethio-green]/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
             {submitting ? "Confirming..." : "Confirm Booking"}
           </button>
         </div>

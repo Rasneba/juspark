@@ -41,7 +41,7 @@ export default function SpaceDetailPage() {
       <div className="min-h-screen bg-zinc-50">
         <Header />
         <div className="text-center py-24 text-zinc-500 flex items-center justify-center gap-2">
-          <span className="w-4 h-4 border-2 border-[#128a42] border-t-transparent rounded-full animate-spin" /> Loading parking space...
+          <span className="w-4 h-4 border-2 border-[ethio-green] border-t-transparent rounded-full animate-spin" /> Loading parking space...
         </div>
       </div>
     );
@@ -52,8 +52,8 @@ export default function SpaceDetailPage() {
       <div className="min-h-screen bg-zinc-50">
         <Header />
         <div className="text-center py-24">
-          <p className="font-display font-bold text-lg text-[#d92323] mb-2">{error || "Space not found"}</p>
-          <Link href="/search" className="text-[#128a42] font-bold text-sm hover:underline">Back to Search</Link>
+          <p className="font-display font-bold text-lg text-[ethio-red] mb-2">{error || "Space not found"}</p>
+          <Link href="/search" className="text-[ethio-green] font-bold text-sm hover:underline">Back to Search</Link>
         </div>
       </div>
     );
@@ -119,10 +119,10 @@ export default function SpaceDetailPage() {
         {/* Space Info Card */}
         <div className="bg-white rounded-3xl overflow-hidden shadow-sm p-5 mb-4">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px] font-bold text-[#128a42] bg-[#128a42]/10 px-2.5 py-1 rounded-full border border-[#128a42]/20 uppercase">{String(space.space_type || space.spaceType)}</span>
+            <span className="text-[10px] font-bold text-[ethio-green] bg-[ethio-green]/10 px-2.5 py-1 rounded-full border border-[ethio-green]/20 uppercase">{String(space.space_type || space.spaceType)}</span>
             {Number(space.rating_avg || space.ratingAvg) > 0 && (
               <span className="text-xs font-bold text-zinc-800">
-                <span className="text-[#facc15]">★</span> {Number(space.rating_avg || space.ratingAvg).toFixed(1)}
+                <span className="text-[ethio-yellow]">★</span> {Number(space.rating_avg || space.ratingAvg).toFixed(1)}
                 {(space.review_count || space.reviewCount) ? <span className="text-zinc-400 font-normal ml-1">({String(space.review_count || space.reviewCount)})</span> : null}
               </span>
             )}
@@ -135,7 +135,7 @@ export default function SpaceDetailPage() {
           <p className="text-xs text-zinc-500 mb-3">{String(space.address)}</p>
 
           <div className="flex gap-2 flex-wrap mb-4">
-            {!!(space.is_covered || space.isCovered) && <span className="text-[10px] font-bold px-2.5 py-1 bg-[#128a42]/5 text-[#128a42] rounded-full border border-[#128a42]/20">☂ Covered</span>}
+            {!!(space.is_covered || space.isCovered) && <span className="text-[10px] font-bold px-2.5 py-1 bg-[ethio-green]/5 text-[ethio-green] rounded-full border border-[ethio-green]/20">☂ Covered</span>}
             {!!(space.is_ev_charger || space.isEvCharger) && <span className="text-[10px] font-bold px-2.5 py-1 bg-blue-50 text-blue-600 rounded-full border border-blue-200">⚡ EV Charging</span>}
             {!!(space.is_24_7 || space.is247) && <span className="text-[10px] font-bold px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-200">🕐 24/7</span>}
           </div>
@@ -163,7 +163,7 @@ export default function SpaceDetailPage() {
               <div key={item.label} className="p-4 rounded-2xl border-2 text-center transition-all" style={{ background: "linear-gradient(135deg, #f8fafc, #f1f5f9)" }}>
                 <div className="text-xl mb-1">{item.icon}</div>
                 <div className="text-[10px] text-zinc-500 mb-1 font-medium">{item.label}</div>
-                <div className="font-display font-extrabold text-sm text-[#128a42]">
+                <div className="font-display font-extrabold text-sm text-[ethio-green]">
                   {item.data ? `ETB ${item.data.price}` : "—"}
                 </div>
                 {item.data && <div className="text-[9px] text-zinc-400 mt-0.5">per {slotType(item.data)}</div>}
@@ -182,7 +182,7 @@ export default function SpaceDetailPage() {
                 <div className="text-slate-500 text-sm mt-0.5">{String(space.address)}</div>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-[#128a42]">
+                <div className="text-2xl font-bold text-[ethio-green]">
                   {hourly ? `ETB ${hourly.price}` : daily ? `ETB ${daily.price}` : monthly ? `ETB ${monthly.price}` : "TBD"}
                 </div>
                 <div className="text-sm text-slate-500">
@@ -191,7 +191,7 @@ export default function SpaceDetailPage() {
               </div>
             </div>
 
-            <Link href={`/book/${space.id}`} className="w-full bg-gradient-to-r from-[#128a42] to-[#0f7a39] text-white font-semibold py-4 rounded-2xl text-lg block text-center shadow-lg shadow-[#128a42]/30 active:scale-[0.98] transition-all">
+            <Link href={`/book/${space.id}`} className="w-full bg-gradient-to-r from-[ethio-green] to-[ethio-green] text-white font-semibold py-4 rounded-2xl text-lg block text-center shadow-lg shadow-[ethio-green]/30 active:scale-[0.98] transition-all">
               Pay &amp; Get Ticket
             </Link>
           </div>
@@ -202,14 +202,14 @@ export default function SpaceDetailPage() {
           <div className="flex justify-between items-center px-5 py-3 border-b border-zinc-100">
             <h2 className="font-display font-bold text-sm text-zinc-950">Location</h2>
             <div className="flex gap-1.5">
-              <button onClick={() => setMapSatellite(false)} className={`px-3 py-1 rounded-xl text-[10px] font-bold transition-all border ${!mapSatellite ? "bg-[#128a42] text-white border-[#128a42]" : "bg-white text-zinc-500 border-zinc-200 hover:bg-zinc-50"}`}>🗺 Streets</button>
-              <button onClick={() => setMapSatellite(true)} className={`px-3 py-1 rounded-xl text-[10px] font-bold transition-all border ${mapSatellite ? "bg-[#128a42]/10 text-[#128a42] border-[#128a42]/30" : "bg-white text-zinc-500 border-zinc-200 hover:bg-zinc-50"}`}>🛰 Satellite</button>
+              <button onClick={() => setMapSatellite(false)} className={`px-3 py-1 rounded-xl text-[10px] font-bold transition-all border ${!mapSatellite ? "bg-[ethio-green] text-white border-[ethio-green]" : "bg-white text-zinc-500 border-zinc-200 hover:bg-zinc-50"}`}>🗺 Streets</button>
+              <button onClick={() => setMapSatellite(true)} className={`px-3 py-1 rounded-xl text-[10px] font-bold transition-all border ${mapSatellite ? "bg-[ethio-green]/10 text-[ethio-green] border-[ethio-green]/30" : "bg-white text-zinc-500 border-zinc-200 hover:bg-zinc-50"}`}>🛰 Satellite</button>
             </div>
           </div>
           <iframe title="Parking Location" width="100%" height="260" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade" src={mapSatellite ? mapSatSrc : mapStreetSrc} />
           <div className="px-5 py-3 flex gap-2">
             <a href={`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`} target="_blank" rel="noopener"
-              className="flex-1 py-2.5 bg-[#128a42]/10 text-[#128a42] rounded-2xl text-xs font-bold text-center hover:bg-[#128a42]/20 transition-all">
+              className="flex-1 py-2.5 bg-[ethio-green]/10 text-[ethio-green] rounded-2xl text-xs font-bold text-center hover:bg-[ethio-green]/20 transition-all">
               🧭 Get Directions
             </a>
           </div>
@@ -229,7 +229,7 @@ export default function SpaceDetailPage() {
                 <div key={String(review.id || i)} className="p-3 bg-zinc-50 rounded-2xl">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-bold text-xs text-zinc-900">{String(review.user_name || review.userName || "Anonymous")}</span>
-                    <span className="text-[11px] font-bold"><span className="text-[#facc15]">★</span> {String(review.rating)}</span>
+                    <span className="text-[11px] font-bold"><span className="text-[ethio-yellow]">★</span> {String(review.rating)}</span>
                   </div>
                   {!!review.comment && <p className="text-[11px] text-zinc-500">{String(review.comment)}</p>}
                 </div>
