@@ -26,6 +26,7 @@ enum SpaceStatus {
   PENDING_VERIFICATION
   REJECTED
   DRAFT
+  SUSPENDED
 }
 
 enum RateType {
@@ -41,6 +42,7 @@ enum BookingStatus {
   COMPLETED
   CANCELLED
   EXPIRED
+  NO_SHOW
 }
 
 enum PaymentStatus {
