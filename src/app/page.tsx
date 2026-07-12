@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <header style={{ padding: "1rem 2rem", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border)" }}>
-        <h1 style={{ fontSize: "1.5rem", fontWeight: "800", color: "var(--primary)" }}>JusPark</h1>
+        <h1 style={{ fontSize: "1.5rem", fontWeight: "800", color: "var(--primary)" }}>PARKme Ethiopia</h1>
         <nav style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
           <Link href="/search" style={{ padding: "0.5rem 1rem", color: "var(--primary)", textDecoration: "none", fontWeight: "600" }}>Find Parking</Link>
           <Link href="/owner" style={{ padding: "0.5rem 1rem", color: "var(--primary)", textDecoration: "none", fontWeight: "600" }}>List Your Space</Link>
@@ -66,7 +66,7 @@ export default function Home() {
       </main>
 
       <footer style={{ padding: "2rem", borderTop: "1px solid var(--border)", textAlign: "center", color: "var(--muted-foreground)" }}>
-        <p>&copy; 2026 JusPark. All rights reserved.</p>
+        <p>&copy; 2026 PARKme Ethiopia. All rights reserved.</p>
       </footer>
     </div>
   );
