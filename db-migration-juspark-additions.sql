@@ -1,4 +1,4 @@
--- JusPark: Add missing columns to match the API
+-- PARKme Ethiopia: Add missing columns to match the API
 -- Run this against your Neon database
 
 -- 1. Add status column to juspark_spaces (used by GET/POST routes)

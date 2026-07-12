@@ -19,15 +19,15 @@ async function main() {
   const password = await bcrypt.hash("admin123", 10);
 
   const host = await prisma.user.upsert({
-    where: { email: "host@juspark.et" },
+    where: { email: "host@parkme.et" },
     update: {},
-    create: { email: "host@juspark.et", name: "Host User", passwordHash: password, role: "OWNER", isHost: true, isVerified: true },
+    create: { email: "host@parkme.et", name: "Host User", passwordHash: password, role: "OWNER", isHost: true, isVerified: true },
   });
 
   const guest = await prisma.user.upsert({
-    where: { email: "guest@juspark.et" },
+    where: { email: "guest@parkme.et" },
     update: {},
-    create: { email: "guest@juspark.et", name: "Guest User", passwordHash: password, role: "DRIVER", isHost: false, isVerified: true },
+    create: { email: "guest@parkme.et", name: "Guest User", passwordHash: password, role: "DRIVER", isHost: false, isVerified: true },
   });
 
   console.log("Host:", host.email, "| Guest:", guest.email, "| Password: admin123");
