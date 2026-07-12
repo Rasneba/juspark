@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { Pool } from "pg";
+import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+import { SignJWT } from "jose";
 
 export async function POST(req: Request) {
   try {
@@ -12,27 +11,39 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Name, email and password are required" }, { status: 400 });
     }
 
-    const exists = await pool.query("SELECT id FROM juspark_users WHERE email = $1", [email]);
-    if (exists.rows.length > 0) {
+    const exists = await prisma.user.findUnique({ where: { email } });
+    if (exists) {
       return NextResponse.json({ error: "Email already registered" }, { status: 409 });
     }
 
-    const password_hash = await bcrypt.hash(password, 10);
-    const result = await pool.query(
-      `INSERT INTO juspark_users (name, email, password_hash, phone)
-       VALUES ($1, $2, $3, $4) RETURNING id, name, email, phone, is_host, created_at`,
-      [name, email, password_hash, phone || null]
-    );
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        passwordHash,
+        phone: phone || null,
+        role: "DRIVER",
+      },
+    });
 
-    const user = result.rows[0];
-    const { SignJWT } = await import("jose");
-    const token = await new SignJWT({ id: user.id, email: user.email, type: "juspark" })
+    const token = await new SignJWT({ id: user.id, email: user.email, type: "juspark", isHost: false })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setExpirationTime("7d")
       .sign(new TextEncoder().encode(process.env.JWT_SECRET || "genius-hrms-secret-key-2026"));
 
-    return NextResponse.json({ token, user }, { status: 201 });
+    return NextResponse.json({
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        is_host: false,
+      },
+    }, { status: 201 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
-import { Pool } from "pg";
+import prisma from "@/lib/prisma";
 import { jwtVerify } from "jose";
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 async function getUser(req: Request) {
   const auth = req.headers.get("authorization");
@@ -13,7 +11,7 @@ async function getUser(req: Request) {
       new TextEncoder().encode(process.env.JWT_SECRET || "genius-hrms-secret-key-2026")
     );
     if (payload.type !== "juspark") return null;
-    return payload as { id: number; email: string; type: string };
+    return payload as { id: string; email: string; type: string };
   } catch {
     return null;
   }
@@ -23,11 +21,23 @@ export async function GET(req: Request) {
   try {
     const user = await getUser(req);
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const result = await pool.query(
-      "SELECT * FROM juspark_vehicles WHERE user_id = $1 ORDER BY is_default DESC, created_at DESC",
-      [user.id]
-    );
-    return NextResponse.json(result.rows);
+
+    const vehicles = await prisma.vehicle.findMany({
+      where: { userId: user.id },
+      orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }],
+    });
+
+    return NextResponse.json(vehicles.map((v) => ({
+      id: v.id,
+      user_id: v.userId,
+      plate_number: v.plateNumber,
+      nickname: v.nickname,
+      make: v.make,
+      model: v.model,
+      color: v.color,
+      is_default: v.isDefault,
+      created_at: v.createdAt,
+    })));
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
@@ -37,18 +47,36 @@ export async function POST(req: Request) {
   try {
     const user = await getUser(req);
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     const { plate_number, nickname, make, model, color } = await req.json();
     if (!plate_number?.trim()) return NextResponse.json({ error: "Plate number is required" }, { status: 400 });
 
-    const existing = await pool.query("SELECT id FROM juspark_vehicles WHERE user_id = $1", [user.id]);
-    const is_default = existing.rows.length === 0;
+    const existing = await prisma.vehicle.count({ where: { userId: user.id } });
+    const is_default = existing === 0;
 
-    const result = await pool.query(
-      `INSERT INTO juspark_vehicles (user_id, plate_number, nickname, make, model, color, is_default)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [user.id, plate_number.trim().toUpperCase(), nickname || null, make || null, model || null, color || null, is_default]
-    );
-    return NextResponse.json(result.rows[0], { status: 201 });
+    const vehicle = await prisma.vehicle.create({
+      data: {
+        userId: user.id,
+        plateNumber: plate_number.trim().toUpperCase(),
+        nickname: nickname || null,
+        make: make || null,
+        model: model || null,
+        color: color || null,
+        isDefault: is_default,
+      },
+    });
+
+    return NextResponse.json({
+      id: vehicle.id,
+      user_id: vehicle.userId,
+      plate_number: vehicle.plateNumber,
+      nickname: vehicle.nickname,
+      make: vehicle.make,
+      model: vehicle.model,
+      color: vehicle.color,
+      is_default: vehicle.isDefault,
+      created_at: vehicle.createdAt,
+    }, { status: 201 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

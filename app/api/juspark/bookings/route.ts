@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
-import { Pool } from "pg";
+import prisma from "@/lib/prisma";
 import { jwtVerify } from "jose";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-
-async function getJusparkUser(req: Request) {
+async function getUser(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) return null;
   try {
@@ -13,7 +11,7 @@ async function getJusparkUser(req: Request) {
       new TextEncoder().encode(process.env.JWT_SECRET || "genius-hrms-secret-key-2026")
     );
     if (payload.type !== "juspark") return null;
-    return payload as { id: number; email: string; type: string };
+    return payload as { id: string; email: string; type: string };
   } catch {
     return null;
   }
@@ -25,48 +23,55 @@ function generateRef(): string {
 
 export async function POST(req: Request) {
   try {
-    const user = await getJusparkUser(req);
+    const user = await getUser(req);
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { space_id, vehicle_plate, start_time, end_time, duration_minutes } = await req.json();
-
     if (!space_id || !start_time) {
       return NextResponse.json({ error: "space_id and start_time required" }, { status: 400 });
     }
 
-    const spaceRes = await pool.query("SELECT s.*, s.has_covered as is_covered, s.has_ev_charging as is_ev_charger, s.total_slots as total_spots, COALESCE(s.available_slots, s.total_slots) as available_spots FROM juspark_spaces s WHERE s.id = $1 AND (s.status = 'active' OR s.is_active = TRUE)", [space_id]);
-    if (spaceRes.rows.length === 0) return NextResponse.json({ error: "Space not found" }, { status: 404 });
-
-    const space = spaceRes.rows[0];
-    if (space.available_spots <= 0) return NextResponse.json({ error: "No spots available" }, { status: 400 });
-
-    const pricingRes = await pool.query("SELECT * FROM juspark_space_pricing WHERE space_id = $1 ORDER BY price ASC", [space_id]);
-    const pricing = pricingRes.rows;
+    const space = await prisma.parkingSpace.findUnique({
+      where: { id: space_id, status: "active" },
+      include: { pricing: { orderBy: { price: "asc" } } },
+    });
+    if (!space) return NextResponse.json({ error: "Space not found" }, { status: 404 });
+    if (space.availableSpots <= 0) return NextResponse.json({ error: "No spots available" }, { status: 400 });
 
     const dur = duration_minutes || (end_time ? Math.ceil((new Date(end_time).getTime() - new Date(start_time).getTime()) / 60000) : 60);
+
     let total = 0;
-    if (pricing.length > 0) {
-      const hourly = pricing.find((p: any) => p.rate_type === "hourly");
-      const daily = pricing.find((p: any) => p.rate_type === "daily");
-      if (dur >= 1440 && daily) total = Math.ceil(dur / 1440) * parseFloat(daily.price);
-      else if (hourly) total = Math.ceil(dur / 60) * parseFloat(hourly.price);
-      else total = pricing[0].price;
+    if (space.pricing.length > 0) {
+      const hourly = space.pricing.find((p) => p.rateType === "HOURLY");
+      const daily = space.pricing.find((p) => p.rateType === "DAILY");
+      if (dur >= 1440 && daily) total = Math.ceil(dur / 1440) * daily.price;
+      else if (hourly) total = Math.ceil(dur / 60) * hourly.price;
+      else total = space.pricing[0].price;
     }
 
-    const booking_ref = generateRef();
+    const booking = await prisma.booking.create({
+      data: {
+        userId: user.id,
+        spaceId: space_id,
+        vehiclePlate: vehicle_plate || null,
+        startTime: new Date(start_time),
+        endTime: end_time ? new Date(end_time) : null,
+        durationMinutes: dur,
+        totalAmount: total,
+        platformFee: total * 0.15,
+        hostPayout: total * 0.85,
+        status: "confirmed",
+        paymentStatus: "pending",
+        bookingRef: generateRef(),
+      },
+    });
 
-    const result = await pool.query(
-      `INSERT INTO juspark_bookings (booking_ref, space_id, user_id, vehicle_plate, start_time, end_time, duration_minutes, total_amount, status, payment_status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'confirmed', 'pending') RETURNING *`,
-      [booking_ref, space_id, user.id, vehicle_plate || null, start_time, end_time || null, dur, total]
-    );
+    await prisma.parkingSpace.update({
+      where: { id: space_id },
+      data: { availableSpots: { decrement: 1 } },
+    });
 
-    await pool.query(
-      "UPDATE juspark_spaces SET available_slots = GREATEST(COALESCE(available_slots, total_slots) - 1, 0) WHERE id = $1 AND COALESCE(available_slots, total_slots) > 0",
-      [space_id]
-    );
-
-    return NextResponse.json(result.rows[0], { status: 201 });
+    return NextResponse.json(booking, { status: 201 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
@@ -74,28 +79,42 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    const user = await getJusparkUser(req);
+    const user = await getUser(req);
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { searchParams } = new URL(req.url);
     const status = searchParams.get("status");
 
-    let query = `SELECT b.*, s.name as space_name, s.address as space_address
-      FROM juspark_bookings b JOIN juspark_spaces s ON b.space_id = s.id
-      WHERE b.user_id = $1`;
-    const params: any[] = [user.id];
-    let idx = 2;
+    const where: any = { userId: user.id };
+    if (status) where.status = status;
 
-    if (status) {
-      query += ` AND b.status = $${idx}`;
-      params.push(status);
-      idx++;
-    }
+    const bookings = await prisma.booking.findMany({
+      where,
+      include: { space: { select: { name: true, address: true } } },
+      orderBy: { createdAt: "desc" },
+      take: 50,
+    });
 
-    query += " ORDER BY b.created_at DESC LIMIT 50";
-
-    const result = await pool.query(query, params);
-    return NextResponse.json(result.rows);
+    return NextResponse.json(bookings.map((b) => ({
+      id: b.id,
+      space_id: b.spaceId,
+      space_name: b.space.name,
+      space_address: b.space.address,
+      user_id: b.userId,
+      vehicle_plate: b.vehiclePlate,
+      start_time: b.startTime,
+      end_time: b.endTime,
+      duration_minutes: b.durationMinutes,
+      amount: b.totalAmount,
+      platform_fee: b.platformFee,
+      host_payout: b.hostPayout,
+      status: b.status,
+      payment_status: b.paymentStatus,
+      booking_ref: b.bookingRef,
+      checkin_time: b.checkinTime,
+      checkout_time: b.checkoutTime,
+      created_at: b.createdAt,
+    })));
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

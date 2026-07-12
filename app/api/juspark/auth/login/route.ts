@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { Pool } from "pg";
+import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+import { SignJWT } from "jose";
 
 export async function POST(req: Request) {
   try {
@@ -12,31 +11,34 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
     }
 
-    const result = await pool.query(
-      "SELECT id, name, email, phone, avatar_url, is_host, password_hash FROM juspark_users WHERE email = $1 AND is_active = TRUE",
-      [email]
-    );
-
-    if (result.rows.length === 0) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user || !user.passwordHash) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    const user = result.rows[0];
-    const valid = await bcrypt.compare(password, user.password_hash);
+    const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    delete (user as any).password_hash;
-
-    const { SignJWT } = await import("jose");
-    const token = await new SignJWT({ id: user.id, email: user.email, type: "juspark" })
+    const token = await new SignJWT({ id: user.id, email: user.email, type: "juspark", isHost: user.isHost })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setExpirationTime("7d")
       .sign(new TextEncoder().encode(process.env.JWT_SECRET || "genius-hrms-secret-key-2026"));
 
-    return NextResponse.json({ token, user });
+    return NextResponse.json({
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        avatar: user.avatar,
+        role: user.role,
+        is_host: user.isHost,
+      },
+    });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

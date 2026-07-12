@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
-import { Pool } from "pg";
+import prisma from "@/lib/prisma";
 import { jwtVerify } from "jose";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-
-async function getJusparkUser(req: Request) {
+async function getUser(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) return null;
   try {
@@ -13,7 +11,7 @@ async function getJusparkUser(req: Request) {
       new TextEncoder().encode(process.env.JWT_SECRET || "genius-hrms-secret-key-2026")
     );
     if (payload.type !== "juspark") return null;
-    return payload as { id: number; email: string; type: string };
+    return payload as { id: string; email: string; type: string };
   } catch {
     return null;
   }
@@ -21,22 +19,36 @@ async function getJusparkUser(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    const user = await getJusparkUser(req);
+    const user = await getUser(req);
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const result = await pool.query(
-      `SELECT s.*,
-        s.has_covered as is_covered,
-        s.has_ev_charging as is_ev_charger,
-        s.total_slots as total_spots,
-        COALESCE(s.available_slots, s.total_slots) as available_spots,
-        (SELECT COUNT(*) FROM juspark_bookings b WHERE b.space_id = s.id) as total_bookings,
-        (SELECT json_agg(json_build_object('rate_type', rate_type, 'price', price)) FROM juspark_space_pricing WHERE space_id = s.id) as pricing
-       FROM juspark_spaces s WHERE s.host_id = $1 ORDER BY s.created_at DESC`,
-      [user.id]
-    );
+    const spaces = await prisma.parkingSpace.findMany({
+      where: { hostId: user.id },
+      include: {
+        pricing: true,
+        bookings: { select: { id: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
 
-    return NextResponse.json(result.rows);
+    return NextResponse.json(spaces.map((s) => ({
+      id: s.id,
+      host_id: s.hostId,
+      name: s.name,
+      description: s.description,
+      address: s.address,
+      latitude: s.latitude,
+      longitude: s.longitude,
+      space_type: s.spaceType.toLowerCase(),
+      is_covered: s.isCovered,
+      is_ev_charger: s.isEvCharger,
+      is_24_7: s.is247,
+      total_spots: s.totalSpots,
+      available_spots: s.availableSpots,
+      status: s.status,
+      total_bookings: s.bookings.length,
+      pricing: s.pricing.map((p) => ({ rate_type: p.rateType.toLowerCase(), price: p.price })),
+    })));
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

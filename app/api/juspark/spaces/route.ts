@@ -1,22 +1,14 @@
 import { NextResponse } from "next/server";
-import { Pool } from "pg";
-import { jwtVerify } from "jose";
+import prisma from "@/lib/prisma";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-
-async function getJusparkUser(req: Request) {
-  const auth = req.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return null;
-  try {
-    const { payload } = await jwtVerify(
-      auth.split(" ")[1],
-      new TextEncoder().encode(process.env.JWT_SECRET || "genius-hrms-secret-key-2026")
-    );
-    if (payload.type !== "juspark") return null;
-    return payload as { id: number; email: string; type: string };
-  } catch {
-    return null;
-  }
+function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
 export async function GET(req: Request) {
@@ -27,36 +19,64 @@ export async function GET(req: Request) {
     const type = searchParams.get("type");
     const search = searchParams.get("search");
 
-    let query = `SELECT s.*,
-      s.has_covered as is_covered,
-      s.has_ev_charging as is_ev_charger,
-      s.total_slots as total_spots,
-      COALESCE(s.available_slots, s.total_slots) as available_spots,
-      (SELECT photo_url FROM juspark_space_photos WHERE space_id = s.id AND is_primary = TRUE LIMIT 1) as primary_photo,
-      (SELECT json_agg(json_build_object('rate_type', rate_type, 'price', price)) FROM juspark_space_pricing WHERE space_id = s.id) as pricing
-      FROM juspark_spaces s WHERE (s.status = 'active' OR s.is_active = TRUE)`;
-    const params: any[] = [];
-    let idx = 1;
-
+    const where: any = { status: "active" };
     if (type && type !== "all") {
-      query += ` AND s.space_type = $${idx}`;
-      params.push(type);
-      idx++;
+      where.spaceType = type.toUpperCase();
     }
     if (search) {
-      query += ` AND (s.name ILIKE $${idx} OR s.address ILIKE $${idx})`;
-      params.push(`%${search}%`);
-      idx++;
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { address: { contains: search, mode: "insensitive" } },
+      ];
     }
 
-    query += " ORDER BY s.created_at DESC LIMIT 50";
+    const result = await prisma.parkingSpace.findMany({
+      where,
+      include: {
+        pricing: true,
+        images: { where: { isPrimary: true }, take: 1 },
+        reviews: { select: { rating: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 50,
+    });
 
-    const result = await pool.query(query, params);
-    const spaces = result.rows.map((r) => ({
-      ...r,
-      pricing: r.pricing || [],
-      distance_km: lat && lng ? haversine(lat, lng, parseFloat(r.latitude), parseFloat(r.longitude)) : null,
-    }));
+    const spaces = result.map((r) => {
+      const avgRating = r.reviews.length > 0
+        ? r.reviews.reduce((sum, rev) => sum + rev.rating, 0) / r.reviews.length
+        : 0;
+
+      return {
+        id: r.id,
+        host_id: r.hostId,
+        name: r.name,
+        description: r.description,
+        address: r.address,
+        latitude: r.latitude,
+        longitude: r.longitude,
+        space_type: r.spaceType.toLowerCase(),
+        is_covered: r.isCovered,
+        is_ev_charger: r.isEvCharger,
+        is_24_7: r.is247,
+        height_limit: r.heightLimit,
+        total_spots: r.totalSpots,
+        available_spots: r.availableSpots,
+        status: r.status,
+        rating_avg: avgRating || r.ratingAvg,
+        rating_count: r.reviews.length || r.ratingCount,
+        primary_photo: r.primaryPhoto || r.images[0]?.url || null,
+        photos: r.images.map((img) => img.url),
+        host_name: r.hostName,
+        pricing: r.pricing.map((p) => ({
+          id: p.id,
+          rate_type: p.rateType.toLowerCase(),
+          price: p.price,
+          min_duration: p.minDuration,
+          max_duration: p.maxDuration,
+        })),
+        distance_km: lat && lng ? haversine(lat, lng, r.latitude, r.longitude) : null,
+      };
+    });
 
     if (lat && lng) {
       spaces.sort((a, b) => (a.distance_km || 999) - (b.distance_km || 999));
@@ -66,53 +86,4 @@ export async function GET(req: Request) {
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
-}
-
-export async function POST(req: Request) {
-  try {
-    const user = await getJusparkUser(req);
-    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const body = await req.json();
-    const { name, description, address, latitude, longitude, space_type, is_covered, is_ev_charger, is_24_7, total_spots, pricing } = body;
-
-    if (!name || !address) {
-      return NextResponse.json({ error: "Name and address required" }, { status: 400 });
-    }
-
-    await pool.query("UPDATE juspark_users SET is_host = TRUE WHERE id = $1", [user.id]);
-
-    const result = await pool.query(
-      `INSERT INTO juspark_spaces (host_id, name, description, address, latitude, longitude, space_type, has_covered, has_ev_charging, total_slots, available_slots, is_active)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $10, TRUE) RETURNING *`,
-      [user.id, name, description || null, address, latitude || null, longitude || null, space_type || "lot", is_covered || false, is_ev_charger || false, total_spots || 1]
-    );
-
-    const space = result.rows[0];
-
-    if (pricing && Array.isArray(pricing)) {
-      for (const p of pricing) {
-        if (p.price > 0) {
-          await pool.query(
-            "INSERT INTO juspark_space_pricing (space_id, rate_type, price) VALUES ($1, $2, $3)",
-            [space.id, p.rate_type, p.price]
-          );
-        }
-      }
-    }
-
-    return NextResponse.json(space, { status: 201 });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
-  }
-}
-
-function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371;
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
