@@ -10,9 +10,9 @@ function getLng(s: any): number { return s.longitude || 38.7636; }
 function createPriceIcon(price: string, selected: boolean) {
   return L.divIcon({
     className: "",
-    html: `<div style="background:${selected ? "#4A90D9" : "#1B1B1B"};color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;font-family:system-ui,sans-serif;white-space:nowrap;border:2px solid ${selected ? "#fff" : "#4A90D9"};box-shadow:0 2px 8px rgba(0,0,0,0.35);cursor:pointer;transform:translate(-50%,-50%);${selected ? "transform:translate(-50%,-50%) scale(1.15);z-index:9999" : ""}">${price}</div>`,
-    iconSize: [80, 28],
-    iconAnchor: [40, 14],
+    html: `<div class="parkme-marker" data-selected="${selected}" style="background:${selected ? "#4A90D9" : "#1B1B1B"};color:#fff;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:700;font-family:system-ui,sans-serif;white-space:nowrap;border:2px solid ${selected ? "#fff" : "#4A90D9"};box-shadow:0 2px 10px rgba(0,0,0,0.35);cursor:pointer;${selected ? "transform:scale(1.15);z-index:9999;" : ""}">${price}</div>`,
+    iconSize: [0, 0],
+    iconAnchor: [0, 0],
   });
 }
 
@@ -40,11 +40,10 @@ export default function MapView({ center, spaces, selectedId, onCenterChange, on
   const myLocationMarkerRef = useRef<L.Marker | null>(null);
   const onSelectRef = useRef(onSelectSpace);
   const onCenterChangeRef = useRef(onCenterChange);
-  const centerRef = useRef(center);
+  const touchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   onSelectRef.current = onSelectSpace;
   onCenterChangeRef.current = onCenterChange;
-  centerRef.current = center;
 
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
@@ -54,7 +53,7 @@ export default function MapView({ center, spaces, selectedId, onCenterChange, on
       zoom: 14,
       zoomControl: false,
       attributionControl: false,
-    });
+    } as any);
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
 
@@ -70,7 +69,7 @@ export default function MapView({ center, spaces, selectedId, onCenterChange, on
     mapRef.current = map;
 
     const style = document.createElement("style");
-    style.textContent = `@keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.8);opacity:0}100%{transform:scale(1);opacity:1}}`;
+    style.textContent = `@keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.8);opacity:0}100%{transform:scale(1);opacity:1}}.parkme-marker{pointer-events:auto!important;cursor:pointer!important;touch-action:manipulation;}`;
     document.head.appendChild(style);
 
     return () => {
@@ -114,17 +113,37 @@ export default function MapView({ center, spaces, selectedId, onCenterChange, on
       }
 
       const icon = createPriceIcon(priceText, isSelected);
-      const marker = L.marker([lat, lng], { icon }).addTo(map);
+      const marker = L.marker([lat, lng], { icon, interactive: true, bubblingMouseEvents: false }).addTo(map);
+
+      const handleSelect = (e?: Event) => {
+        if (e) {
+          e.stopPropagation?.();
+          e.preventDefault?.();
+        }
+        onSelectRef.current(space);
+      };
 
       marker.on("click", (e: L.LeafletMouseEvent) => {
         L.DomEvent.stopPropagation(e.originalEvent);
-        L.DomEvent.stopPropagation(e as any);
-        onSelectRef.current(space);
+        handleSelect();
       });
 
-      marker.on("touchend", () => {
-        onSelectRef.current(space);
-      });
+      const el = marker.getElement();
+      if (el) {
+        el.style.pointerEvents = "auto";
+        el.style.cursor = "pointer";
+        el.style.touchAction = "manipulation";
+
+        el.addEventListener("touchend", (e: TouchEvent) => {
+          e.stopPropagation();
+          handleSelect(e);
+        }, { passive: false });
+
+        el.addEventListener("click", (e: MouseEvent) => {
+          e.stopPropagation();
+          handleSelect(e);
+        });
+      }
 
       markersRef.current.set(space.id, marker);
     });

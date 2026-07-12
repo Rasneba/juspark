@@ -84,9 +84,11 @@ export default function MapPage() {
   };
 
   const spaceIcon = (type: string) => {
-    if (type === "garage") return "🏢";
-    if (type === "driveway") return "🏠";
-    if (type === "street") return "🛣";
+    if (!type) return "🅿";
+    const t = type.toLowerCase();
+    if (t === "garage") return "🏢";
+    if (t === "driveway") return "🏠";
+    if (t === "street") return "🛣";
     return "🅿";
   };
 
@@ -137,10 +139,10 @@ export default function MapPage() {
         </div>
 
         {selectedSpace && (
-          <div style={{ position: "absolute", bottom: 52, left: 8, right: 8, zIndex: 1000, background: "white", borderRadius: 12, border: "1px solid #e5e7eb", padding: "0.75rem", boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}>
+          <div style={{ position: "absolute", bottom: 52, left: 8, right: 8, zIndex: 9999, background: "white", borderRadius: 12, border: "1px solid #e5e7eb", padding: "0.75rem", boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}>
             <div style={{ display: "flex", alignItems: "start", gap: "0.75rem" }}>
               <div style={{ width: 52, height: 52, borderRadius: 10, background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem", flexShrink: 0 }}>
-                {spaceIcon(selectedSpace.space_type)}
+                {spaceIcon(selectedSpace.spaceType || selectedSpace.space_type)}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: "700", fontSize: "0.9rem", marginBottom: 2 }}>{selectedSpace.name}</div>
@@ -149,17 +151,17 @@ export default function MapPage() {
                   <span style={{ fontSize: "0.9rem", fontWeight: "800", color: "#1B1B1B" }}>
                     {selectedSpace.pricing?.[0] ? `ETB ${selectedSpace.pricing[0].price}` : "TBD"}
                     <span style={{ fontSize: "0.7rem", fontWeight: "500", color: "#6b7280" }}>
-                      {selectedSpace.pricing?.[0] ? `/${selectedSpace.pricing[0].rate_type === "hourly" ? "hr" : selectedSpace.pricing[0].rate_type === "daily" ? "day" : "mo"}` : ""}
+                      {selectedSpace.pricing?.[0] ? `/${selectedSpace.pricing[0].rateType === "HOURLY" ? "hr" : selectedSpace.pricing[0].rateType === "DAILY" ? "day" : "mo"}` : ""}
                     </span>
                   </span>
-                  {selectedSpace.rating_avg > 0 && (
-                    <span style={{ fontSize: "0.7rem", color: "#f59e0b", fontWeight: 600 }}>★ {Number(selectedSpace.rating_avg).toFixed(1)}</span>
+                  {(selectedSpace.ratingAvg || selectedSpace.rating_avg) > 0 && (
+                    <span style={{ fontSize: "0.7rem", color: "#f59e0b", fontWeight: 600 }}>★ {Number(selectedSpace.ratingAvg || selectedSpace.rating_avg).toFixed(1)}</span>
                   )}
                   <span style={{ fontSize: "0.6rem", padding: "1px 6px", background: "#f3f4f6", borderRadius: 999, color: "#6b7280", fontWeight: 600, textTransform: "capitalize" }}>
-                    {selectedSpace.space_type}
+                    {selectedSpace.spaceType || selectedSpace.space_type}
                   </span>
-                  {selectedSpace.is_covered && <span style={{ fontSize: "0.6rem", padding: "1px 6px", background: "#dbeafe", borderRadius: 999, color: "#2563eb", fontWeight: 600 }}>Covered</span>}
-                  {selectedSpace.is_24_7 && <span style={{ fontSize: "0.6rem", padding: "1px 6px", background: "#fef3c7", borderRadius: 999, color: "#d97706", fontWeight: 600 }}>24/7</span>}
+                  {(selectedSpace.isCovered || selectedSpace.is_covered) && <span style={{ fontSize: "0.6rem", padding: "1px 6px", background: "#dbeafe", borderRadius: 999, color: "#2563eb", fontWeight: 600 }}>Covered</span>}
+                  {(selectedSpace.is247 || selectedSpace.is_24_7) && <span style={{ fontSize: "0.6rem", padding: "1px 6px", background: "#fef3c7", borderRadius: 999, color: "#d97706", fontWeight: 600 }}>24/7</span>}
                 </div>
               </div>
               <button onClick={(e) => { e.stopPropagation(); setSelectedSpace(null); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.1rem", color: "#9ca3af", padding: "4px", flexShrink: 0 }}>✕</button>
