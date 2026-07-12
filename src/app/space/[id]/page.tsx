@@ -23,6 +23,8 @@ export default function SpaceDetailPage() {
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mapSatellite, setMapSatellite] = useState(false);
+  const [activePhoto, setActivePhoto] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -83,7 +85,9 @@ export default function SpaceDetailPage() {
 
   const lat = space.latitude || space.lat || 9.0054;
   const lng = space.longitude || space.lng || 38.7636;
-  const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.008}%2C${lat - 0.005}%2C${lng + 0.008}%2C${lat + 0.005}&layer=mapnik&marker=${lat}%2C${lng}`;
+  const mapStreetSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.008}%2C${lat - 0.005}%2C${lng + 0.008}%2C${lat + 0.005}&layer=mapnik&marker=${lat}%2C${lng}`;
+  const mapSatSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.008}%2C${lat - 0.005}%2C${lng + 0.008}%2C${lat + 0.005}&layer=satellite&marker=${lat}%2C${lng}`;
+  const photos = space.images?.length > 0 ? space.images : (space.primary_photo ? [{ url: space.primary_photo, isPrimary: true }] : []);
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--muted)" }}>
@@ -96,8 +100,22 @@ export default function SpaceDetailPage() {
 
         <div style={{ background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", overflow: "hidden" }}>
           <div style={{ height: "320px", background: "var(--muted)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-            {space.primary_photo ? (
-              <img src={space.primary_photo} alt={space.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            {photos.length > 0 ? (
+              <>
+                <img src={photos[activePhoto]?.url || photos[0]?.url} alt={space.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                {photos.length > 1 && (
+                  <div style={{ position: "absolute", bottom: 12, left: "50%", transform: "translateX(-50%)", display: "flex", gap: "6px", background: "rgba(0,0,0,0.5)", borderRadius: 999, padding: "4px 8px" }}>
+                    {photos.map((_: any, i: number) => (
+                      <button key={i} onClick={() => setActivePhoto(i)} style={{ width: activePhoto === i ? 20 : 8, height: 8, borderRadius: 999, border: "none", background: activePhoto === i ? "white" : "rgba(255,255,255,0.5)", cursor: "pointer", transition: "all 0.2s" }} />
+                    ))}
+                  </div>
+                )}
+                {photos.length > 1 && (
+                  <div style={{ position: "absolute", top: 12, right: 12, background: "rgba(0,0,0,0.5)", color: "white", borderRadius: 8, padding: "2px 8px", fontSize: "0.7rem", fontWeight: "600" }}>
+                    {activePhoto + 1}/{photos.length} photos
+                  </div>
+                )}
+              </>
             ) : (
               <span style={{ fontSize: "4rem", color: "var(--muted-foreground)" }}>🅿</span>
             )}
@@ -170,30 +188,56 @@ export default function SpaceDetailPage() {
               </div>
             </div>
 
-            <Link
-              href={`/book?spaceId=${space.id}`}
-              style={{
-                display: "block",
-                width: "100%",
-                padding: "1rem",
-                background: "var(--primary)",
-                color: "white",
-                border: "none",
-                borderRadius: "var(--radius)",
-                fontSize: "1.1rem",
-                fontWeight: "700",
-                textAlign: "center",
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-            >
-              Book Now
-            </Link>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <Link
+                href={`/book/${space.id}`}
+                style={{
+                  flex: 1,
+                  display: "block",
+                  padding: "1rem",
+                  background: "var(--primary)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "var(--radius)",
+                  fontSize: "1.1rem",
+                  fontWeight: "700",
+                  textAlign: "center",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Book Now
+              </Link>
+              <a
+                href={`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`}
+                target="_blank"
+                rel="noopener"
+                style={{
+                  padding: "1rem 1.25rem",
+                  background: "#4A90D9",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "var(--radius)",
+                  fontSize: "1.1rem",
+                  fontWeight: "700",
+                  textAlign: "center",
+                  textDecoration: "none",
+                }}
+              >
+                🧭
+              </a>
+            </div>
           </div>
         </div>
 
         <div style={{ background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", marginTop: "1.5rem", overflow: "hidden" }}>
-          <h2 style={{ fontSize: "1.125rem", fontWeight: "700", padding: "1.25rem 1.5rem", borderBottom: "1px solid var(--border)" }}>Location</h2>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 1.5rem", borderBottom: "1px solid var(--border)" }}>
+            <h2 style={{ fontSize: "1.125rem", fontWeight: "700" }}>Location</h2>
+            <div style={{ display: "flex", gap: "0.35rem" }}>
+              <button onClick={() => setMapSatellite(false)} style={{ padding: "0.3rem 0.6rem", borderRadius: 6, border: `1px solid ${!mapSatellite ? "#1B1B1B" : "#d1d5db"}`, background: !mapSatellite ? "#1B1B1B" : "white", color: !mapSatellite ? "white" : "#6b7280", fontSize: "0.7rem", fontWeight: "600", cursor: "pointer" }}>🗺 Streets</button>
+              <button onClick={() => setMapSatellite(true)} style={{ padding: "0.3rem 0.6rem", borderRadius: 6, border: `1px solid ${mapSatellite ? "#4A90D9" : "#d1d5db"}`, background: mapSatellite ? "#EEF4FF" : "white", color: mapSatellite ? "#4A90D9" : "#6b7280", fontSize: "0.7rem", fontWeight: "600", cursor: "pointer" }}>🛰 Satellite</button>
+            </div>
+          </div>
           <iframe
             title="Parking Location"
             width="100%"
@@ -201,7 +245,7 @@ export default function SpaceDetailPage() {
             style={{ border: 0 }}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            src={mapSrc}
+            src={mapSatellite ? mapSatSrc : mapStreetSrc}
           />
         </div>
 
