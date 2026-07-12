@@ -244,15 +244,22 @@ export default function SpaceDetailPage() {
 
 function Header() {
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-zinc-200 shadow-sm">
+    <nav className="sticky top-0 z-50 bg-white border-b border-zinc-200 shadow-sm h-16">
       <div className="h-1" style={{ background: "linear-gradient(90deg, #009900 33%, #FFCC00 66%, #CC0000 100%)" }} />
-      <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
-        <Link href="/" className="flex items-center gap-2 flex-1">
-          <div className="w-9 h-9 bg-gradient-to-br from-[#128a42] to-[#0f7a39] rounded-2xl flex items-center justify-center text-white text-xl shadow-md shadow-[#128a42]/20">🅿</div>
-          <span className="font-display font-extrabold text-lg tracking-tighter text-[#128a42]">Park<span className="text-zinc-900">Eth</span></span>
+      <div className="max-w-2xl mx-auto px-4 h-full flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3 flex-1">
+          <div className="w-10 h-10 bg-gradient-to-r from-ethio-green via-ethio-yellow to-ethio-red p-[2px] rounded-2xl shadow-lg">
+            <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
+              <span className="text-sm font-black">🅿</span>
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-display font-extrabold text-lg tracking-tighter text-zinc-950">Park<span className="text-ethio-green">Eth</span></span>
+            <span className="text-[9px] font-mono font-bold tracking-wider text-ethio-green uppercase -mt-0.5">ፓርክ · ኢትዮጵያ</span>
+          </div>
         </Link>
-        <Link href="/auth/login" className="flex items-center gap-2 bg-white border border-zinc-200 px-4 py-2 rounded-3xl text-sm hover:bg-zinc-50 transition-all">
-          👤 <span className="font-medium text-zinc-700">Sign In</span>
+        <Link href="/auth/login" className="flex items-center gap-2 bg-zinc-100 hover:bg-zinc-200 px-4 py-2 rounded-2xl text-xs font-bold transition-all border border-zinc-200">
+          👤 <span className="text-zinc-700">Sign In</span>
         </Link>
       </div>
     </nav>
