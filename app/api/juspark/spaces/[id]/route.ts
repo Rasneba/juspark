@@ -96,15 +96,15 @@ export async function POST(req: Request) {
         address,
         latitude: latitude || 0,
         longitude: longitude || 0,
-        spaceType: (space_type || "lot").toUpperCase(),
+        spaceType: (space_type || "LOT").toUpperCase() as any,
         isCovered: is_covered || false,
         isEvCharger: is_ev_charger || false,
         is247: is_24_7 || false,
         totalSpots: total_spots || 1,
         availableSpots: total_spots || 1,
-        status: "active",
+        status: "ACTIVE",
         pricing: pricing && Array.isArray(pricing)
-          ? { create: pricing.filter((p: any) => p.price > 0).map((p: any) => ({ rateType: p.rate_type.toUpperCase(), price: p.price })) }
+          ? { create: pricing.filter((p: any) => p.price > 0).map((p: any) => ({ rateType: (p.rate_type || "HOURLY").toUpperCase() as any, price: p.price })) }
           : undefined,
       },
       include: { pricing: true },
@@ -134,7 +134,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     if (body.address !== undefined) data.address = body.address;
     if (body.latitude !== undefined) data.latitude = body.latitude;
     if (body.longitude !== undefined) data.longitude = body.longitude;
-    if (body.space_type !== undefined) data.spaceType = body.space_type.toUpperCase();
+    if (body.space_type !== undefined) data.spaceType = body.space_type.toUpperCase() as any;
     if (body.is_covered !== undefined) data.isCovered = body.is_covered;
     if (body.is_ev_charger !== undefined) data.isEvCharger = body.is_ev_charger;
     if (body.is_24_7 !== undefined) data.is247 = body.is_24_7;
@@ -149,7 +149,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       await prisma.parkingPrice.createMany({
         data: body.pricing
           .filter((p: any) => p.price > 0)
-          .map((p: any) => ({ spaceId: id, rateType: p.rate_type.toUpperCase(), price: p.price })),
+          .map((p: any) => ({ spaceId: id, rateType: (p.rate_type || "HOURLY").toUpperCase() as any, price: p.price })),
       });
     }
 

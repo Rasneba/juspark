@@ -24,7 +24,7 @@ export async function GET(req: Request) {
 
     const [earnings, spaces, bookings, reviews] = await Promise.all([
       prisma.booking.aggregate({
-        where: { space: { hostId: user.id }, status: { in: ["completed", "active"] } },
+        where: { space: { hostId: user.id }, status: { in: ["COMPLETED", "ACTIVE"] as any } },
         _sum: { totalAmount: true },
       }),
       prisma.parkingSpace.count({ where: { hostId: user.id } }),
@@ -36,7 +36,7 @@ export async function GET(req: Request) {
     ]);
 
     const pendingPayout = await prisma.booking.aggregate({
-      where: { space: { hostId: user.id }, paymentStatus: "pending", status: { in: ["completed", "active"] } },
+      where: { space: { hostId: user.id }, paymentStatus: "PENDING" as any, status: { in: ["COMPLETED", "ACTIVE"] as any } },
       _sum: { totalAmount: true },
     });
 

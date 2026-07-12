@@ -19,9 +19,9 @@ export async function GET(req: Request) {
     const type = searchParams.get("type");
     const search = searchParams.get("search");
 
-    const where: any = { status: "active" };
+    const where: any = { status: "ACTIVE" };
     if (type && type !== "all") {
-      where.spaceType = type.toUpperCase();
+      where.spaceType = type.toUpperCase() as any;
     }
     if (search) {
       where.OR = [

@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     }
 
     const space = await prisma.parkingSpace.findUnique({
-      where: { id: space_id, status: "active" },
+      where: { id: space_id, status: "ACTIVE" as any },
       include: { pricing: { orderBy: { price: "asc" } } },
     });
     if (!space) return NextResponse.json({ error: "Space not found" }, { status: 404 });
@@ -60,8 +60,8 @@ export async function POST(req: Request) {
         totalAmount: total,
         platformFee: total * 0.15,
         hostPayout: total * 0.85,
-        status: "confirmed",
-        paymentStatus: "pending",
+        status: "CONFIRMED" as any,
+        paymentStatus: "PENDING" as any,
         bookingRef: generateRef(),
       },
     });

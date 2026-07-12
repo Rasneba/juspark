@@ -46,7 +46,9 @@ export async function GET(req: Request) {
       total_spots: s.totalSpots,
       available_spots: s.availableSpots,
       status: s.status,
+      is_active: s.status === "ACTIVE",
       total_bookings: s.bookings.length,
+      booking_count: s.bookings.length,
       pricing: s.pricing.map((p) => ({ rate_type: p.rateType.toLowerCase(), price: p.price })),
     })));
   } catch (e: any) {

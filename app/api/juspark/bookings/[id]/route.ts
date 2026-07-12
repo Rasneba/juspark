@@ -47,13 +47,13 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     if (body.action === "cancel") {
       const booking = await prisma.booking.findFirst({
-        where: { id, userId: user.id, status: { in: ["pending", "confirmed"] } },
+        where: { id, userId: user.id, status: { in: ["PENDING", "CONFIRMED"] as any } },
       });
       if (!booking) return NextResponse.json({ error: "Cannot cancel" }, { status: 400 });
 
       const updated = await prisma.booking.update({
         where: { id },
-        data: { status: "cancelled", cancelReason: body.reason || null, cancelledAt: new Date() },
+        data: { status: "CANCELLED" as any, cancelReason: body.reason || null, cancelledAt: new Date() },
       });
 
       await prisma.parkingSpace.update({
@@ -66,21 +66,21 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     if (body.action === "checkin") {
       const updated = await prisma.booking.update({
-        where: { id, userId: user.id, status: "confirmed" },
-        data: { status: "active", checkinTime: new Date() },
+        where: { id, userId: user.id, status: "CONFIRMED" as any },
+        data: { status: "ACTIVE" as any, checkinTime: new Date() },
       });
       return NextResponse.json(updated);
     }
 
     if (body.action === "checkout") {
       const booking = await prisma.booking.findFirst({
-        where: { id, userId: user.id, status: "active" },
+        where: { id, userId: user.id, status: "ACTIVE" as any },
       });
       if (!booking) return NextResponse.json({ error: "Cannot check out" }, { status: 400 });
 
       const updated = await prisma.booking.update({
         where: { id },
-        data: { status: "completed", checkoutTime: new Date() },
+        data: { status: "COMPLETED" as any, checkoutTime: new Date() },
       });
 
       await prisma.parkingSpace.update({
