@@ -55,19 +55,16 @@ export default function BookingsPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--muted)" }}>
-      <header style={{ padding: "1rem 2rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Link href="/" style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--primary)", textDecoration: "none" }}>PARKme Ethiopia</Link>
-        <nav style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <Link href="/search" style={{ color: "var(--muted-foreground)", textDecoration: "none" }}>Search</Link>
-          <Link href="/host" style={{ color: "var(--muted-foreground)", textDecoration: "none" }}>Host</Link>
-          <Link href="/profile" style={{ padding: "0.5rem 1rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600", fontSize: "0.875rem" }}>Profile</Link>
-        </nav>
+      <header style={{ padding: "0.75rem 1rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <Link href="/" style={{ padding: "0.4rem 0.6rem", background: "var(--muted)", borderRadius: "var(--radius)", fontSize: "1.1rem" }}>←</Link>
+        <span style={{ fontSize: "0.95rem", fontWeight: "700", flex: 1 }}>My Bookings</span>
+        <Link href="/search" style={{ padding: "0.35rem 0.7rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", fontSize: "0.75rem", fontWeight: "600" }}>Search</Link>
       </header>
 
-      <div style={{ maxWidth: "800px", margin: "0 auto", padding: "2rem" }}>
-        <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--primary)", marginBottom: "1.5rem" }}>My Bookings</h1>
+      <div style={{ padding: "1rem", maxWidth: "600px", margin: "0 auto" }}>
+        <h1 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--primary)", marginBottom: "1rem" }}>My Bookings</h1>
 
-        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}>
+        <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1rem" }}>
           <button
             onClick={() => setTab("active")}
             style={{
@@ -103,12 +100,12 @@ export default function BookingsPage() {
         {loading ? (
           <div style={{ textAlign: "center", padding: "3rem", color: "var(--muted-foreground)" }}>Loading bookings...</div>
         ) : filtered.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "3rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
-            <p style={{ fontSize: "1.125rem", fontWeight: "600", marginBottom: "0.5rem" }}>
+          <div style={{ textAlign: "center", padding: "2rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
+            <p style={{ fontSize: "0.95rem", fontWeight: "600", marginBottom: "0.25rem" }}>
               {tab === "active" ? "No active bookings" : "No past bookings"}
             </p>
-            <p style={{ color: "var(--muted-foreground)", marginBottom: "1rem" }}>
-              {tab === "active" ? "Find and book a parking space to get started" : "Your completed bookings will appear here"}
+            <p style={{ color: "var(--muted-foreground)", fontSize: "0.85rem", marginBottom: "0.75rem" }}>
+              {tab === "active" ? "Find and book a parking space" : "Past bookings appear here"}
             </p>
             {tab === "active" && (
               <Link href="/search" style={{ padding: "0.75rem 1.5rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600" }}>
@@ -117,7 +114,7 @@ export default function BookingsPage() {
             )}
           </div>
         ) : (
-          <div style={{ display: "grid", gap: "0.75rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
             {filtered.map((booking) => {
               const statusKey = (booking.status || "").toLowerCase();
               const statusStyle = STATUS_STYLES[statusKey] || { bg: "#F5F5F5", color: "var(--muted-foreground)" };
@@ -129,7 +126,7 @@ export default function BookingsPage() {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    padding: "1rem 1.25rem",
+                    padding: "0.75rem 1rem",
                     background: "white",
                     borderRadius: "var(--radius)",
                     border: "1px solid var(--border)",
@@ -138,10 +135,10 @@ export default function BookingsPage() {
                   }}
                 >
                   <div style={{ flex: 1 }}>
-                    <h3 style={{ fontWeight: "700", marginBottom: "0.125rem" }}>
+                    <h3 style={{ fontWeight: "700", fontSize: "0.9rem", marginBottom: "0.125rem" }}>
                       {booking.space_name || booking.spaceName || booking.space?.name || "Parking Space"}
                     </h3>
-                    <div style={{ fontSize: "0.8rem", color: "var(--muted-foreground)", display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+                    <div style={{ fontSize: "0.75rem", color: "var(--muted-foreground)", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                       {booking.date && <span>{booking.date}</span>}
                       {booking.duration && <span>{booking.duration}h</span>}
                       {booking.amount && <span>ETB {booking.amount}</span>}

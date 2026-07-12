@@ -85,23 +85,19 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--muted)" }}>
-      <header style={{ padding: "1rem 2rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Link href="/" style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--primary)", textDecoration: "none" }}>PARKme Ethiopia</Link>
-        <nav style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <Link href="/search" style={{ color: "var(--muted-foreground)", textDecoration: "none" }}>Search</Link>
-          <Link href="/host" style={{ color: "var(--muted-foreground)", textDecoration: "none" }}>Host</Link>
-          <Link href="/profile" style={{ padding: "0.5rem 1rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600", fontSize: "0.875rem" }}>Profile</Link>
-        </nav>
+      <header style={{ padding: "0.75rem 1rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <Link href={`/space/${spaceId}`} style={{ padding: "0.4rem 0.6rem", background: "var(--muted)", borderRadius: "var(--radius)", fontSize: "1.1rem" }}>←</Link>
+        <span style={{ fontSize: "0.95rem", fontWeight: "700", flex: 1 }}>Book Parking</span>
       </header>
 
-      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "2rem" }}>
-        <Link href={`/space/${spaceId}`} style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none", fontSize: "0.875rem", display: "inline-block", marginBottom: "1rem" }}>← Back to Space</Link>
+      <div style={{ padding: "1rem", maxWidth: "500px", margin: "0 auto" }}>
+        <Link href={`/space/${spaceId}`} style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none", fontSize: "0.8rem", display: "inline-block", marginBottom: "0.75rem" }}>← Back to Space</Link>
 
-        <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--primary)", marginBottom: "0.25rem" }}>Book Parking</h1>
-        <p style={{ color: "var(--muted-foreground)", marginBottom: "2rem" }}>{space.name}</p>
+        <h1 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--primary)", marginBottom: "0.25rem" }}>Book Parking</h1>
+        <p style={{ color: "var(--muted-foreground)", fontSize: "0.85rem", marginBottom: "1rem" }}>{space.name}</p>
 
-        <div style={{ padding: "1.5rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", marginBottom: "1.5rem" }}>
-          <h2 style={{ fontSize: "1.125rem", fontWeight: "700", marginBottom: "1rem" }}>Space Details</h2>
+        <div style={{ padding: "1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", marginBottom: "1rem" }}>
+          <h2 style={{ fontSize: "0.9rem", fontWeight: "700", marginBottom: "0.75rem" }}>Space Details</h2>
           <div style={{ display: "grid", gap: "0.75rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "var(--muted-foreground)" }}>Address</span>
@@ -120,8 +116,8 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
           </div>
         </div>
 
-        <div style={{ padding: "1.5rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", marginBottom: "1.5rem" }}>
-          <h2 style={{ fontSize: "1.125rem", fontWeight: "700", marginBottom: "1rem" }}>Booking Details</h2>
+        <div style={{ padding: "1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", marginBottom: "1rem" }}>
+          <h2 style={{ fontSize: "0.9rem", fontWeight: "700", marginBottom: "0.75rem" }}>Booking Details</h2>
 
           {error && (
             <div style={{ padding: "0.75rem", background: "#FEE2E2", color: "var(--danger)", borderRadius: "var(--radius)", marginBottom: "1rem", fontSize: "0.875rem" }}>{error}</div>

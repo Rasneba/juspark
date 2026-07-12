@@ -50,65 +50,60 @@ export default function HostDashboardPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--muted)" }}>
-      <header style={{ padding: "1rem 2rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Link href="/" style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--primary)", textDecoration: "none" }}>PARKme Ethiopia</Link>
-        <nav style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <Link href="/search" style={{ color: "var(--muted-foreground)", textDecoration: "none" }}>Search</Link>
-          <Link href="/host" style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none" }}>Host</Link>
-          <Link href="/profile" style={{ padding: "0.5rem 1rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600", fontSize: "0.875rem" }}>Profile</Link>
-        </nav>
+      <header style={{ padding: "0.75rem 1rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+        <Link href="/" style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--primary)", textDecoration: "none" }}>PARKme Ethiopia</Link>
+        <span style={{ flex: 1 }} />
+        <Link href="/search" style={{ padding: "0.35rem 0.7rem", background: "var(--muted)", borderRadius: "var(--radius)", fontSize: "0.8rem", fontWeight: "600", textDecoration: "none" }}>Search</Link>
+        <Link href="/profile" style={{ padding: "0.35rem 0.7rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600", fontSize: "0.8rem" }}>Profile</Link>
       </header>
 
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
-          <div>
-            <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--primary)" }}>Host Dashboard</h1>
-            <p style={{ color: "var(--muted-foreground)", marginTop: "0.25rem" }}>Manage your parking spaces and earnings</p>
-          </div>
-          <Link href="/host/add" style={{ padding: "0.75rem 1.5rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "700" }}>+ Add Space</Link>
+      <div style={{ padding: "1rem", maxWidth: "600px", margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+          <h1 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--primary)" }}>Host Dashboard</h1>
+          <Link href="/host/add" style={{ padding: "0.5rem 1rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "700", fontSize: "0.85rem" }}>+ Add</Link>
         </div>
 
         {loading ? (
-          <div style={{ textAlign: "center", padding: "3rem", color: "var(--muted-foreground)" }}>Loading dashboard...</div>
+          <div style={{ textAlign: "center", padding: "3rem", color: "var(--muted-foreground)" }}>Loading...</div>
         ) : (
           <>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem", marginBottom: "2rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "1.5rem" }}>
               {statCards.map((card) => (
-                <div key={card.label} style={{ padding: "1.5rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                    <span style={{ fontSize: "0.875rem", color: "var(--muted-foreground)", fontWeight: "500" }}>{card.label}</span>
-                    <span style={{ fontSize: "1.5rem" }}>{card.icon}</span>
+                <div key={card.label} style={{ padding: "1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                    <span style={{ fontSize: "0.75rem", color: "var(--muted-foreground)", fontWeight: "500" }}>{card.label}</span>
+                    <span style={{ fontSize: "1.1rem" }}>{card.icon}</span>
                   </div>
-                  <div style={{ fontSize: "1.5rem", fontWeight: "800", color: "var(--primary)" }}>{card.value}</div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--primary)" }}>{card.value}</div>
                 </div>
               ))}
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-              <h2 style={{ fontSize: "1.25rem", fontWeight: "700" }}>Your Spaces</h2>
-              <Link href="/host/listings" style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none", fontSize: "0.875rem" }}>Manage Listings →</Link>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+              <h2 style={{ fontSize: "1rem", fontWeight: "700" }}>Your Spaces</h2>
+              <Link href="/host/listings" style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none", fontSize: "0.8rem" }}>Manage →</Link>
             </div>
 
             {spaces.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "3rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
-                <p style={{ fontSize: "1.125rem", fontWeight: "600", marginBottom: "0.5rem" }}>No spaces yet</p>
-                <p style={{ color: "var(--muted-foreground)", marginBottom: "1rem" }}>Add your first parking space to start earning</p>
-                <Link href="/host/add" style={{ padding: "0.75rem 1.5rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600" }}>+ Add Space</Link>
+              <div style={{ textAlign: "center", padding: "2rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
+                <p style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.25rem" }}>No spaces yet</p>
+                <p style={{ color: "var(--muted-foreground)", fontSize: "0.85rem", marginBottom: "0.75rem" }}>Add your first parking space to start earning</p>
+                <Link href="/host/add" style={{ padding: "0.5rem 1rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600", fontSize: "0.85rem" }}>+ Add Space</Link>
               </div>
             ) : (
-              <div style={{ display: "grid", gap: "0.75rem" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                 {spaces.map((space) => (
-                  <div key={space.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 1.25rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}>
+                  <Link key={space.id} href={`/space/${space.id}`} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.75rem 1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", textDecoration: "none", color: "inherit" }}>
                     <div style={{ flex: 1 }}>
-                      <h3 style={{ fontWeight: "700", marginBottom: "0.125rem" }}>{space.name}</h3>
-                      <p style={{ fontSize: "0.875rem", color: "var(--muted-foreground)" }}>{space.address}</p>
+                      <h3 style={{ fontWeight: "700", marginBottom: "0.125rem", fontSize: "0.9rem" }}>{space.name}</h3>
+                      <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)" }}>{space.address}</p>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                      <span style={{ fontSize: "0.8rem", color: "var(--muted-foreground)" }}>{space.booking_count || space.bookingCount || 0} bookings</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <span style={{ fontSize: "0.7rem", color: "var(--muted-foreground)" }}>{space.booking_count || space.bookingCount || 0} bookings</span>
                       <span style={{
-                        padding: "0.25rem 0.75rem",
+                        padding: "0.2rem 0.5rem",
                         borderRadius: "999px",
-                        fontSize: "0.75rem",
+                        fontSize: "0.65rem",
                         fontWeight: "600",
                         background: (space.is_active !== false && space.isActive !== false) ? "#D5F5E3" : "#FADBD8",
                         color: (space.is_active !== false && space.isActive !== false) ? "var(--success)" : "var(--danger)",
@@ -116,7 +111,7 @@ export default function HostDashboardPage() {
                         {space.is_active !== false && space.isActive !== false ? "Active" : "Inactive"}
                       </span>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}

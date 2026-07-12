@@ -62,26 +62,23 @@ export default function ProfilePage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--muted)" }}>
-      <header style={{ padding: "1rem 2rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Link href="/" style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--primary)", textDecoration: "none" }}>PARKme Ethiopia</Link>
-        <nav style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <Link href="/search" style={{ color: "var(--muted-foreground)", textDecoration: "none" }}>Search</Link>
-          <Link href="/host" style={{ color: "var(--muted-foreground)", textDecoration: "none" }}>Host</Link>
-          <Link href="/profile" style={{ padding: "0.5rem 1rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600", fontSize: "0.875rem" }}>Profile</Link>
-        </nav>
+      <header style={{ padding: "0.75rem 1rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <Link href="/" style={{ padding: "0.4rem 0.6rem", background: "var(--muted)", borderRadius: "var(--radius)", fontSize: "1.1rem" }}>←</Link>
+        <span style={{ fontSize: "0.95rem", fontWeight: "700", flex: 1 }}>Profile</span>
+        <Link href="/search" style={{ padding: "0.35rem 0.7rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", fontSize: "0.75rem", fontWeight: "600" }}>Search</Link>
       </header>
 
-      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "2rem" }}>
-        <h1 style={{ fontSize: "1.75rem", fontWeight: "800", color: "var(--primary)", marginBottom: "1.5rem" }}>My Profile</h1>
+      <div style={{ padding: "1rem", maxWidth: "500px", margin: "0 auto" }}>
+        <h1 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--primary)", marginBottom: "1rem" }}>My Profile</h1>
 
-        <div style={{ padding: "1.5rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", marginBottom: "1.5rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1rem" }}>
-            <div style={{ width: "56px", height: "56px", borderRadius: "50%", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: "1.5rem", fontWeight: "700" }}>
+        <div style={{ padding: "1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", marginBottom: "1rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" }}>
+            <div style={{ width: "44px", height: "44px", borderRadius: "50%", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: "1.1rem", fontWeight: "700", flexShrink: 0 }}>
               {user.name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || "?"}
             </div>
             <div>
-              <h2 style={{ fontWeight: "700", fontSize: "1.125rem" }}>{user.name || "User"}</h2>
-              <p style={{ fontSize: "0.875rem", color: "var(--muted-foreground)" }}>{user.email}</p>
+              <h2 style={{ fontWeight: "700", fontSize: "0.95rem" }}>{user.name || "User"}</h2>
+              <p style={{ fontSize: "0.8rem", color: "var(--muted-foreground)" }}>{user.email}</p>
             </div>
           </div>
           <div style={{ display: "inline-block", padding: "0.25rem 0.75rem", borderRadius: "999px", background: mode === "host" ? "#EEF4FF" : "#D5F5E3", color: mode === "host" ? "var(--accent)" : "var(--success)", fontSize: "0.8rem", fontWeight: "600", textTransform: "capitalize" }}>
@@ -89,7 +86,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}>
+        <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1rem" }}>
           <button
             onClick={() => toggleMode("driver")}
             style={{
@@ -124,15 +121,15 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        <div style={{ display: "grid", gap: "0.75rem", marginBottom: "1.5rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1.5rem" }}>
           {links.map((link) => (
-            <Link key={link.href + link.label} href={link.href} style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "1rem 1.25rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", textDecoration: "none", color: "inherit", transition: "box-shadow 0.2s" }}>
-              <span style={{ fontSize: "1.5rem" }}>{link.icon}</span>
-              <div>
-                <div style={{ fontWeight: "600" }}>{link.label}</div>
-                <div style={{ fontSize: "0.8rem", color: "var(--muted-foreground)" }}>{link.desc}</div>
+            <Link key={link.href + link.label} href={link.href} style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.75rem 1rem", background: "white", borderRadius: "var(--radius)", border: "1px solid var(--border)", textDecoration: "none", color: "inherit" }}>
+              <span style={{ fontSize: "1.1rem" }}>{link.icon}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: "600", fontSize: "0.85rem" }}>{link.label}</div>
+                <div style={{ fontSize: "0.7rem", color: "var(--muted-foreground)" }}>{link.desc}</div>
               </div>
-              <span style={{ marginLeft: "auto", color: "var(--muted-foreground)" }}>→</span>
+              <span style={{ marginLeft: "auto", color: "var(--muted-foreground)", fontSize: "0.9rem" }}>→</span>
             </Link>
           ))}
         </div>
@@ -141,13 +138,13 @@ export default function ProfilePage() {
           onClick={handleLogout}
           style={{
             width: "100%",
-            padding: "0.75rem",
+            padding: "0.65rem",
             borderRadius: "var(--radius)",
             border: "1px solid var(--danger)",
             background: "white",
             color: "var(--danger)",
             fontWeight: "700",
-            fontSize: "0.95rem",
+            fontSize: "0.85rem",
             cursor: "pointer",
           }}
         >

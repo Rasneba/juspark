@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://juspark-api-ephrem-awulachews-projects.vercel.app";
-const GOOGLE_MAPS_KEY = "AIzaSyDhW7KIfOSP-lLduYFQokSKjwJx34iEDZ8";
 
 function getToken() { return typeof window !== "undefined" ? localStorage.getItem("token") : null; }
 
@@ -37,7 +36,7 @@ export default function SpaceDetailPage() {
         setSpace(data);
 
         try {
-          const revRes = await apiFetch(`/api/juspark/spaces/${id}/reviews`);
+          const revRes = await apiFetch(`/api/juspark/reviews?spaceId=${id}`);
           if (revRes.ok) {
             const revData = await revRes.json();
             setReviews(Array.isArray(revData) ? revData : []);
@@ -84,7 +83,7 @@ export default function SpaceDetailPage() {
 
   const lat = space.latitude || space.lat || 9.0054;
   const lng = space.longitude || space.lng || 38.7636;
-  const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_KEY}&q=${lat},${lng}&zoom=16`;
+  const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.008}%2C${lat - 0.005}%2C${lng + 0.008}%2C${lat + 0.005}&layer=mapnik&marker=${lat}%2C${lng}`;
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--muted)" }}>
@@ -233,13 +232,10 @@ export default function SpaceDetailPage() {
 
 function Header() {
   return (
-    <header style={{ padding: "1rem 2rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-      <Link href="/" style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--primary)", textDecoration: "none" }}>PARKme Ethiopia</Link>
-      <nav style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-        <Link href="/search" style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none" }}>Search</Link>
-        <Link href="/host" style={{ color: "var(--muted-foreground)", textDecoration: "none" }}>Host</Link>
-        <Link href="/auth/login" style={{ padding: "0.5rem 1rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", textDecoration: "none", fontWeight: "600", fontSize: "0.875rem" }}>Sign In</Link>
-      </nav>
+    <header style={{ padding: "0.75rem 1rem", background: "white", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "0.75rem" }}>
+      <Link href="/search" style={{ padding: "0.4rem 0.6rem", background: "var(--muted)", borderRadius: "var(--radius)", fontSize: "1.1rem" }}>←</Link>
+      <span style={{ fontSize: "0.95rem", fontWeight: "700", flex: 1 }}>🅿 PARKme Ethiopia</span>
+      <Link href="/auth/login" style={{ padding: "0.35rem 0.7rem", background: "var(--primary)", color: "white", borderRadius: "var(--radius)", fontSize: "0.75rem", fontWeight: "600" }}>Sign In</Link>
     </header>
   );
 }
