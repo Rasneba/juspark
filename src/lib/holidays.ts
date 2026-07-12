@@ -19,7 +19,7 @@ export const ETHIOPIAN_HOLIDAYS: EthiopianHoliday[] = [
     day: 11,
     emoji: "🌸",
     descriptionEn: "Ethiopian New Year — flowers bloom, families celebrate",
-    descriptionAm: "የኢትዮጵያ አዲስ ዓመት — አበቦች ይፈфорሻሉ፣ ቤተሰቦች ይ חגግashaሉ",
+    descriptionAm: "የኢትዮጵያ አዲስ ዓመት — አበቦች ይፈфорሻሉ፣ ቤተሰቦች ይከበራሉ",
     recurring: true,
   },
   {
@@ -30,7 +30,7 @@ export const ETHIOPIAN_HOLIDAYS: EthiopianHoliday[] = [
     day: 27,
     emoji: "🔥",
     descriptionEn: "Finding of the True Cross — bonfires light up every city",
-    descriptionAm: "መስቀሉን ማግኘት — በ Mọi ከተማ ላይ እሳት ይወልጣል",
+    descriptionAm: "መስቀሉን ማግኘት — በሰፊ ከተማ ላይ እሳት ይወልጣል",
     recurring: true,
   },
   {
@@ -67,11 +67,11 @@ export const ETHIOPIAN_HOLIDAYS: EthiopianHoliday[] = [
     recurring: true,
   },
   {
-    id: "fidel",
+    id: "fasika",
     nameEn: "Fasika (Easter)",
     nameAm: "ፋሲካ",
-    month: 0,
-    day: 0,
+    month: 4,
+    day: 1,
     emoji: "✝️",
     descriptionEn: "Ethiopian Easter — 55 days of fasting end, joyous celebration",
     descriptionAm: "የኢትዮጵያ ፋሲካ — 55 ቀን ጾም ያለቅሳል፣ ታላላቅ በዓል",
@@ -89,7 +89,7 @@ export const ETHIOPIAN_HOLIDAYS: EthiopianHoliday[] = [
     recurring: true,
   },
   {
-    id: "اربعين",
+    id: "arbaeen",
     nameEn: "Arba'een",
     nameAm: "አርባዕን",
     month: 2,
@@ -102,12 +102,10 @@ export const ETHIOPIAN_HOLIDAYS: EthiopianHoliday[] = [
 ];
 
 export function getBlockedDatesForYear(year: number): { date: string; holiday: EthiopianHoliday }[] {
-  return ETHIOPIAN_HOLIDAYS
-    .filter((h) => h.month > 0 && h.day > 0)
-    .map((h) => ({
-      date: `${year}-${String(h.month).padStart(2, "0")}-${String(h.day).padStart(2, "0")}`,
-      holiday: h,
-    }));
+  return ETHIOPIAN_HOLIDAYS.filter((h) => h.month > 0 && h.day > 0).map((h) => ({
+    date: `${year}-${String(h.month).padStart(2, "0")}-${String(h.day).padStart(2, "0")}`,
+    holiday: h,
+  }));
 }
 
 export function isEthiopianHoliday(dateStr: string): EthiopianHoliday | null {

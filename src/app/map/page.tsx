@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { api } from "@/lib/api";
 
 const DEFAULT_CENTER: [number, number] = [9.0192, 38.7525];
 
@@ -62,7 +63,8 @@ export default function MapPage() {
     fetchingRef.current = true;
     setLoading(true);
     try {
-      const res = await fetch(`/api/parking?lat=${lat}&lng=${lng}&radius=100`);
+      const res = await api.get(`/api/parking?lat=${lat}&lng=${lng}&radius=100`);
+      if (!res.ok) throw new Error("Failed");
       const data = await res.json();
       setSpaces(data.spaces || []);
     } catch {

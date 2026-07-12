@@ -1,43 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  /* Ethiopian Brand Colors */
   --ethio-green: #128a42;
   --ethio-yellow: #facc15;
   --ethio-red: #d92323;
-
-  /* Warm Olive/Zinc palette (from parkmeethiopia) */
-  --zinc-950: #0a0d0a;
-  --zinc-900: #101411;
-  --zinc-850: #161c18;
-  --zinc-800: #1f2722;
-  --zinc-700: #2d3b32;
-  --zinc-600: #3c4f43;
-  --zinc-500: #88a693;
-  --zinc-400: #b0c7ba;
-  --zinc-300: #d6e3db;
-  --zinc-200: #eef3f0;
-  --zinc-100: #f4f4f5;
-
-  /* Semantic tokens */
   --background: #f8faf9;
   --foreground: #0a0d0a;
-  --primary: #128a42;
-  --primary-foreground: #ffffff;
-  --secondary: #facc15;
-  --secondary-foreground: #0a0d0a;
-  --accent: #128a42;
-  --accent-foreground: #ffffff;
-  --muted: #f4f5f3;
-  --muted-foreground: #6b7a72;
-  --border: #e2e8e4;
-  --input: #e2e8e4;
-  --ring: #128a42;
-  --success: #128a42;
-  --danger: #d92323;
-  --warning: #facc15;
-  --radius: 0.75rem;
 }
 
 @theme {
@@ -70,11 +38,6 @@ input, button, textarea, select {
   font-size: inherit;
 }
 
-input:focus, button:focus, textarea:focus {
-  outline: 2px solid var(--ethio-green);
-  outline-offset: 1px;
-}
-
 button {
   cursor: pointer;
 }
@@ -84,16 +47,10 @@ a {
   text-decoration: none;
 }
 
-/* Ethiopian Flag glow on map containers */
 .map-container {
   background: linear-gradient(135deg, #fafafa 0%, #f4f4f5 100%);
-  background-image:
-    radial-gradient(circle at 25% 25%, rgba(18, 138, 66, 0.09) 0%, transparent 60%),
-    radial-gradient(circle at 75% 45%, rgba(250, 204, 21, 0.09) 0%, transparent 55%),
-    radial-gradient(circle at 50% 85%, rgba(217, 35, 35, 0.09) 0%, transparent 50%);
 }
 
-/* Glassmorphism panel */
 .glass-panel {
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(14px);
@@ -101,7 +58,6 @@ a {
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
 }
 
-/* Premium scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -117,7 +73,6 @@ a {
   background: #128a42;
 }
 
-/* Range slider */
 input[type="range"] {
   appearance: none;
   -webkit-appearance: none;
@@ -143,7 +98,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
   background: #15a850;
 }
 
-/* Leaflet overrides for z-index */
 .leaflet-container {
   z-index: 1;
 }

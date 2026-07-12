@@ -2,7 +2,6 @@ export type Locale = "en" | "am";
 
 const translations = {
   en: {
-    // Navigation
     "nav.home": "Home",
     "nav.search": "Search",
     "nav.map": "Map",
@@ -13,13 +12,9 @@ const translations = {
     "nav.signUp": "Sign Up",
     "nav.back": "Back",
     "nav.listings": "My Listings",
-
-    // Brand
     "brand.name": "PARKme",
     "brand.subtitle": "Ethiopia",
     "brand.amharic": "ፓርክም · ኢትዮጵያ",
-
-    // Home
     "home.title": "Park Smarter",
     "home.titleAccent": "Across Ethiopia",
     "home.description": "Search, book, and pay for parking in Addis Ababa and beyond. Instant booking, real-time availability.",
@@ -31,8 +26,6 @@ const translations = {
     "home.feature2Desc": "Instant confirm",
     "home.feature3Title": "Earn",
     "home.feature3Desc": "List your space",
-
-    // Search
     "search.placeholder": "Search parking spots, addresses...",
     "search.noResults": "No parking found",
     "search.noResultsDesc": "Try adjusting your search or filters to find available parking.",
@@ -45,8 +38,6 @@ const translations = {
     "search.filterCovered": "Covered",
     "search.filterEv": "EV",
     "search.filter247": "24/7",
-
-    // Map
     "map.title": "Map",
     "map.search": "Search places, hotels, airports, streets...",
     "map.searchButton": "Search this area",
@@ -60,8 +51,6 @@ const translations = {
     "map.searching": "Searching...",
     "map.listView": "List View",
     "map.detailsBook": "Details & Book",
-
-    // Space Detail
     "space.spots": "spots",
     "space.available": "available",
     "space.pricing": "Pricing",
@@ -77,8 +66,6 @@ const translations = {
     "space.covered": "Covered",
     "space.evCharging": "EV Charging",
     "space.access247": "24/7 Access",
-
-    // Booking
     "book.title": "Book Parking",
     "book.spaceDetails": "Space Details",
     "book.bookingDetails": "Booking Details",
@@ -89,8 +76,6 @@ const translations = {
     "book.total": "Total",
     "book.confirm": "Confirm Booking",
     "book.confirming": "Confirming...",
-
-    // Host Dashboard
     "host.title": "Host Dashboard",
     "host.totalEarnings": "Total Earnings",
     "host.pendingPayout": "Pending Payout",
@@ -101,8 +86,6 @@ const translations = {
     "host.noSpacesDesc": "Add your first parking space to start earning",
     "host.addSpace": "+ Add Space",
     "host.manage": "Manage →",
-
-    // Host Listings
     "listings.title": "My Listings",
     "listings.totalSpaces": "total spaces",
     "listings.noListings": "No listings yet",
@@ -112,11 +95,9 @@ const translations = {
     "listings.deactivate": "Deactivate",
     "listings.activate": "Activate",
     "listings.delete": "Delete",
-
-    // Holiday Blocking
     "holiday.title": "Holiday Blocking",
     "holiday.subtitle": "Block dates for Ethiopian holidays",
-    "holiday.description": "Automatically block your parking space during major Ethiopian holidays when demand patterns change.",
+    "holiday.description": "Block your parking space during major Ethiopian holidays when demand patterns change.",
     "holiday.upcoming": "Upcoming Holidays",
     "holiday.blockedDates": "Blocked Dates",
     "host.blockAll": "Block All Holidays",
@@ -124,14 +105,10 @@ const translations = {
     "host.blocked": "Blocked",
     "host.block": "Block",
     "host.unblock": "Unblock",
-
-    // Profile
     "profile.title": "My Profile",
     "profile.driverMode": "Driver Mode",
     "profile.hostMode": "Host Mode",
     "profile.logout": "Log Out",
-
-    // Driver Profile
     "driver.title": "My Profile",
     "driver.account": "Driver Account",
     "driver.totalBookings": "Total Bookings",
@@ -147,8 +124,6 @@ const translations = {
     "driver.switchToHost": "Switch to Host",
     "driver.switchToHostDesc": "Manage your parking spaces",
     "driver.recentBookings": "Recent Bookings",
-
-    // Bookings
     "bookings.title": "My Bookings",
     "bookings.active": "Active",
     "bookings.past": "Past",
@@ -157,8 +132,6 @@ const translations = {
     "bookings.findBook": "Find and book a parking space",
     "bookings.pastAppear": "Past bookings appear here",
     "bookings.searchParking": "Search Parking",
-
-    // Auth
     "auth.login.title": "PARKme Ethiopia",
     "auth.login.subtitle": "Find & book parking in seconds",
     "auth.login.guestAccess": "Guest Access",
@@ -168,8 +141,6 @@ const translations = {
     "auth.login.email": "Email",
     "auth.login.password": "Password",
     "auth.login.noAccount": "No account?",
-    "auth.login.testCreds": "Test: guest@parkme.et / host@parkme.et — Password: admin123",
-
     "auth.register.title": "Create Account",
     "auth.register.subtitle": "Join PARKme Ethiopia today",
     "auth.register.fullName": "Full Name",
@@ -181,8 +152,6 @@ const translations = {
     "auth.register.hostInfo": "List your parking space and earn money. Switch roles anytime.",
     "auth.register.haveAccount": "Have an account?",
     "auth.register.createAccount": "Create Account",
-
-    // Common
     "common.loading": "Loading...",
     "common.error": "Something went wrong",
     "common.retry": "Try again",
@@ -196,7 +165,6 @@ const translations = {
     "common.perMonth": "/mo",
   },
   am: {
-    // Navigation
     "nav.home": "መነሻ",
     "nav.search": "ፈልግ",
     "nav.map": "ካርታ",
@@ -206,15 +174,11 @@ const translations = {
     "nav.signIn": "ግባ",
     "nav.signUp": "ተመዝገብ",
     "nav.back": "ተመለስ",
-    "nav.listings": "ቦታ ማስተዋいらっቸዎቼ",
-
-    // Brand
+    "nav.listings": "ቦታ ማስተዋ\OptionsResolver",
     "brand.name": "ፓርክም",
     "brand.subtitle": "ኢትዮጵያ",
     "brand.amharic": "ፓርክም · ኢትዮጵያ",
-
-    // Home
-    "home.title": "በ智能 የመኪና ቦታ",
+    "home.title": "በአክብሮት የመኪና ቦታ",
     "home.titleAccent": "መስራት በኢትዮጵያ",
     "home.description": "በአዲስ አበባ እና ከዚህ በላይ የመኪና ቦታ ፈልግ፣ ቀይጥ እና ክፈል።",
     "home.findParking": "ቦታ ፈልግ",
@@ -225,8 +189,6 @@ const translations = {
     "home.feature2Desc": "በፍጥነት ያረጋግጥ",
     "home.feature3Title": "ያስተዋግ",
     "home.feature3Desc": "ቦታ ያስተዋግ",
-
-    // Search
     "search.placeholder": "ቦታ ማስያዣ ፈልግ...",
     "search.noResults": "ቦታ ማስያዣ አልተገኘም",
     "search.noResultsDesc": "የተሻለ ለመፈለግ ፍለጋዎን ያስተካክሉ።",
@@ -239,14 +201,12 @@ const translations = {
     "search.filterCovered": "የተሸፈነ",
     "search.filterEv": "ኤሌክትሪክ",
     "search.filter247": "24/7",
-
-    // Map
     "map.title": "ካርታ",
     "map.search": "ቦታዎች ፈልግ...",
     "map.searchButton": "ይህን ቦታ ፈልግ",
     "map.myLocation": "የእኔ ቦታ",
     "map.streets": "መንገዶች",
-    "map.satellite": "ሳትelite",
+    "map.satellite": "ሳተላይት",
     "map.placesOn": "ቦታዎች ON",
     "map.placesOff": "ቦታዎች OFF",
     "map.parkingCount": "ቦታ ማስያዣ",
@@ -254,8 +214,6 @@ const translations = {
     "map.searching": "በመፈለግ ላይ...",
     "map.listView": "የዝርዝር ቅርጽ",
     "map.detailsBook": "ዝርዝር እና ቀይጥ",
-
-    // Space Detail
     "space.spots": "ቦታዎች",
     "space.available": "ይገኛል",
     "space.pricing": "ዋጋ",
@@ -271,8 +229,6 @@ const translations = {
     "space.covered": "የተሸፈነ",
     "space.evCharging": "ኤሌክትሪክ ሽⴰርㅈ",
     "space.access247": "24/7 መድረሻ",
-
-    // Booking
     "book.title": "ቦታ ቀይጥ",
     "book.spaceDetails": "የቦታ ዝርዝሮች",
     "book.bookingDetails": "የቦታ ማስያዣ ዝርዝሮች",
@@ -283,8 +239,6 @@ const translations = {
     "book.total": "ጠቅላላ",
     "book.confirm": "ቦታ ማስያዣ ያረጋግጡ",
     "book.confirming": "በመረጋገጥ ላይ...",
-
-    // Host Dashboard
     "host.title": "የእንቋቋ ማስተዳደሪያ",
     "host.totalEarnings": "ጠቅላላ ገንዘብ",
     "host.pendingPayout": "የሚሆን ክፍያ",
@@ -295,22 +249,18 @@ const translations = {
     "host.noSpacesDesc": "መንገድ ለመጀመር ቦታ ያስተዋግ",
     "host.addSpace": "+ ቦታ አክል",
     "host.manage": "ያስተዳድሩ →",
-
-    // Host Listings
-    "listings.title": "ቦታ ማስተዋreadcrች",
+    "listings.title": "ቦታ ማስተዋ\OptionsResolver",
     "listings.totalSpaces": "ጠቅላላ ቦታዎች",
-    "listings.noListings": "ቦታ ማስተዋいらっቸዎች የሉም",
+    "listings.noListings": "ቦታ ማስተዋ\OptionsResolver የሉም",
     "listings.noListingsDesc": "መጀመሪያ ቦታ ያስተዋግ",
     "listings.active": "ንቁ",
     "listings.inactive": "ንቁ የማይሆን",
     "listings.deactivate": "ንቁ አቋም",
     "listings.activate": "ንቁ አድርግ",
     "listings.delete": "ሰርዝ",
-
-    // Holiday Blocking
     "holiday.title": "የኢትዮጵያ በዓላት መገደብ",
     "holiday.subtitle": "ከኢትዮጵያ በዓላት ቀኖች ቦታ ያስተዋግ",
-    "holiday.description": "ትልቅ የኢትዮጵያ በዓላት ወቅት ተፈጻ嵯き ይለዋወጣል።",
+    "holiday.description": "ትልቅ የኢትዮጵያ በዓላት ወቅት ቦታ ማስያዣ ይለዋወጣል።",
     "holiday.upcoming": "የሚቀጥሉ በዓላት",
     "holiday.blockedDates": "የተገደቡ ቀኖች",
     "host.blockAll": "ሁሉንም በዓላት ግደብ",
@@ -318,14 +268,10 @@ const translations = {
     "host.blocked": "የተገደበ",
     "host.block": "ግደብ",
     "host.unblock": "ክፈት",
-
-    // Profile
     "profile.title": "መገለጫ",
     "profile.driverMode": "የመኪና ሾፋሪ ሁኔታ",
     "profile.hostMode": "የእንቋቋ ሁኔታ",
     "profile.logout": "ውጣ",
-
-    // Driver Profile
     "driver.title": "መገለጫ",
     "driver.account": "የሾፋሪ መለያ",
     "driver.totalBookings": "ጠቅላላ ቦታ ማስያዣዎች",
@@ -341,8 +287,6 @@ const translations = {
     "driver.switchToHost": "ወደ እንቋቋ ቀይር",
     "driver.switchToHostDesc": "ቦታዎችህን ያስተዳድሩ",
     "driver.recentBookings": "የቅርብ ቦታ ማስያዣዎች",
-
-    // Bookings
     "bookings.title": "ቦታ ማስያዣዎቼ",
     "bookings.active": "ንቁ",
     "bookings.past": "ቀይተኛ",
@@ -351,8 +295,6 @@ const translations = {
     "bookings.findBook": "ቦታ ማስያዣ ፈልግ",
     "bookings.pastAppear": "ቀይተኛ ቦታ ማስያዣዎች ይወያያሉ",
     "bookings.searchParking": "ቦታ ፈልግ",
-
-    // Auth
     "auth.login.title": "ፓርክም ኢትዮጵያ",
     "auth.login.subtitle": "በቃ ቦታ ማስያዣ ፈልግ",
     "auth.login.guestAccess": "እንግዳ መድረሻ",
@@ -362,8 +304,6 @@ const translations = {
     "auth.login.email": "ኢሜይል",
     "auth.login.password": "የይለፍ ቃል",
     "auth.login.noAccount": "መለያ የለህም?",
-    "auth.login.testCreds": "ፃፈት: guest@parkme.et / host@parkme.et — የይለፍ ቃል: admin123",
-
     "auth.register.title": "መለያ ፍጭም",
     "auth.register.subtitle": "ፓርክም ኢትዮጵያ ተቀላቅል",
     "auth.register.fullName": "ሙሉ ስም",
@@ -375,8 +315,6 @@ const translations = {
     "auth.register.hostInfo": "ቦታ ያስተዋግ እና ገንዘብ አግኝ።",
     "auth.register.haveAccount": "መለያ አለህ?",
     "auth.register.createAccount": "መለያ ፍጭም",
-
-    // Common
     "common.loading": "በመጫን ላይ...",
     "common.error": "ችግር ተፈጥሯል",
     "common.retry": "እንደገና ሞክር",
