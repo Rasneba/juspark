@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://juspark-api-ephrem-awulachews-projects.vercel.app";
+const API_BASE = "";
 
 function getToken() { return typeof window !== "undefined" ? localStorage.getItem("token") : null; }
 
@@ -37,10 +37,10 @@ export default function BookingsPage() {
   const loadBookings = async () => {
     setLoading(true);
     try {
-      const res = await apiFetch("/api/juspark/bookings");
+      const res = await apiFetch("/api/bookings");
       if (res.ok) {
         const data = await res.json();
-        setBookings(Array.isArray(data) ? data : []);
+        setBookings(data.bookings || []);
       }
     } catch { }
     setLoading(false);

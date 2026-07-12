@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://juspark-api-ephrem-awulachews-projects.vercel.app";
+const API_BASE = "";
 
 function getToken() { return typeof window !== "undefined" ? localStorage.getItem("token") : null; }
 
@@ -29,10 +29,10 @@ export default function HostListingsPage() {
   const loadSpaces = async () => {
     setLoading(true);
     try {
-      const res = await apiFetch("/api/juspark/host/spaces");
+      const res = await apiFetch("/api/owner/listings");
       if (res.ok) {
         const data = await res.json();
-        setSpaces(Array.isArray(data) ? data : []);
+        setSpaces(data.spaces || []);
       }
     } catch { }
     setLoading(false);
@@ -43,9 +43,9 @@ export default function HostListingsPage() {
     const isActive = space.is_active !== false && space.isActive !== false;
     setTogglingId(id);
     try {
-      await apiFetch(`/api/juspark/spaces/${id}`, {
+      await apiFetch(`/api/parking/${id}`, {
         method: "PATCH",
-        body: JSON.stringify({ is_active: !isActive }),
+        body: JSON.stringify({ status: isActive ? "INACTIVE" : "ACTIVE" }),
       });
       setSpaces((prev) =>
         prev.map((s) =>
@@ -60,7 +60,7 @@ export default function HostListingsPage() {
     if (!window.confirm("Are you sure you want to delete this space? This action cannot be undone.")) return;
     setDeletingId(id);
     try {
-      const res = await apiFetch(`/api/juspark/spaces/${id}`, { method: "DELETE" });
+      const res = await apiFetch(`/api/parking/${id}`, { method: "DELETE" });
       if (res.ok) setSpaces((prev) => prev.filter((s) => s.id !== id));
     } catch { }
     setDeletingId(null);

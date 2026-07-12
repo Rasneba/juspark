@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "https://juspark-api-ephrem-awulachews-projects.vercel.app";
-
 export default function SearchPage() {
   const [spaces, setSpaces] = useState<any[]>([]);
   const [query, setQuery] = useState("");
@@ -28,9 +26,9 @@ export default function SearchPage() {
   const loadSpaces = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API}/api/juspark/spaces?lat=${userLocation?.lat || 9.0054}&lng=${userLocation?.lng || 38.7636}&radius=10`);
+      const res = await fetch(`/api/parking?lat=${userLocation?.lat || 9.0054}&lng=${userLocation?.lng || 38.7636}&radius=10`);
       const data = await res.json();
-      setSpaces(Array.isArray(data) ? data : []);
+      setSpaces(data.spaces || []);
     } catch {}
     setLoading(false);
   };

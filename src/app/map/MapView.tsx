@@ -1,51 +1,52 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-function getLat(s: any): number { return s.latitude || s.lat || 9.0054; }
-function getLng(s: any): number { return s.longitude || s.lng || 38.7636; }
+function getLat(s: any): number { return s.latitude || 9.0054; }
+function getLng(s: any): number { return s.longitude || 38.7636; }
 
-function createPriceIcon(price: string) {
+function createPriceIcon(price: string, selected: boolean) {
   return L.divIcon({
     className: "",
-    html: `<div style="background:#1B1B1B;color:#fff;padding:3px 7px;border-radius:5px;font-size:11px;font-weight:700;font-family:system-ui,sans-serif;white-space:nowrap;border:2px solid #4A90D9;box-shadow:0 2px 8px rgba(0,0,0,0.35);cursor:pointer">${price}</div>`,
-    iconSize: [0, 0],
-    iconAnchor: [22, 11],
-    popupAnchor: [0, -14],
+    html: `<div style="background:${selected ? "#4A90D9" : "#1B1B1B"};color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;font-family:system-ui,sans-serif;white-space:nowrap;border:2px solid ${selected ? "#fff" : "#4A90D9"};box-shadow:0 2px 8px rgba(0,0,0,0.35);cursor:pointer;transform:translate(-50%,-50%);${selected ? "transform:translate(-50%,-50%) scale(1.15);z-index:9999" : ""}">${price}</div>`,
+    iconSize: [80, 28],
+    iconAnchor: [40, 14],
   });
 }
 
 function createMyLocationIcon() {
   return L.divIcon({
     className: "",
-    html: `<div style="width:20px;height:20px;background:#4A90D9;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #4A90D9, 0 2px 8px rgba(0,0,0,0.3)"></div>`,
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
+    html: `<div style="position:relative;width:24px;height:24px"><div style="position:absolute;inset:0;background:rgba(74,144,217,0.2);border-radius:50%;animation:pulse 2s infinite"></div><div style="position:absolute;top:4px;left:4px;width:16px;height:16px;background:#4A90D9;border:3px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.3)"></div></div>`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
   });
 }
 
 interface MapViewProps {
   center: [number, number];
   spaces: any[];
+  selectedId: string | null;
   onCenterChange: (lat: number, lng: number) => void;
   onSelectSpace: (space: any) => void;
 }
 
-export default function MapView({ center, spaces, onCenterChange, onSelectSpace }: MapViewProps) {
+export default function MapView({ center, spaces, selectedId, onCenterChange, onSelectSpace }: MapViewProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
-  const markersRef = useRef<L.Marker[]>([]);
+  const markersRef = useRef<Map<string, L.Marker>>(new Map());
   const myLocationMarkerRef = useRef<L.Marker | null>(null);
-  const spacesRef = useRef<any[]>([]);
   const onSelectRef = useRef(onSelectSpace);
   const onCenterChangeRef = useRef(onCenterChange);
+  const centerRef = useRef(center);
 
   onSelectRef.current = onSelectSpace;
   onCenterChangeRef.current = onCenterChange;
+  centerRef.current = center;
 
-  const initMap = useCallback(() => {
+  useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
     const map = L.map(mapContainerRef.current, {
@@ -67,47 +68,67 @@ export default function MapView({ center, spaces, onCenterChange, onSelectSpace 
     });
 
     mapRef.current = map;
-  }, [center]);
 
-  useEffect(() => {
-    initMap();
+    const style = document.createElement("style");
+    style.textContent = `@keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.8);opacity:0}100%{transform:scale(1);opacity:1}}`;
+    document.head.appendChild(style);
+
     return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
+      style.remove();
+      map.remove();
+      mapRef.current = null;
     };
   }, []);
 
   useEffect(() => {
     if (!mapRef.current) return;
-    mapRef.current.flyTo(center, 15, { duration: 0.8 });
+    const dist = Math.abs(mapRef.current.getCenter().lat - center[0]) + Math.abs(mapRef.current.getCenter().lng - center[1]);
+    if (dist > 0.001) {
+      mapRef.current.flyTo(center, mapRef.current.getZoom(), { duration: 0.8 });
+    }
   }, [center[0], center[1]]);
 
   useEffect(() => {
     if (!mapRef.current) return;
+    const map = mapRef.current;
+    const existingIds = new Set(spaces.map((s: any) => s.id));
 
-    markersRef.current.forEach((m) => m.remove());
-    markersRef.current = [];
-    spacesRef.current = spaces;
+    markersRef.current.forEach((marker, id) => {
+      if (!existingIds.has(id)) {
+        marker.remove();
+        markersRef.current.delete(id);
+      }
+    });
 
     spaces.forEach((space: any) => {
       const lat = getLat(space);
       const lng = getLng(space);
       const price = space.pricing?.[0];
       const priceText = price ? `ETB ${price.price}` : space.name;
+      const isSelected = space.id === selectedId;
 
-      const icon = createPriceIcon(priceText);
-      const marker = L.marker([lat, lng], { icon }).addTo(mapRef.current!);
+      const existing = markersRef.current.get(space.id);
+      if (existing) {
+        existing.setIcon(createPriceIcon(priceText, isSelected));
+        return;
+      }
 
-      marker.on("click", (e: L.LeafletEvent) => {
+      const icon = createPriceIcon(priceText, isSelected);
+      const marker = L.marker([lat, lng], { icon }).addTo(map);
+
+      marker.on("click", (e: L.LeafletMouseEvent) => {
+        L.DomEvent.stopPropagation(e.originalEvent);
         L.DomEvent.stopPropagation(e as any);
         onSelectRef.current(space);
       });
 
-      markersRef.current.push(marker);
+      marker.on("touchend", () => {
+        onSelectRef.current(space);
+      });
+
+      markersRef.current.set(space.id, marker);
     });
-  }, [spaces]);
+  }, [spaces, selectedId]);
 
   useEffect(() => {
     (window as any).__leafletMapView = {
@@ -117,7 +138,7 @@ export default function MapView({ center, spaces, onCenterChange, onSelectSpace 
           myLocationMarkerRef.current.remove();
         }
         const icon = createMyLocationIcon();
-        myLocationMarkerRef.current = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(mapRef.current);
+        myLocationMarkerRef.current = L.marker([lat, lng], { icon, zIndexOffset: 10000 }).addTo(mapRef.current);
         mapRef.current.flyTo([lat, lng], 16, { duration: 0.8 });
       },
     };
@@ -125,6 +146,6 @@ export default function MapView({ center, spaces, onCenterChange, onSelectSpace 
   }, []);
 
   return (
-    <div ref={mapContainerRef} style={{ width: "100%", height: "100%" }} />
+    <div ref={mapContainerRef} style={{ width: "100%", height: "100%", zIndex: 0 }} />
   );
 }

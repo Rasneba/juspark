@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://juspark-api-ephrem-awulachews-projects.vercel.app";
+const API_BASE = "";
 
 function getToken() { return typeof window !== "undefined" ? localStorage.getItem("token") : null; }
 
@@ -19,6 +19,10 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
   const [space, setSpace] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [duration, setDuration] = useState(1);
+  const [startTime, setStartTime] = useState(() => {
+    const now = new Date();
+    return now.toISOString().slice(0, 16);
+  });
   const [vehiclePlate, setVehiclePlate] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -30,8 +34,11 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
   const loadSpace = async () => {
     setLoading(true);
     try {
-      const res = await apiFetch(`/api/juspark/spaces/${spaceId}`);
-      if (res.ok) setSpace(await res.json());
+      const res = await apiFetch(`/api/parking/${spaceId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setSpace(data.space || data);
+      }
     } catch { }
     setLoading(false);
   };
@@ -47,12 +54,14 @@ export default function BookSpacePage({ params }: { params: Promise<{ spaceId: s
     setSubmitting(true);
     setError("");
     try {
-      const res = await apiFetch("/api/juspark/bookings", {
+      const start = new Date(startTime);
+      const end = new Date(start.getTime() + duration * 60 * 60 * 1000);
+      const res = await apiFetch("/api/bookings", {
         method: "POST",
         body: JSON.stringify({
-          space_id: spaceId,
-          duration_hours: duration,
-          vehicle_plate: vehiclePlate.trim(),
+          spaceId,
+          startTime: start.toISOString(),
+          endTime: end.toISOString(),
         }),
       });
       if (!res.ok) {

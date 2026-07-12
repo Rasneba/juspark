@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://juspark-api-ephrem-awulachews-projects.vercel.app";
+const API_BASE = "";
 
 function getToken() { return typeof window !== "undefined" ? localStorage.getItem("token") : null; }
 
@@ -29,13 +29,13 @@ export default function HostDashboardPage() {
     setLoading(true);
     try {
       const [dashRes, spacesRes] = await Promise.all([
-        apiFetch("/api/juspark/host/dashboard"),
-        apiFetch("/api/juspark/host/spaces"),
+        apiFetch("/api/owner/dashboard"),
+        apiFetch("/api/owner/listings"),
       ]);
       if (dashRes.ok) setStats(await dashRes.json());
       if (spacesRes.ok) {
         const data = await spacesRes.json();
-        setSpaces(Array.isArray(data) ? data : []);
+        setSpaces(data.spaces || []);
       }
     } catch { }
     setLoading(false);

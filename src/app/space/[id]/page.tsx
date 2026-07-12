@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://juspark-api-ephrem-awulachews-projects.vercel.app";
+const API_BASE = "";
 
 function getToken() { return typeof window !== "undefined" ? localStorage.getItem("token") : null; }
 
@@ -30,16 +30,16 @@ export default function SpaceDetailPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await apiFetch(`/api/juspark/spaces/${id}`);
+        const res = await apiFetch(`/api/parking/${id}`);
         if (!res.ok) throw new Error("Space not found");
         const data = await res.json();
-        setSpace(data);
+        setSpace(data.space || data);
 
         try {
-          const revRes = await apiFetch(`/api/juspark/reviews?spaceId=${id}`);
+          const revRes = await apiFetch(`/api/reviews?spaceId=${id}`);
           if (revRes.ok) {
             const revData = await revRes.json();
-            setReviews(Array.isArray(revData) ? revData : []);
+            setReviews(revData.reviews || []);
           }
         } catch { }
       } catch (e: any) {
